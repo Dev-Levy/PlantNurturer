@@ -1,12 +1,14 @@
 #pragma once
 #include <Arduino.h>
 
+// sensor types
+#define DHT_TYPE DHT22
+
 // constants
 const int MAX_MENU_ITEMS = 8;
 const int PLANT_TYPE_COUNT = 4;
-
-// sensor types
-#define DHT_TYPE DHT22
+extern const char *const plantNames[];
+const int EEPROM_PLANT_SLOT_BASE = 0;
 
 // pins
 const int TFT_CS = 10;

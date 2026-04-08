@@ -5,9 +5,9 @@ extern MenuPage mainPage;
 extern MenuPage plantsPage;
 extern MenuPage plant1Page;
 extern MenuPage plant2Page;
+extern MenuPage plant3Page;
 extern MenuPage sensorPage;
 extern MenuPage actuatorPage;
-extern MenuPage settingsPage;
+extern MenuPage setPlantPage;
 
 extern int activePlantIndex;
-void setupMenuConfiguration();

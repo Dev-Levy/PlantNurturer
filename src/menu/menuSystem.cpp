@@ -1,12 +1,20 @@
+#include <avr/pgmspace.h>
+
 #include "MenuSystem.h"
 
+static char plantTypeLabels[PLANT_TYPE_COUNT][16];
+static char plantSlotLabels[3][16];
+static char plantPageTitles[3][16];
+
 static IActuatorActions *actuatorActionsContext = nullptr;
+static MenuSystem *globalMenuPtr = nullptr;
+int activePlantIndex = 0;
 
 MenuSystem::MenuSystem(TFTManager &tftMgr, ISensorActions &sensorActions, IActuatorActions &actuatorActions)
     : tftManager(tftMgr),
       sensorActions(sensorActions),
       actuatorActions(actuatorActions),
-      selected(0),
+      currentCursor(0),
       currentPage(nullptr),
       currentReadings()
 {
@@ -14,11 +22,12 @@ MenuSystem::MenuSystem(TFTManager &tftMgr, ISensorActions &sensorActions, IActua
 
 void MenuSystem::begin()
 {
+    globalMenuPtr = this;
     actuatorActionsContext = &actuatorActions;
     currentPage = &homePage;
 
     setupMenuConfiguration();
-    setutActuatorsPage();
+    setupActuatorsPage();
     draw();
 }
 
@@ -27,26 +36,26 @@ void MenuSystem::processKey(int key)
     switch (key)
     {
     case 1: // UP
-        selected = (selected == 0) ? currentPage->itemCount - 1 : selected - 1;
+        currentCursor = (currentCursor == 0) ? currentPage->itemCount - 1 : currentCursor - 1;
         break;
 
     case 2: // DOWN
-        selected = (selected == currentPage->itemCount - 1) ? 0 : selected + 1;
+        currentCursor = (currentCursor == currentPage->itemCount - 1) ? 0 : currentCursor + 1;
         break;
 
     case 3:
     {
-        MenuItem &activeItem = currentPage->items[selected];
+        MenuItem &activeItem = currentPage->items[currentCursor];
 
         // nav
         if (activeItem.targetPage != nullptr)
         {
             currentPage = activeItem.targetPage;
-            selected = 0;
             if (activeItem.callback != nullptr)
             {
                 activeItem.callback();
             }
+            currentCursor = 0;
         }
         // action
         else if (activeItem.callback != nullptr)
@@ -57,7 +66,7 @@ void MenuSystem::processKey(int key)
         else if (currentPage->parent != nullptr)
         {
             currentPage = currentPage->parent;
-            selected = 0;
+            currentCursor = 0;
         }
         break;
     }
@@ -89,7 +98,7 @@ void MenuSystem::drawPage(MenuPage *page)
     {
         int yPos = 28 + (i * 16);
 
-        bool isSelected = (i == selected);
+        bool isSelected = (i == currentCursor);
 
         if (page == &sensorPage)
         {
@@ -109,7 +118,7 @@ void MenuSystem::drawDynamicSensorData()
     for (int i = 0; i < sensorPage.itemCount; i++)
     {
         int yPos = 28 + (i * 16);
-        bool isSelected = (i == selected);
+        bool isSelected = (i == currentCursor);
 
         char valBuffer[32];
         getSensorString(i, valBuffer);
@@ -191,7 +200,98 @@ void MenuSystem::updateSensorValues()
     }
 }
 
-void MenuSystem::setutActuatorsPage()
+int MenuSystem::getCursorPosition()
+{
+    return currentCursor;
+}
+
+static void commitSelectedPlantType()
+{
+    int index = globalMenuPtr->getCursorPosition();
+    const char *flashName = (const char *)pgm_read_word(&(plantNames[index]));
+
+    // plants menu items
+    strcpy_P(plantSlotLabels[activePlantIndex], flashName);
+    plantsPage.items[activePlantIndex].label = plantSlotLabels[activePlantIndex];
+    strcpy(plantPageTitles[activePlantIndex], plantSlotLabels[activePlantIndex]);
+
+    // plant page title
+    if (activePlantIndex == 0)
+    {
+        plant1Page.title = plantSlotLabels[activePlantIndex];
+        plantsPage.items[activePlantIndex].targetPage = &plant1Page;
+    }
+    else if (activePlantIndex == 1)
+    {
+        plant2Page.title = plantSlotLabels[activePlantIndex];
+        plantsPage.items[activePlantIndex].targetPage = &plant2Page;
+    }
+    else if (activePlantIndex == 2)
+    {
+        plant3Page.title = plantSlotLabels[activePlantIndex];
+        plantsPage.items[activePlantIndex].targetPage = &plant3Page;
+    }
+}
+
+void MenuSystem::setupMenuConfiguration()
+{
+    // --- Home Page ---
+    homePage.title = "Welcome!";
+    homePage.items[0] = {"Enter Main Menu", &mainPage};
+    homePage.itemCount = 1;
+    homePage.parent = nullptr;
+
+    // --- Main Page ---
+    mainPage.title = "Main Menu";
+    mainPage.parent = &homePage;
+    mainPage.items[0] = {"Plants", &plantsPage};
+    mainPage.items[1] = {"Sensors", &sensorPage};
+    mainPage.items[2] = {"Actuators", &actuatorPage};
+    mainPage.items[3] = {"(back)", &homePage};
+    mainPage.itemCount = 4;
+
+    // --- Plants Page ---
+    plantsPage.title = "Plants";
+    plantsPage.parent = &mainPage;
+    plantsPage.items[0] = {"Plant1", &setPlantPage, []()
+                           { activePlantIndex = 0; }};
+    plantsPage.items[1] = {"Plant2", &setPlantPage, []()
+                           { activePlantIndex = 1; }};
+    plantsPage.items[2] = {"Plant3", &setPlantPage, []()
+                           { activePlantIndex = 2; }};
+    plantsPage.items[3] = {"(back)", nullptr, nullptr};
+    plantsPage.itemCount = 4;
+
+    // --- Set Plant Page ---
+    setPlantPage.title = "Select Plant";
+    setPlantPage.parent = &plantsPage;
+    setPlantPage.itemCount = PLANT_TYPE_COUNT;
+
+    for (int i = 0; i < PLANT_TYPE_COUNT; i++)
+    {
+        const char *flashName = (const char *)pgm_read_word(&(plantNames[i]));
+        strcpy_P(plantTypeLabels[i], flashName);
+
+        setPlantPage.items[i].label = plantTypeLabels[i];
+        setPlantPage.items[i].targetPage = &plantsPage;
+        setPlantPage.items[i].callback = commitSelectedPlantType;
+    }
+
+    plant1Page.parent = &plantsPage;
+    plant2Page.parent = &plantsPage;
+    plant3Page.parent = &plantsPage;
+
+    // --- Sensors Page ---
+    sensorPage.title = "Live Data";
+    sensorPage.parent = &mainPage;
+    sensorPage.itemCount = 5;
+
+    // --- Actuators Page ---
+    actuatorPage.title = "Actuators";
+    actuatorPage.parent = &mainPage;
+}
+
+void MenuSystem::setupActuatorsPage()
 {
     if (actuatorActionsContext)
     {

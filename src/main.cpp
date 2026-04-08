@@ -15,11 +15,11 @@ static unsigned long lastSensorRead = 0;
 
 void setup()
 {
+  Serial.begin(9600);
+
   setupPins();
   tft.begin();
   menu.begin();
-
-  Serial.begin(9600);
 }
 
 void loop()

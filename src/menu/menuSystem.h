@@ -18,12 +18,14 @@ public:
     void processKey(int key);
     void updateSensorValues();
 
+    int getCursorPosition();
+
 private:
     TFTManager &tftManager;
     ISensorActions &sensorActions;
     IActuatorActions &actuatorActions;
 
-    int selected;
+    int currentCursor;
     MenuPage *currentPage;
     SensorReadings currentReadings;
 
@@ -32,5 +34,6 @@ private:
     void drawItem(int y, const char *text, bool selected);
     void getSensorString(int index, char *buffer);
 
-    void setutActuatorsPage();
+    void setupMenuConfiguration();
+    void setupActuatorsPage();
 };

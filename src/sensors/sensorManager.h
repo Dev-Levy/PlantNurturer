@@ -14,7 +14,7 @@ class SensorManager : public ISensorActions
 public:
     SensorManager();
 
-    SensorReadings readAll();
+    SensorReadings readAll() override;
 
 private:
     DHT dht;
