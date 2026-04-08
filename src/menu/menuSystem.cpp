@@ -3,8 +3,8 @@
 #include "MenuSystem.h"
 
 static char plantTypeLabels[PLANT_TYPE_COUNT][16];
-static char plantSlotLabels[3][16];
-static char plantPageTitles[3][16];
+static char plantSlotLabels[3][16] = {"Plant1", "Plant2", "Plant3"};
+static char plantPageTitles[3][16] = {"Plant1", "Plant2", "Plant3"};
 
 static IActuatorActions *actuatorActionsContext = nullptr;
 static MenuSystem *globalMenuPtr = nullptr;
@@ -253,11 +253,11 @@ void MenuSystem::setupMenuConfiguration()
     // --- Plants Page ---
     plantsPage.title = "Plants";
     plantsPage.parent = &mainPage;
-    plantsPage.items[0] = {"Plant1", &setPlantPage, []()
+    plantsPage.items[0] = {plantSlotLabels[0], &setPlantPage, []()
                            { activePlantIndex = 0; }};
-    plantsPage.items[1] = {"Plant2", &setPlantPage, []()
+    plantsPage.items[1] = {plantSlotLabels[1], &setPlantPage, []()
                            { activePlantIndex = 1; }};
-    plantsPage.items[2] = {"Plant3", &setPlantPage, []()
+    plantsPage.items[2] = {plantSlotLabels[2], &setPlantPage, []()
                            { activePlantIndex = 2; }};
     plantsPage.items[3] = {"(back)", nullptr, nullptr};
     plantsPage.itemCount = 4;
