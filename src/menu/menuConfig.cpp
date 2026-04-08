@@ -15,6 +15,8 @@ MenuPage actuatorPage;
 
 MenuPage setPlantPage;
 
+int activePlantIndex = 0;
+
 void setupMenuConfiguration()
 {
     // --- Home Page ---
@@ -47,31 +49,6 @@ void setupMenuConfiguration()
     plant1Page.parent = &plantsPage;
     plant2Page.parent = &plantsPage;
     plant3Page.parent = &plantsPage;
-
-    // --- Set Plant Page ---
-    setPlantPage.title = "Select Type";
-    setPlantPage.parent = &plantsPage;
-    setPlantPage.itemCount = PLANT_TYPE_COUNT;
-
-    for (int i = 0; i < PLANT_TYPE_COUNT; i++)
-    {
-        const char *namePtr = (const char *)pgm_read_word(&(plantNames[i]));
-
-        setPlantPage.items[i] = {
-            namePtr,
-            nullptr,
-            [namePtr]()
-            {
-                plantsPage.items[activePlantIndex].label = namePtr;
-
-                if (activePlantIndex == 0)
-                    plant1Page.title = namePtr;
-                else if (activePlantIndex == 1)
-                    plant2Page.title = namePtr;
-                else if (activePlantIndex == 2)
-                    plant3Page.title = namePtr;
-            }};
-    }
 
     // --- Sensors Page ---
     sensorPage.title = "Live Data";

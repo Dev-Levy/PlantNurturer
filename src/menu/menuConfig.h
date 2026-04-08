@@ -9,5 +9,5 @@ extern MenuPage sensorPage;
 extern MenuPage actuatorPage;
 extern MenuPage settingsPage;
 
-int activePlantIndex = 0;
+extern int activePlantIndex;
 void setupMenuConfiguration();

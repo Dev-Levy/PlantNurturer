@@ -5,9 +5,6 @@
 const int MAX_MENU_ITEMS = 8;
 const int PLANT_TYPE_COUNT = 4;
 
-// plant types
-const char *const plantNames[];
-
 // sensor types
 #define DHT_TYPE DHT22
 
