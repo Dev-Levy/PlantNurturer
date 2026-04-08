@@ -201,7 +201,7 @@ void MenuSystem::setutActuatorsPage()
                                  { actuatorActionsContext->toggleLight(); }};
         actuatorPage.items[2] = {"Fan", nullptr, []()
                                  { actuatorActionsContext->toggleFan(); }};
-        actuatorPage.items[3] = {"[back]", nullptr, nullptr};
+        actuatorPage.items[3] = {"(back)", nullptr, nullptr};
         actuatorPage.itemCount = 4;
     }
 }
