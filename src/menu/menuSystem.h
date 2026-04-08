@@ -35,5 +35,6 @@ private:
     void getSensorString(int index, char *buffer);
 
     void setupMenuConfiguration();
+    void setupPlantsPage();
     void setupActuatorsPage();
 };

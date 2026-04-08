@@ -1,14 +1,30 @@
 #include <avr/pgmspace.h>
+#include <EEPROM.h>
 
 #include "MenuSystem.h"
 
 static char plantTypeLabels[PLANT_TYPE_COUNT][16];
+static int plantTypeSelected[3] = {0, 0, 0};
 static char plantSlotLabels[3][16] = {"Plant1", "Plant2", "Plant3"};
 static char plantPageTitles[3][16] = {"Plant1", "Plant2", "Plant3"};
 
 static IActuatorActions *actuatorActionsContext = nullptr;
 static MenuSystem *globalMenuPtr = nullptr;
 int activePlantIndex = 0;
+
+void loadPlantSlotTypes()
+{
+    EEPROM.get(EEPROM_PLANT_SLOT_BASE, plantSlotLabels);
+    EEPROM.get(EEPROM_PLANT_SLOT_BASE + sizeof(plantSlotLabels), plantTypeSelected);
+    Serial.println("EEPROM read!");
+}
+
+void savePlantSlotTypes()
+{
+    EEPROM.put(EEPROM_PLANT_SLOT_BASE, plantSlotLabels);
+    EEPROM.put(EEPROM_PLANT_SLOT_BASE + sizeof(plantSlotLabels), plantTypeSelected);
+    Serial.println("EEPROM written!");
+}
 
 MenuSystem::MenuSystem(TFTManager &tftMgr, ISensorActions &sensorActions, IActuatorActions &actuatorActions)
     : tftManager(tftMgr),
@@ -26,7 +42,9 @@ void MenuSystem::begin()
     actuatorActionsContext = &actuatorActions;
     currentPage = &homePage;
 
+    loadPlantSlotTypes();
     setupMenuConfiguration();
+    setupPlantsPage();
     setupActuatorsPage();
     draw();
 }
@@ -231,6 +249,9 @@ static void commitSelectedPlantType()
         plant3Page.title = plantSlotLabels[activePlantIndex];
         plantsPage.items[activePlantIndex].targetPage = &plant3Page;
     }
+
+    plantTypeSelected[activePlantIndex] = 1;
+    savePlantSlotTypes();
 }
 
 void MenuSystem::setupMenuConfiguration()
@@ -253,12 +274,60 @@ void MenuSystem::setupMenuConfiguration()
     // --- Plants Page ---
     plantsPage.title = "Plants";
     plantsPage.parent = &mainPage;
-    plantsPage.items[0] = {plantSlotLabels[0], &setPlantPage, []()
-                           { activePlantIndex = 0; }};
-    plantsPage.items[1] = {plantSlotLabels[1], &setPlantPage, []()
-                           { activePlantIndex = 1; }};
-    plantsPage.items[2] = {plantSlotLabels[2], &setPlantPage, []()
-                           { activePlantIndex = 2; }};
+
+    // --- Sensors Page ---
+    sensorPage.title = "Live Data";
+    sensorPage.parent = &mainPage;
+    sensorPage.itemCount = 5;
+
+    // --- Actuators Page ---
+    actuatorPage.title = "Actuators";
+    actuatorPage.parent = &mainPage;
+}
+
+void MenuSystem::setupPlantsPage()
+{
+    Serial.println("Setting up plants page...");
+    if (plantTypeSelected[0] == 1)
+    {
+        Serial.println("Plant 1 selected, setting up page...");
+        plantsPage.items[0] = {plantSlotLabels[0], &plant1Page, nullptr};
+        plant1Page.title = plantSlotLabels[0];
+    }
+    else
+    {
+        Serial.println("Plant 1 not selected, setting up selection item...");
+        plantsPage.items[0] = {plantSlotLabels[0], &setPlantPage, []()
+                               { activePlantIndex = 0; }};
+    }
+
+    if (plantTypeSelected[1] == 1)
+    {
+        Serial.println("Plant 2 selected, setting up page...");
+        plantsPage.items[1] = {plantSlotLabels[1], &plant2Page, nullptr};
+        plant2Page.title = plantSlotLabels[1];
+    }
+    else
+    {
+        Serial.println("Plant 2 not selected, setting up selection item...");
+        plantsPage.items[1] = {plantSlotLabels[1], &setPlantPage, []()
+                               { activePlantIndex = 1; }};
+    }
+
+    if (plantTypeSelected[2] == 1)
+    {
+        Serial.println("Plant 3 selected, setting up page...");
+        plantsPage.items[2] = {plantSlotLabels[2], &plant3Page, nullptr};
+        plant3Page.title = plantSlotLabels[2];
+    }
+    else
+    {
+        Serial.println("Plant 3 not selected, setting up selection item...");
+        plantsPage.items[2] = {plantSlotLabels[2], &setPlantPage, []()
+                               { activePlantIndex = 2; }};
+    }
+    Serial.println("Plant pages set!");
+
     plantsPage.items[3] = {"(back)", nullptr, nullptr};
     plantsPage.itemCount = 4;
 
@@ -280,15 +349,6 @@ void MenuSystem::setupMenuConfiguration()
     plant1Page.parent = &plantsPage;
     plant2Page.parent = &plantsPage;
     plant3Page.parent = &plantsPage;
-
-    // --- Sensors Page ---
-    sensorPage.title = "Live Data";
-    sensorPage.parent = &mainPage;
-    sensorPage.itemCount = 5;
-
-    // --- Actuators Page ---
-    actuatorPage.title = "Actuators";
-    actuatorPage.parent = &mainPage;
 }
 
 void MenuSystem::setupActuatorsPage()
