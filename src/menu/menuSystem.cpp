@@ -42,6 +42,7 @@ void MenuSystem::begin()
     actuatorActionsContext = &actuatorActions;
     currentPage = &homePage;
 
+    savePlantSlotTypes(); // Ensure EEPROM is initialized with default values if not set
     loadPlantSlotTypes();
     setupMenuConfiguration();
     setupPlantsPage();
