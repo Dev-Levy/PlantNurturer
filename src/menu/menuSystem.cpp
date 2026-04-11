@@ -3,28 +3,16 @@
 
 #include "MenuSystem.h"
 
-static char plantTypeLabels[PLANT_TYPE_COUNT][16];
-static int plantTypeSelected[3] = {0, 0, 0};
-static char plantSlotLabels[3][16] = {"Plant1", "Plant2", "Plant3"};
-static char plantPageTitles[3][16] = {"Plant1", "Plant2", "Plant3"};
+static char typesPlants[PLANT_TYPE_COUNT][16];
+
+static PlantSlot slotsPlants[3] = {
+    {false, &plant1Page, "Plant1"},
+    {false, &plant2Page, "Plant2"},
+    {false, &plant3Page, "Plant3"}};
 
 static IActuatorActions *actuatorActionsContext = nullptr;
 static MenuSystem *globalMenuPtr = nullptr;
 int activePlantIndex = 0;
-
-void loadPlantSlotTypes()
-{
-    EEPROM.get(EEPROM_PLANT_SLOT_BASE, plantSlotLabels);
-    EEPROM.get(EEPROM_PLANT_SLOT_BASE + sizeof(plantSlotLabels), plantTypeSelected);
-    Serial.println("EEPROM read!");
-}
-
-void savePlantSlotTypes()
-{
-    EEPROM.put(EEPROM_PLANT_SLOT_BASE, plantSlotLabels);
-    EEPROM.put(EEPROM_PLANT_SLOT_BASE + sizeof(plantSlotLabels), plantTypeSelected);
-    Serial.println("EEPROM written!");
-}
 
 MenuSystem::MenuSystem(TFTManager &tftMgr, ISensorActions &sensorActions, IActuatorActions &actuatorActions)
     : tftManager(tftMgr),
@@ -42,9 +30,10 @@ void MenuSystem::begin()
     actuatorActionsContext = &actuatorActions;
     currentPage = &homePage;
 
-    loadPlantSlotTypes();
+    loadPlantData();
     setupMenuConfiguration();
     setupPlantsPage();
+    setupSetPlantPage();
     setupActuatorsPage();
     draw();
 }
@@ -71,14 +60,14 @@ void MenuSystem::processKey(int key)
             currentPage = activeItem.targetPage;
             if (activeItem.callback != nullptr)
             {
-                activeItem.callback();
+                activeItem.callback(activeItem.callbackContext);
             }
             currentCursor = 0;
         }
         // action
         else if (activeItem.callback != nullptr)
         {
-            activeItem.callback();
+            activeItem.callback(activeItem.callbackContext);
         }
         // back
         else if (currentPage->parent != nullptr)
@@ -101,6 +90,10 @@ void MenuSystem::draw()
 
 void MenuSystem::drawPage(MenuPage *page)
 {
+    // pls serial out the page title being drawn
+    Serial.print("Drawing page: ");
+    Serial.println(page->title);
+
     tftManager.clearScreen();
     auto tft = tftManager.getTFT();
 
@@ -218,42 +211,6 @@ void MenuSystem::updateSensorValues()
     }
 }
 
-int MenuSystem::getCursorPosition()
-{
-    return currentCursor;
-}
-
-static void commitSelectedPlantType()
-{
-    int index = globalMenuPtr->getCursorPosition();
-    const char *flashName = (const char *)pgm_read_word(&(plantNames[index]));
-
-    // plants menu items
-    strcpy_P(plantSlotLabels[activePlantIndex], flashName);
-    plantsPage.items[activePlantIndex].label = plantSlotLabels[activePlantIndex];
-    strcpy(plantPageTitles[activePlantIndex], plantSlotLabels[activePlantIndex]);
-
-    // plant page title
-    if (activePlantIndex == 0)
-    {
-        plant1Page.title = plantSlotLabels[activePlantIndex];
-        plantsPage.items[activePlantIndex].targetPage = &plant1Page;
-    }
-    else if (activePlantIndex == 1)
-    {
-        plant2Page.title = plantSlotLabels[activePlantIndex];
-        plantsPage.items[activePlantIndex].targetPage = &plant2Page;
-    }
-    else if (activePlantIndex == 2)
-    {
-        plant3Page.title = plantSlotLabels[activePlantIndex];
-        plantsPage.items[activePlantIndex].targetPage = &plant3Page;
-    }
-
-    plantTypeSelected[activePlantIndex] = 1;
-    savePlantSlotTypes();
-}
-
 void MenuSystem::setupMenuConfiguration()
 {
     // --- Home Page ---
@@ -287,51 +244,37 @@ void MenuSystem::setupMenuConfiguration()
 
 void MenuSystem::setupPlantsPage()
 {
-    Serial.println("Setting up plants page...");
-    if (plantTypeSelected[0] == 1)
+    for (int i = 0; i < PLANT_PAGES_COUNT; i++)
     {
-        Serial.println("Plant 1 selected, setting up page...");
-        plantsPage.items[0] = {plantSlotLabels[0], &plant1Page, nullptr};
-        plant1Page.title = plantSlotLabels[0];
-    }
-    else
-    {
-        Serial.println("Plant 1 not selected, setting up selection item...");
-        plantsPage.items[0] = {plantSlotLabels[0], &setPlantPage, []()
-                               { activePlantIndex = 0; }};
-    }
+        MenuItem &item = plantsPage.items[i];
 
-    if (plantTypeSelected[1] == 1)
-    {
-        Serial.println("Plant 2 selected, setting up page...");
-        plantsPage.items[1] = {plantSlotLabels[1], &plant2Page, nullptr};
-        plant2Page.title = plantSlotLabels[1];
-    }
-    else
-    {
-        Serial.println("Plant 2 not selected, setting up selection item...");
-        plantsPage.items[1] = {plantSlotLabels[1], &setPlantPage, []()
-                               { activePlantIndex = 1; }};
-    }
+        if (slotsPlants[i].isSet)
+        {
+            item.label = slotsPlants[i].label;
+            item.targetPage = slotsPlants[i].page;
+            item.callback = nullptr;
+            item.callbackContext = nullptr;
 
-    if (plantTypeSelected[2] == 1)
-    {
-        Serial.println("Plant 3 selected, setting up page...");
-        plantsPage.items[2] = {plantSlotLabels[2], &plant3Page, nullptr};
-        plant3Page.title = plantSlotLabels[2];
+            slotsPlants[i].page->title = slotsPlants[i].label;
+        }
+        else
+        {
+            item.label = slotsPlants[i].label;
+            item.targetPage = &setPlantPage;
+            item.callback = setActivePlantCallback;
+            item.callbackContext = (void *)(intptr_t)i;
+        }
     }
-    else
-    {
-        Serial.println("Plant 3 not selected, setting up selection item...");
-        plantsPage.items[2] = {plantSlotLabels[2], &setPlantPage, []()
-                               { activePlantIndex = 2; }};
-    }
-    Serial.println("Plant pages set!");
+    plantsPage.items[PLANT_PAGES_COUNT] = {"(back)", &homePage, nullptr, nullptr};
+    plantsPage.itemCount = PLANT_PAGES_COUNT + 1;
 
-    plantsPage.items[3] = {"(back)", nullptr, nullptr};
-    plantsPage.itemCount = 4;
+    plant1Page.parent = &plantsPage;
+    plant2Page.parent = &plantsPage;
+    plant3Page.parent = &plantsPage;
+}
 
-    // --- Set Plant Page ---
+void MenuSystem::setupSetPlantPage()
+{
     setPlantPage.title = "Select Plant";
     setPlantPage.parent = &plantsPage;
     setPlantPage.itemCount = PLANT_TYPE_COUNT;
@@ -339,29 +282,107 @@ void MenuSystem::setupPlantsPage()
     for (int i = 0; i < PLANT_TYPE_COUNT; i++)
     {
         const char *flashName = (const char *)pgm_read_word(&(plantNames[i]));
-        strcpy_P(plantTypeLabels[i], flashName);
+        strncpy_P(typesPlants[i], flashName, 15);
+        typesPlants[i][15] = '\0';
 
-        setPlantPage.items[i].label = plantTypeLabels[i];
-        setPlantPage.items[i].targetPage = &plantsPage;
-        setPlantPage.items[i].callback = commitSelectedPlantType;
+        setPlantPage.items[i] = {
+            typesPlants[i],
+            &plantsPage,
+            commitSelectedPlantTypeCallback,
+            (void *)(intptr_t)i};
     }
-
-    plant1Page.parent = &plantsPage;
-    plant2Page.parent = &plantsPage;
-    plant3Page.parent = &plantsPage;
 }
 
 void MenuSystem::setupActuatorsPage()
 {
     if (actuatorActionsContext)
     {
-        actuatorPage.items[0] = {"Pump", nullptr, []()
+        actuatorPage.items[0] = {"Pump", nullptr, [](void *ctx)
                                  { actuatorActionsContext->togglePump(); }};
-        actuatorPage.items[1] = {"Light", nullptr, []()
+        actuatorPage.items[1] = {"Light", nullptr, [](void *ctx)
                                  { actuatorActionsContext->toggleLight(); }};
-        actuatorPage.items[2] = {"Fan", nullptr, []()
+        actuatorPage.items[2] = {"Fan", nullptr, [](void *ctx)
                                  { actuatorActionsContext->toggleFan(); }};
         actuatorPage.items[3] = {"(back)", nullptr, nullptr};
         actuatorPage.itemCount = 4;
     }
+}
+
+void MenuSystem::commitSelectedPlantTypeCallback(void *ctx)
+{
+    int plantTypeIndex = (int)(intptr_t)ctx;
+
+    if (plantTypeIndex < 0 || plantTypeIndex >= PLANT_TYPE_COUNT)
+    {
+        Serial.println("ERROR: Invalid plant type index");
+        return;
+    }
+
+    if (activePlantIndex < 0 || activePlantIndex >= PLANT_PAGES_COUNT)
+    {
+        Serial.println("ERROR: Invalid active plant index");
+        return;
+    }
+
+    const char *plantName = (const char *)pgm_read_word(&(plantNames[plantTypeIndex]));
+
+    strncpy_P(slotsPlants[activePlantIndex].label, plantName, 15);
+    slotsPlants[activePlantIndex].label[15] = '\0';
+
+    slotsPlants[activePlantIndex].isSet = true;
+
+    plantsPage.items[activePlantIndex] = {
+        slotsPlants[activePlantIndex].label,
+        slotsPlants[activePlantIndex].page,
+        nullptr,
+        nullptr};
+
+    slotsPlants[activePlantIndex].page->title = slotsPlants[activePlantIndex].label;
+
+    globalMenuPtr->savePlantData();
+
+    Serial.print("Plant ");
+    Serial.print(activePlantIndex);
+    Serial.print(" set to: ");
+    Serial.println(slotsPlants[activePlantIndex].label);
+}
+
+void MenuSystem::setActivePlantCallback(void *ctx)
+{
+    activePlantIndex = (int)(intptr_t)ctx;
+}
+
+void MenuSystem::savePlantData()
+{
+    for (int i = 0; i < PLANT_PAGES_COUNT; i++)
+    {
+        EEPROM.write(EEPROM_ADDR + (i * 17), slotsPlants[i].isSet ? 1 : 0);
+
+        for (int j = 0; j < 16; j++)
+        {
+            EEPROM.write(EEPROM_ADDR + (i * 17) + 1 + j, slotsPlants[i].label[j]);
+        }
+    }
+    Serial.println("EEPROM written!");
+}
+
+void MenuSystem::loadPlantData()
+{
+    for (int i = 0; i < PLANT_PAGES_COUNT; i++)
+    {
+        slotsPlants[i].isSet = EEPROM.read(EEPROM_ADDR + (i * 17)) == 1;
+
+        if (slotsPlants[i].isSet)
+        {
+            for (int j = 0; j < 16; j++)
+            {
+                slotsPlants[i].label[j] = EEPROM.read(EEPROM_ADDR + (i * 17) + 1 + j);
+            }
+        }
+
+        slotsPlants[i].page = (i == 0)   ? &plant1Page
+                              : (i == 1) ? &plant2Page
+                                         : &plant3Page;
+    }
+    Serial.println("EEPROM read!");
 }

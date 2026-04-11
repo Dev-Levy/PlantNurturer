@@ -1,4 +1,3 @@
-// MenuPage.h
 #pragma once
 #include <Arduino.h>
 #include "../../config.h"
@@ -9,7 +8,8 @@ struct MenuItem
 {
     const char *label;
     MenuPage *targetPage;
-    void (*callback)();
+    void (*callback)(void *ctx);
+    void *callbackContext;
 };
 
 struct MenuPage

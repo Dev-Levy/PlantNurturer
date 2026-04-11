@@ -7,8 +7,9 @@
 // constants
 const int MAX_MENU_ITEMS = 8;
 const int PLANT_TYPE_COUNT = 4;
+const int PLANT_PAGES_COUNT = 3;
 extern const char *const plantNames[];
-const int EEPROM_PLANT_SLOT_BASE = 0;
+const int EEPROM_ADDR = 0;
 
 // pins
 const int TFT_CS = 10;

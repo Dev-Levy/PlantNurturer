@@ -3,8 +3,9 @@
 #include "../tft/TFTManager.h"
 
 #include "config.h"
-#include "menuConfig.h"
+#include "pages/pages.h"
 #include "helpers/menuPage.h"
+#include "helpers/plantSlot.h"
 #include "sensors/sensorActionsInterface.h"
 #include "actuators/actuatorActionsInterface.h"
 
@@ -17,8 +18,6 @@ public:
     void draw();
     void processKey(int key);
     void updateSensorValues();
-
-    int getCursorPosition();
 
 private:
     TFTManager &tftManager;
@@ -36,5 +35,12 @@ private:
 
     void setupMenuConfiguration();
     void setupPlantsPage();
+    void setupSetPlantPage();
     void setupActuatorsPage();
+
+    static void commitSelectedPlantTypeCallback(void *ctx);
+    static void setActivePlantCallback(void *ctx);
+
+    void savePlantData();
+    void loadPlantData();
 };

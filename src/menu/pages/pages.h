@@ -1,4 +1,4 @@
-#include "helpers/menuPage.h"
+#include "../helpers/menuPage.h"
 
 extern MenuPage homePage;
 extern MenuPage mainPage;
@@ -9,5 +9,3 @@ extern MenuPage plant3Page;
 extern MenuPage sensorPage;
 extern MenuPage actuatorPage;
 extern MenuPage setPlantPage;
-
-extern int activePlantIndex;
