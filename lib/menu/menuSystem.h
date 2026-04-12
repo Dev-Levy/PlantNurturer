@@ -1,18 +1,19 @@
 
 #pragma once
-#include "../tft/TFTManager.h"
 
-#include "config.h"
+#include <config.h>
+
 #include "pages/pages.h"
-#include "helpers/menuPage.h"
-#include "helpers/plantSlot.h"
-#include "sensors/sensorActionsInterface.h"
-#include "actuators/actuatorActionsInterface.h"
+#include "structs/menuPage.h"
+#include "structs/plantSlot.h"
+#include "displayActionsInterface.h"
+#include "sensorActionsInterface.h"
+#include "actuatorActionsInterface.h"
 
 class MenuSystem
 {
 public:
-    explicit MenuSystem(TFTManager &tftManager, ISensorActions &sensorActions, IActuatorActions &actuatorActions);
+    explicit MenuSystem(IDisplayActions &display, ISensorActions &sensorActions, IActuatorActions &actuatorActions);
 
     void begin();
     void draw();
@@ -20,7 +21,7 @@ public:
     void updateSensorValues();
 
 private:
-    TFTManager &tftManager;
+    IDisplayActions &display;
     ISensorActions &sensorActions;
     IActuatorActions &actuatorActions;
 

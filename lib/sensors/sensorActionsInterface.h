@@ -1,5 +1,5 @@
 #pragma once
-#include "sensorReadings.h"
+#include "structs/sensorReadings.h"
 
 class ISensorActions
 {

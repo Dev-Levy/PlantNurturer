@@ -5,9 +5,9 @@
 #include <DallasTemperature.h>
 
 #include "sensorActionsInterface.h"
-#include "sensorReadings.h"
+#include "structs/sensorReadings.h"
 
-#include "../config.h"
+#include "config.h"
 
 class SensorManager : public ISensorActions
 {

@@ -1,11 +1,13 @@
 #include <Arduino.h>
-#include "tft/tftManager.h"
-#include "menu/menuSystem.h"
-#include "menu/navigationKeys/keys.h"
-#include "sensors/sensorManager.h"
-#include "actuators/actuatorManager.h"
 
-#include "config.h"
+#include <tftManager.h>
+#include <sensorManager.h>
+#include <actuatorManager.h>
+
+#include <menuSystem.h>
+#include <navigationKeys/keys.h>
+
+#include <config.h>
 
 ActuatorManager actuators;
 SensorManager sensors;

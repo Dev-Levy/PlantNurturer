@@ -1,4 +1,4 @@
-#include "SensorManager.h"
+#include "sensorManager.h"
 
 SensorManager::SensorManager()
     : dht(DHT_PIN, DHT_TYPE),

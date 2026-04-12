@@ -1,4 +1,4 @@
-#include "../helpers/menuPage.h"
+#include <structs/menuPage.h>
 
 extern MenuPage homePage;
 extern MenuPage mainPage;

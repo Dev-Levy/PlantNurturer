@@ -14,8 +14,8 @@ static PlantSlot slotsPlants[3] = {
 static IActuatorActions *actuatorActionsContext = nullptr;
 static MenuSystem *globalMenuPtr = nullptr;
 
-MenuSystem::MenuSystem(TFTManager &tftMgr, ISensorActions &sensorActions, IActuatorActions &actuatorActions)
-    : tftManager(tftMgr),
+MenuSystem::MenuSystem(IDisplayActions &display, ISensorActions &sensorActions, IActuatorActions &actuatorActions)
+    : display(display),
       sensorActions(sensorActions),
       actuatorActions(actuatorActions),
       currentCursor(0),
@@ -95,8 +95,8 @@ void MenuSystem::drawPage(MenuPage *page)
     Serial.print(F("Drawing page: "));
     Serial.println(page->title);
 
-    tftManager.clearScreen();
-    auto tft = tftManager.getTFT();
+    display.clearScreen();
+    auto tft = display.getTFT();
 
     tft.fillRect(0, 0, tft.width(), 20, ST77XX_BLUE);
     tft.setCursor(4, 3);
@@ -140,7 +140,7 @@ void MenuSystem::drawDynamicSensorData()
 
 void MenuSystem::drawItem(int y, const char *text, bool selected)
 {
-    auto tft = tftManager.getTFT();
+    auto tft = display.getTFT();
     int screenWidth = tft.width();
     int itemHeight = 14;
 

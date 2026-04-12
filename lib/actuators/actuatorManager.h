@@ -1,8 +1,8 @@
 #pragma once
 #include <Arduino.h>
-#include "actuatorActionsInterface.h"
+#include <config.h>
 
-#include "../config.h"
+#include "actuatorActionsInterface.h"
 
 class ActuatorManager : public IActuatorActions
 {
