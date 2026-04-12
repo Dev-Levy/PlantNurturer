@@ -10,29 +10,11 @@ SensorManager::SensorManager()
 
 SensorReadings SensorManager::readAll()
 {
-    // float newTemp = readAirTempSensor();
-    // float newHumid = readHumiditySensor();
-
-    // if (!isnan(newTemp) && !isnan(newHumid))
-    // {
-    //     lastReadings.airTemp = newTemp;
-    //     lastReadings.humidity = newHumid;
-    // }
-
-    // lastReadings.light = readLightSensor();
-    // lastReadings.soilTemp = readSoilTempSensor();
-    // lastReadings.soilMoisture = readSoilMoistureSensor();
-
-    // Serial.print("Light: ");
-    // Serial.print(lastReadings.light);
-    // Serial.print(" | Moisture: ");
-    // Serial.print(lastReadings.soilMoisture);
-    // Serial.print(" | Humidity: ");
-    // Serial.print(lastReadings.humidity);
-    // Serial.print(" | Air Temp: ");
-    // Serial.println(lastReadings.airTemp);
-    // Serial.print(" | Soil Temp: ");
-    // Serial.println(lastReadings.soilTemp);
+    lastReadings.airTemp = readAirTempSensor();
+    lastReadings.humidity = readHumiditySensor();
+    lastReadings.light = readLightSensor();
+    lastReadings.soilTemp = readSoilTempSensor();
+    lastReadings.soilMoisture = readSoilMoistureSensor();
 
     return lastReadings;
 }
@@ -57,7 +39,7 @@ float SensorManager::readHumiditySensor()
         lastRead = millis();
     }
 
-    return humidity;
+    return isnan(humidity) ? lastReadings.humidity : humidity;
 }
 
 float SensorManager::readAirTempSensor()
@@ -70,7 +52,7 @@ float SensorManager::readAirTempSensor()
         lastRead = millis();
     }
 
-    return temp;
+    return isnan(temp) ? lastReadings.airTemp : temp;
 }
 
 float SensorManager::readSoilTempSensor()

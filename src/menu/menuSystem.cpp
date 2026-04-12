@@ -5,14 +5,14 @@
 
 static char typesPlants[PLANT_TYPE_COUNT][16];
 
+int activePlantIndex = 0;
 static PlantSlot slotsPlants[3] = {
-    {false, &plant1Page, "Plant1"},
-    {false, &plant2Page, "Plant2"},
-    {false, &plant3Page, "Plant3"}};
+    {false, &plant1Page, "(select plant)"},
+    {false, &plant2Page, "(select plant)"},
+    {false, &plant3Page, "(select plant)"}};
 
 static IActuatorActions *actuatorActionsContext = nullptr;
 static MenuSystem *globalMenuPtr = nullptr;
-int activePlantIndex = 0;
 
 MenuSystem::MenuSystem(TFTManager &tftMgr, ISensorActions &sensorActions, IActuatorActions &actuatorActions)
     : tftManager(tftMgr),
@@ -30,6 +30,7 @@ void MenuSystem::begin()
     actuatorActionsContext = &actuatorActions;
     currentPage = &homePage;
 
+    // savePlantData(); // uncomment to reset saved plant data
     loadPlantData();
     setupMenuConfiguration();
     setupPlantsPage();
@@ -91,7 +92,7 @@ void MenuSystem::draw()
 void MenuSystem::drawPage(MenuPage *page)
 {
     // pls serial out the page title being drawn
-    Serial.print("Drawing page: ");
+    Serial.print(F("Drawing page: "));
     Serial.println(page->title);
 
     tftManager.clearScreen();
@@ -191,7 +192,7 @@ void MenuSystem::getSensorString(int index, char *buffer)
         break;
     }
     case 4:
-        sprintf(buffer, "Soil Moisture: %d%%", currentReadings.soilMoisture);
+        sprintf(buffer, "Soil Moisture: %d", currentReadings.soilMoisture);
         break;
     default:
         sprintf(buffer, "Unknown Sensor");
@@ -265,7 +266,7 @@ void MenuSystem::setupPlantsPage()
             item.callbackContext = (void *)(intptr_t)i;
         }
     }
-    plantsPage.items[PLANT_PAGES_COUNT] = {"(back)", &homePage, nullptr, nullptr};
+    plantsPage.items[PLANT_PAGES_COUNT] = {"(back)", &mainPage, nullptr, nullptr};
     plantsPage.itemCount = PLANT_PAGES_COUNT + 1;
 
     plant1Page.parent = &plantsPage;
@@ -363,7 +364,7 @@ void MenuSystem::savePlantData()
             EEPROM.write(EEPROM_ADDR + (i * 17) + 1 + j, slotsPlants[i].label[j]);
         }
     }
-    Serial.println("EEPROM written!");
+    Serial.println(F("EEPROM written!"));
 }
 
 void MenuSystem::loadPlantData()
@@ -384,5 +385,5 @@ void MenuSystem::loadPlantData()
                               : (i == 1) ? &plant2Page
                                          : &plant3Page;
     }
-    Serial.println("EEPROM read!");
+    Serial.println(F("EEPROM read!"));
 }

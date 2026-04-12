@@ -29,7 +29,6 @@ void loop()
     menu.updateSensorValues();
     lastSensorRead = millis();
   }
-  menu.updateSensorValues();
 
   int key = readKeys();
   if (key)
