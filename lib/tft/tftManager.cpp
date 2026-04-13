@@ -17,7 +17,7 @@ void TFTManager::clearScreen()
     tft.fillScreen(ST77XX_BLACK);
 }
 
-void TFTManager::setCursor(int x, int y)
+void TFTManager::setCursor(uint8_t x, uint8_t y)
 {
     tft.setCursor(x, y);
 }
@@ -47,7 +47,7 @@ void TFTManager::print(const __FlashStringHelper *text)
     tft.print(text);
 }
 
-void TFTManager::print(const int value)
+void TFTManager::print(const int16_t value)
 {
     tft.print(value);
 }
@@ -62,7 +62,7 @@ void TFTManager::println(const __FlashStringHelper *text)
     tft.println(text);
 }
 
-void TFTManager::println(const int value)
+void TFTManager::println(const int16_t value)
 {
     tft.println(value);
 }
