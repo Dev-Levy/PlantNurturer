@@ -32,10 +32,8 @@ void MenuSystem::begin()
 
     // savePlantData(); // uncomment to reset saved plant data
     loadPlantData();
-    setupMenuConfiguration();
-    setupPlantsPage();
-    setupSetPlantPage();
-    setupActuatorsPage();
+
+    setupMenuPages();
     draw();
 }
 
@@ -84,6 +82,18 @@ void MenuSystem::processKey(int key)
     }
 }
 
+void MenuSystem::updateSensorValues()
+{
+    currentReadings = sensorActions.readAll();
+
+    static unsigned long lastSerialWrite = 0;
+    if (currentPage == &sensorPage && millis() - lastSerialWrite > 2000)
+    {
+        drawDynamicSensorData();
+        lastSerialWrite = millis();
+    }
+}
+
 void MenuSystem::draw()
 {
     drawPage(currentPage);
@@ -91,7 +101,6 @@ void MenuSystem::draw()
 
 void MenuSystem::drawPage(MenuPage *page)
 {
-    // pls serial out the page title being drawn
     Serial.print(F("Drawing page: "));
     Serial.println(page->title);
 
@@ -200,27 +209,27 @@ void MenuSystem::getSensorString(int index, char *buffer)
     }
 }
 
-void MenuSystem::updateSensorValues()
+void MenuSystem::setupMenuPages()
 {
-    currentReadings = sensorActions.readAll();
-
-    static unsigned long lastSerialWrite = 0;
-    if (currentPage == &sensorPage && millis() - lastSerialWrite > 2000)
-    {
-        drawDynamicSensorData();
-        lastSerialWrite = millis();
-    }
+    setupHomeMenuPage();
+    setupMainMenuPage();
+    setupPlantsMenuPage();
+    setupPlantMenuPage();
+    setupSelectPlantMenuPage();
+    setupSensorDataMenuPage();
+    setupActuatorControlMenuPage();
 }
 
-void MenuSystem::setupMenuConfiguration()
+void MenuSystem::setupHomeMenuPage()
 {
-    // --- Home Page ---
     homePage.title = "Welcome!";
     homePage.items[0] = {"Enter Main Menu", &mainPage};
     homePage.itemCount = 1;
     homePage.parent = nullptr;
+}
 
-    // --- Main Page ---
+void MenuSystem::setupMainMenuPage()
+{
     mainPage.title = "Main Menu";
     mainPage.parent = &homePage;
     mainPage.items[0] = {"Plants", &plantsPage};
@@ -228,23 +237,12 @@ void MenuSystem::setupMenuConfiguration()
     mainPage.items[2] = {"Actuators", &actuatorPage};
     mainPage.items[3] = {"(back)", &homePage};
     mainPage.itemCount = 4;
-
-    // --- Plants Page ---
-    plantsPage.title = "Plants";
-    plantsPage.parent = &mainPage;
-
-    // --- Sensors Page ---
-    sensorPage.title = "Live Data";
-    sensorPage.parent = &mainPage;
-    sensorPage.itemCount = 5;
-
-    // --- Actuators Page ---
-    actuatorPage.title = "Actuators";
-    actuatorPage.parent = &mainPage;
 }
 
-void MenuSystem::setupPlantsPage()
+void MenuSystem::setupPlantsMenuPage()
 {
+    plantsPage.title = "Plants";
+    plantsPage.parent = &mainPage;
     for (int i = 0; i < PLANT_PAGES_COUNT; i++)
     {
         MenuItem &item = plantsPage.items[i];
@@ -274,7 +272,11 @@ void MenuSystem::setupPlantsPage()
     plant3Page.parent = &plantsPage;
 }
 
-void MenuSystem::setupSetPlantPage()
+void MenuSystem::setupPlantMenuPage()
+{
+}
+
+void MenuSystem::setupSelectPlantMenuPage()
 {
     setPlantPage.title = "Select Plant";
     setPlantPage.parent = &plantsPage;
@@ -294,8 +296,17 @@ void MenuSystem::setupSetPlantPage()
     }
 }
 
-void MenuSystem::setupActuatorsPage()
+void MenuSystem::setupSensorDataMenuPage()
 {
+    sensorPage.title = "Live Data";
+    sensorPage.parent = &mainPage;
+    sensorPage.itemCount = 5;
+}
+
+void MenuSystem::setupActuatorControlMenuPage()
+{
+    actuatorPage.title = "Actuators";
+    actuatorPage.parent = &mainPage;
     if (actuatorActionsContext)
     {
         actuatorPage.items[0] = {"Pump", nullptr, [](void *ctx)

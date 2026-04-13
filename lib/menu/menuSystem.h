@@ -34,10 +34,14 @@ private:
     void drawItem(int y, const char *text, bool selected);
     void getSensorString(int index, char *buffer);
 
-    void setupMenuConfiguration();
-    void setupPlantsPage();
-    void setupSetPlantPage();
-    void setupActuatorsPage();
+    void setupMenuPages();
+    void setupHomeMenuPage();
+    void setupMainMenuPage();
+    void setupPlantsMenuPage();
+    void setupPlantMenuPage();
+    void setupSelectPlantMenuPage();
+    void setupSensorDataMenuPage();
+    void setupActuatorControlMenuPage();
 
     static void commitSelectedPlantTypeCallback(void *ctx);
     static void setActivePlantCallback(void *ctx);
