@@ -16,9 +16,13 @@ public:
     void setTextSize(uint8_t size) override;
     void setTextColor(uint16_t color) override;
     void setTextColor(uint16_t color, uint16_t bgColor) override;
+
     void print(const char *text) override;
+    void print(const __FlashStringHelper *text) override;
     void print(const int value) override;
+
     void println(const char *text) override;
+    void println(const __FlashStringHelper *text) override;
     void println(const int value) override;
 
     Adafruit_ST7735 &getTFT() override;

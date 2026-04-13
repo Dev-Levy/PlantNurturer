@@ -42,6 +42,11 @@ void TFTManager::print(const char *text)
     tft.print(text);
 }
 
+void TFTManager::print(const __FlashStringHelper *text)
+{
+    tft.print(text);
+}
+
 void TFTManager::print(const int value)
 {
     tft.print(value);
@@ -51,6 +56,12 @@ void TFTManager::println(const char *text)
 {
     tft.println(text);
 }
+
+void TFTManager::println(const __FlashStringHelper *text)
+{
+    tft.println(text);
+}
+
 void TFTManager::println(const int value)
 {
     tft.println(value);
