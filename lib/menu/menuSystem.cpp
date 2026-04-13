@@ -40,19 +40,19 @@ void MenuSystem::begin()
     draw();
 }
 
-void MenuSystem::processKey(int key)
+void MenuSystem::processKey(KeyPress key)
 {
     switch (key)
     {
-    case 1: // UP
+    case KeyPress::UP: // UP
         currentCursor = (currentCursor == 0) ? currentPage->itemCount - 1 : currentCursor - 1;
         break;
 
-    case 2: // DOWN
+    case KeyPress::DOWN: // DOWN
         currentCursor = (currentCursor == currentPage->itemCount - 1) ? 0 : currentCursor + 1;
         break;
 
-    case 3:
+    case KeyPress::SELECT:
     {
         MenuItem &activeItem = currentPage->items[currentCursor];
 

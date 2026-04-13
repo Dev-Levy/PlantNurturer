@@ -2,4 +2,12 @@
 #include <Arduino.h>
 #include <config.h>
 
-int readKeys();
+enum class KeyPress : uint8_t
+{
+    NONE = 0,
+    UP = 1,
+    DOWN = 2,
+    SELECT = 3
+};
+
+KeyPress readKeys();

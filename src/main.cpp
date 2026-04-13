@@ -32,8 +32,8 @@ void loop()
     lastSensorRead = millis();
   }
 
-  int key = readKeys();
-  if (key)
+  KeyPress key = readKeys();
+  if (key != KeyPress::NONE)
   {
     menu.processKey(key);
     menu.draw();

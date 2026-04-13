@@ -1,12 +1,13 @@
 #include "keys.h"
 
-int readKeys()
+KeyPress readKeys()
 {
-    if (digitalRead(BUTTON_UP) == HIGH)
-        return 1;
-    if (digitalRead(BUTTON_DOWN) == HIGH)
-        return 2;
     if (digitalRead(BUTTON_SELECT) == HIGH)
-        return 3;
-    return 0;
+        return KeyPress::SELECT;
+    else if (digitalRead(BUTTON_UP) == HIGH)
+        return KeyPress::UP;
+    else if (digitalRead(BUTTON_DOWN) == HIGH)
+        return KeyPress::DOWN;
+
+    return KeyPress::NONE;
 }

@@ -3,6 +3,7 @@
 
 #include <config.h>
 
+#include "navigationKeys/keys.h"
 #include "pages/pages.h"
 #include "structs/plantSlot.h"
 #include "displayActionsInterface.h"
@@ -16,7 +17,7 @@ public:
 
     void begin();
     void draw();
-    void processKey(int key);
+    void processKey(KeyPress key);
     void updateSensorValues();
 
 private:
