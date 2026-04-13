@@ -4,7 +4,6 @@
 #include <config.h>
 
 #include "pages/pages.h"
-#include "structs/menuPage.h"
 #include "structs/plantSlot.h"
 #include "displayActionsInterface.h"
 #include "sensorActionsInterface.h"
