@@ -14,6 +14,8 @@ static PlantSlot slotsPlants[3] = {
 static IActuatorActions *actuatorActionsContext = nullptr;
 static MenuSystem *globalMenuPtr = nullptr;
 
+static char valBuffer[32];
+
 MenuSystem::MenuSystem(IDisplayActions &display, ISensorActions &sensorActions, IActuatorActions &actuatorActions)
     : display(display),
       sensorActions(sensorActions),
@@ -30,7 +32,8 @@ void MenuSystem::begin()
     actuatorActionsContext = &actuatorActions;
     currentPage = &homePage;
 
-    // savePlantData(); // uncomment to reset saved plant data
+    // reset EEPROM
+    // savePlantData();
     loadPlantData();
 
     setupMenuPages();
@@ -123,7 +126,6 @@ void MenuSystem::drawPage(MenuPage *page)
 
         if (page == &sensorPage)
         {
-            char valBuffer[32];
             getSensorString(i, valBuffer);
             drawItem(yPos, valBuffer, isSelected);
         }
@@ -141,7 +143,6 @@ void MenuSystem::drawDynamicSensorData()
         int yPos = 28 + (i * 16);
         bool isSelected = (i == currentCursor);
 
-        char valBuffer[32];
         getSensorString(i, valBuffer);
         drawItem(yPos, valBuffer, isSelected);
     }
