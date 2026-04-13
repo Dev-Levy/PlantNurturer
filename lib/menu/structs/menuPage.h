@@ -6,16 +6,16 @@ struct MenuPage;
 
 struct MenuItem
 {
-    const char *label;
-    MenuPage *targetPage;
+    const __FlashStringHelper *label;
+    const MenuPage *targetPage;
     void (*callback)(void *ctx);
     void *callbackContext;
 };
 
 struct MenuPage
 {
-    const char *title;
-    MenuItem items[MAX_MENU_ITEMS];
-    int itemCount;
-    MenuPage *parent;
+    const __FlashStringHelper *title;
+    const MenuItem *items;
+    uint8_t itemCount;
+    const MenuPage *parent;
 };

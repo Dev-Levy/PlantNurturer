@@ -5,23 +5,22 @@
 #define DHT_TYPE DHT22
 
 // constants
-constexpr int MAX_MENU_ITEMS = 8;
-constexpr int PLANT_TYPE_COUNT = 4;
-constexpr int PLANT_PAGES_COUNT = 3;
-constexpr int EEPROM_ADDR = 0;
+constexpr uint8_t PLANT_TYPE_COUNT = 4;
+constexpr uint8_t PLANT_COUNT = 3;
+constexpr uint8_t EEPROM_ADDR = 0;
 
 // pins
-constexpr int TFT_CS = 10;
-constexpr int TFT_RST = 8;
-constexpr int TFT_DC = 9;
+constexpr uint8_t TFT_CS = 10;
+constexpr uint8_t TFT_RST = 8;
+constexpr uint8_t TFT_DC = 9;
 
-constexpr int BUTTON_UP = 5;
-constexpr int BUTTON_DOWN = 6;
-constexpr int BUTTON_SELECT = 7;
+constexpr uint8_t BUTTON_UP = 5;
+constexpr uint8_t BUTTON_DOWN = 6;
+constexpr uint8_t BUTTON_SELECT = 7;
 
-constexpr int SOIL_TEMP_PIN = 2;
-constexpr int LDR_PIN = 3;
-constexpr int DHT_PIN = 4;
+constexpr uint8_t SOIL_TEMP_PIN = 2;
+constexpr uint8_t LDR_PIN = 3;
+constexpr uint8_t DHT_PIN = 4;
 #define SOIL_MOIST_PIN A1
 
 // Plant names in PROGMEM

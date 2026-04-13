@@ -3,7 +3,7 @@
 
 struct PlantSlot
 {
-    bool isSet;
+    char label[12];
     MenuPage *page;
-    char label[16];
-};
+    bool isSet;
+} __attribute__((packed));

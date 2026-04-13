@@ -25,27 +25,26 @@ private:
     ISensorActions &sensorActions;
     IActuatorActions &actuatorActions;
 
-    int currentCursor;
-    MenuPage *currentPage;
+    uint8_t currentCursor;
+    const MenuPage *currentPage;
     SensorReadings currentReadings;
 
-    void drawPage(MenuPage *page);
     void drawDynamicSensorData();
     void drawItem(int y, const char *text, bool selected);
     void getSensorString(int index, char *buffer);
 
-    void setupMenuPages();
-    void setupHomeMenuPage();
-    void setupMainMenuPage();
-    void setupPlantsMenuPage();
-    void setupPlantMenuPage();
-    void setupSelectPlantMenuPage();
-    void setupSensorDataMenuPage();
-    void setupActuatorControlMenuPage();
+    // void setupMenuPages();
+    // void setupHomeMenuPage();
+    // void setupMainMenuPage();
+    // void setupPlantsMenuPage();
+    // void setupPlantMenuPage();
+    // void setupSelectPlantMenuPage();
+    // void setupSensorDataMenuPage();
+    // void setupActuatorControlMenuPage();
 
-    static void commitSelectedPlantTypeCallback(void *ctx);
-    static void setActivePlantCallback(void *ctx);
+    // static void commitSelectedPlantTypeCallback(void *ctx);
+    // static void setActivePlantCallback(void *ctx);
 
-    void savePlantData();
-    void loadPlantData();
+    // void savePlantData();
+    // void loadPlantData();
 };
