@@ -13,9 +13,13 @@ public:
     void toggleFan() override;
 
 private:
-    bool pumpOn = false;
-    bool lightOn = false;
-    bool fanOn = false;
+    struct
+    {
+        uint8_t pumpOn : 1;
+        uint8_t lightOn : 1;
+        uint8_t fanOn : 1;
+    } state;
+
     void turnOnPump();
     void turnOffPump();
     void turnOnLight();

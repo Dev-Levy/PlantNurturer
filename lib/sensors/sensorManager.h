@@ -13,7 +13,6 @@ class SensorManager : public ISensorActions
 {
 public:
     SensorManager();
-
     SensorReadings readAll() override;
 
 private:
@@ -22,9 +21,5 @@ private:
     DallasTemperature sensors;
     SensorReadings lastReadings;
 
-    int readLightSensor();
-    int readSoilMoistureSensor();
-    float readHumiditySensor();
-    float readAirTempSensor();
-    float readSoilTempSensor();
+    uint32_t lastDhtRead = 0;
 };

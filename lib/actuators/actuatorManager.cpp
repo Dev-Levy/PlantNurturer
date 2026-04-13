@@ -2,11 +2,14 @@
 
 ActuatorManager::ActuatorManager()
 {
+    state.pumpOn = 0;
+    state.lightOn = 0;
+    state.fanOn = 0;
 }
 
 void ActuatorManager::togglePump()
 {
-    if (pumpOn)
+    if (state.pumpOn)
     {
         turnOffPump();
     }
@@ -14,12 +17,12 @@ void ActuatorManager::togglePump()
     {
         turnOnPump();
     }
-    pumpOn = !pumpOn;
+    state.pumpOn = !state.pumpOn;
 }
 
 void ActuatorManager::toggleLight()
 {
-    if (lightOn)
+    if (state.lightOn)
     {
         turnOffLight();
     }
@@ -27,12 +30,12 @@ void ActuatorManager::toggleLight()
     {
         turnOnLight();
     }
-    lightOn = !lightOn;
+    state.lightOn = !state.lightOn;
 }
 
 void ActuatorManager::toggleFan()
 {
-    if (fanOn)
+    if (state.fanOn)
     {
         turnOffFan();
     }
@@ -40,35 +43,35 @@ void ActuatorManager::toggleFan()
     {
         turnOnFan();
     }
-    fanOn = !fanOn;
+    state.fanOn = !state.fanOn;
 }
 
 void ActuatorManager::turnOnPump()
 {
-    Serial.println("Pump turned ON");
+    Serial.println(F("Pump turned ON"));
 }
 
 void ActuatorManager::turnOffPump()
 {
-    Serial.println("Pump turned OFF");
+    Serial.println(F("Pump turned OFF"));
 }
 
 void ActuatorManager::turnOnLight()
 {
-    Serial.println("Light turned ON");
+    Serial.println(F("Light turned ON"));
 }
 
 void ActuatorManager::turnOffLight()
 {
-    Serial.println("Light turned OFF");
+    Serial.println(F("Light turned OFF"));
 }
 
 void ActuatorManager::turnOnFan()
 {
-    Serial.println("Fan turned ON");
+    Serial.println(F("Fan turned ON"));
 }
 
 void ActuatorManager::turnOffFan()
 {
-    Serial.println("Fan turned OFF");
+    Serial.println(F("Fan turned OFF"));
 }
