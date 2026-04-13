@@ -5,6 +5,14 @@
 #define DHT_TYPE DHT22
 
 // constants
+constexpr uint8_t HOME_PAGE_ITEMS = 1;
+constexpr uint8_t MAIN_PAGE_ITEMS = 4;
+constexpr uint8_t PLANTS_PAGE_ITEMS = 4;
+constexpr uint8_t PLANT_SELECT_PAGE_ITEMS = 4;
+constexpr uint8_t PLANT_PAGE_ITEMS = 0;
+constexpr uint8_t SENSORS_PAGE_ITEMS = 5;
+constexpr uint8_t ACTUATORS_PAGE_ITEMS = 4;
+
 constexpr uint8_t PLANT_TYPE_COUNT = 4;
 constexpr uint8_t PLANT_COUNT = 3;
 constexpr uint8_t EEPROM_ADDR = 0;
