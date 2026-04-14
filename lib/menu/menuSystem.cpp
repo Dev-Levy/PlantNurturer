@@ -4,6 +4,9 @@
 #include "MenuSystem.h"
 
 uint8_t activePlantIndex = 0;
+static unsigned long lastMenuRefresh = 0;
+const MenuPage *selectedPlantPages[3] = {nullptr, nullptr, nullptr};
+MenuSystem *globalMenuPtr = nullptr;
 
 MenuSystem::MenuSystem(IDisplayActions &display, ISensorActions &sensorActions, IActuatorActions &actuatorActions)
     : display(display),
@@ -17,6 +20,7 @@ MenuSystem::MenuSystem(IDisplayActions &display, ISensorActions &sensorActions, 
 
 void MenuSystem::begin()
 {
+    globalMenuPtr = this;
     currentPage = &homePage;
     draw();
 }
@@ -43,7 +47,22 @@ void MenuSystem::processKey(KeyPress key)
         void (*callback)(void *) = (void (*)(void *))pgm_read_ptr(&(items[currentCursor].callback));
         void *ctx = (void *)pgm_read_ptr(&(items[currentCursor].callbackContext));
 
-        if (targetPage)
+        if (currentPage == &plantsPage && currentCursor < PLANTS_PAGE_ITEMS - 1)
+        {
+            activePlantIndex = currentCursor;
+
+            if (selectedPlantPages[activePlantIndex] == nullptr)
+            {
+                currentPage = &selectPlantPage;
+                currentCursor = 0;
+            }
+            else
+            {
+                currentPage = selectedPlantPages[activePlantIndex];
+                currentCursor = 0;
+            }
+        }
+        else if (targetPage)
         {
             currentPage = targetPage;
             if (callback)
@@ -68,11 +87,10 @@ void MenuSystem::updateSensorValues()
 {
     currentReadings = sensorActions.readAll();
 
-    static unsigned long lastSerialWrite = 0;
-    if (currentPage == &sensorPage && millis() - lastSerialWrite > 2000)
+    if (currentPage == &sensorPage && millis() - lastMenuRefresh > 2000)
     {
         drawMenuItems();
-        lastSerialWrite = millis();
+        lastMenuRefresh = millis();
     }
 }
 
@@ -91,12 +109,31 @@ void MenuSystem::drawMenuItems()
     const uint8_t count = pgm_read_byte(&(currentPage->itemCount));
     const MenuItem *items = (const MenuItem *)pgm_read_ptr(&(currentPage->items));
 
+    Serial.println(F("Printing items:------------------------------"));
     for (uint8_t i = 0; i < count; i++)
     {
         const char *label = (const char *)pgm_read_ptr(&(items[i].label));
 
-        bool isSelected = (i == currentCursor);
-        drawItem(28 + (i * 16), label, isSelected);
+        Serial.println((const __FlashStringHelper *)label);
+
+        if (currentPage == &plantsPage && i < PLANTS_PAGE_ITEMS - 1)
+        {
+            if (selectedPlantPages[i] != nullptr)
+            {
+                Serial.print(F("Label change: "));
+                label = (const char *)pgm_read_ptr(&(selectedPlantPages[i]->title));
+
+                Serial.println((const __FlashStringHelper *)label);
+            }
+            else
+            {
+                Serial.print(F("selectedPlantPages["));
+                Serial.print(i);
+                Serial.println(F("] is nullptr"));
+            }
+        }
+
+        drawItem(28 + (i * 16), label, i == currentCursor);
     }
 }
 

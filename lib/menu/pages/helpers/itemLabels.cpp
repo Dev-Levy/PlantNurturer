@@ -12,16 +12,12 @@ const char labelPlants[] PROGMEM = "Plants";
 const char labelSensors[] PROGMEM = "Sensors";
 const char labelActuators[] PROGMEM = "Actuators";
 
-// plants
-const char labelPlant1[] PROGMEM = "(select plant)";
-const char labelPlant2[] PROGMEM = "(select plant)";
-const char labelPlant3[] PROGMEM = "(select plant)";
-
 // select plant
+const char labelSelect[] PROGMEM = "(select a plant)";
 const char labelTomato[] PROGMEM = "Tomato";
+const char labelChili[] PROGMEM = "Chili";
 const char labelMint[] PROGMEM = "Mint";
 const char labelBasil[] PROGMEM = "Basil";
-const char labelChili[] PROGMEM = "Chili";
 
 // sensors
 const char labelLightSensor[] PROGMEM = "Light: ";

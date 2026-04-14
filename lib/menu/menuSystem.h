@@ -5,7 +5,6 @@
 
 #include "pages/pages.h"
 #include "navigationKeys/keys.h"
-#include "callbacks/callbacks.h"
 
 #include "displayActionsInterface.h"
 #include "sensorActionsInterface.h"
@@ -20,6 +19,11 @@ public:
     void draw();
     void processKey(KeyPress key);
     void updateSensorValues();
+
+    static void plantSelectionCallback(void *ctx);
+    static void togglePumpCallBack(void *ctx);
+    static void toggleLightCallBack(void *ctx);
+    static void toggleFanCallBack(void *ctx);
 
 private:
     IDisplayActions &display;
