@@ -65,11 +65,6 @@ void MenuSystem::processKey(KeyPress key)
         else if (targetPage)
         {
             currentPage = targetPage;
-            if (callback)
-            {
-                callback(ctx);
-            }
-
             currentCursor = 0;
         }
         else if (callback)
