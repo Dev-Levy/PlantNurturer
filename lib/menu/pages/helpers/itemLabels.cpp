@@ -14,6 +14,7 @@ const char labelActuators[] PROGMEM = "Actuators";
 
 // select plant
 const char labelSelect[] PROGMEM = "(select a plant)";
+const char labelRemove[] PROGMEM = "(remove plant)";
 const char labelTomato[] PROGMEM = "Tomato";
 const char labelChili[] PROGMEM = "Chili";
 const char labelMint[] PROGMEM = "Mint";

@@ -31,11 +31,11 @@ void MenuSystem::processKey(KeyPress key)
 
     switch (key)
     {
-    case KeyPress::UP: // UP
+    case KeyPress::UP:
         currentCursor = (currentCursor == 0) ? count - 1 : currentCursor - 1;
         break;
 
-    case KeyPress::DOWN: // DOWN
+    case KeyPress::DOWN:
         currentCursor = (currentCursor == count - 1) ? 0 : currentCursor + 1;
         break;
 
@@ -65,11 +65,6 @@ void MenuSystem::processKey(KeyPress key)
         else if (targetPage)
         {
             currentPage = targetPage;
-            if (callback)
-            {
-                callback(ctx);
-            }
-
             currentCursor = 0;
         }
         else if (callback)
@@ -109,7 +104,6 @@ void MenuSystem::drawMenuItems()
     const uint8_t count = pgm_read_byte(&(currentPage->itemCount));
     const MenuItem *items = (const MenuItem *)pgm_read_ptr(&(currentPage->items));
 
-    Serial.println(F("Printing items:------------------------------"));
     for (uint8_t i = 0; i < count; i++)
     {
         const char *label = (const char *)pgm_read_ptr(&(items[i].label));
@@ -120,16 +114,7 @@ void MenuSystem::drawMenuItems()
         {
             if (selectedPlantPages[i] != nullptr)
             {
-                Serial.print(F("Label change: "));
                 label = (const char *)pgm_read_ptr(&(selectedPlantPages[i]->title));
-
-                Serial.println((const __FlashStringHelper *)label);
-            }
-            else
-            {
-                Serial.print(F("selectedPlantPages["));
-                Serial.print(i);
-                Serial.println(F("] is nullptr"));
             }
         }
 

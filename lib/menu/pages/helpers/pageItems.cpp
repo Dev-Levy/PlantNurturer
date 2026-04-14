@@ -28,6 +28,7 @@ const MenuItem selectPlantItems[] PROGMEM = {
 };
 const MenuItem plantItems[] PROGMEM = {
     {(const __FlashStringHelper *)labelSetting, nullptr, nullptr, nullptr},
+    {(const __FlashStringHelper *)labelRemove, nullptr, MenuSystem::plantRemoveCallback, nullptr},
     {(const __FlashStringHelper *)labelBack, &plantsPage, nullptr, nullptr},
 };
 

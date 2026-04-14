@@ -21,6 +21,7 @@ public:
     void updateSensorValues();
 
     static void plantSelectionCallback(void *ctx);
+    static void plantRemoveCallback(void *ctx);
     static void togglePumpCallBack(void *ctx);
     static void toggleLightCallBack(void *ctx);
     static void toggleFanCallBack(void *ctx);
