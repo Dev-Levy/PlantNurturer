@@ -31,8 +31,6 @@ void loop()
 
   if (key != KeyPress::NONE && lastKey == KeyPress::NONE)
   {
-    Serial.print(F("pressed: "));
-    Serial.println((int)key);
     menu.processKey(key);
     menu.draw();
   }
