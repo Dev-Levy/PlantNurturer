@@ -104,7 +104,6 @@ void MenuSystem::drawMenuItems()
     const uint8_t count = pgm_read_byte(&(currentPage->itemCount));
     const MenuItem *items = (const MenuItem *)pgm_read_ptr(&(currentPage->items));
 
-    Serial.println(F("Printing items:------------------------------"));
     for (uint8_t i = 0; i < count; i++)
     {
         const char *label = (const char *)pgm_read_ptr(&(items[i].label));
@@ -115,16 +114,7 @@ void MenuSystem::drawMenuItems()
         {
             if (selectedPlantPages[i] != nullptr)
             {
-                Serial.print(F("Label change: "));
                 label = (const char *)pgm_read_ptr(&(selectedPlantPages[i]->title));
-
-                Serial.println((const __FlashStringHelper *)label);
-            }
-            else
-            {
-                Serial.print(F("selectedPlantPages["));
-                Serial.print(i);
-                Serial.println(F("] is nullptr"));
             }
         }
 

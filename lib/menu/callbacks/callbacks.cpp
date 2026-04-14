@@ -11,10 +11,6 @@ void MenuSystem::plantSelectionCallback(void *ctx)
 
     selectedPlantPages[activePlantIndex] = chosenPage;
 
-    const __FlashStringHelper *title = (const __FlashStringHelper *)pgm_read_ptr(&(chosenPage->title));
-    Serial.print(F("Selected "));
-    Serial.println(title);
-
     if (globalMenuPtr)
     {
         globalMenuPtr->currentPage = &plantsPage;
