@@ -31,11 +31,11 @@ void MenuSystem::processKey(KeyPress key)
 
     switch (key)
     {
-    case KeyPress::UP: // UP
+    case KeyPress::UP:
         currentCursor = (currentCursor == 0) ? count - 1 : currentCursor - 1;
         break;
 
-    case KeyPress::DOWN: // DOWN
+    case KeyPress::DOWN:
         currentCursor = (currentCursor == count - 1) ? 0 : currentCursor + 1;
         break;
 
