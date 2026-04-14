@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "pages/pages.h"
 #include "itemLabels.cpp"
+#include "forwardDeclarations.h"
 
 const MenuItem homeItems[] PROGMEM = {
     {(const __FlashStringHelper *)labelEnterMain, &mainPage, nullptr, nullptr},
@@ -40,8 +41,8 @@ const MenuItem sensorDataItems[] PROGMEM = {
     {(const __FlashStringHelper *)labelBack, &mainPage, nullptr, nullptr},
 };
 const MenuItem actuatorActionItems[] PROGMEM = {
-    {(const __FlashStringHelper *)labelPump, nullptr, nullptr, nullptr},
-    {(const __FlashStringHelper *)labelLight, nullptr, nullptr, nullptr},
-    {(const __FlashStringHelper *)labelFan, nullptr, nullptr, nullptr},
+    {(const __FlashStringHelper *)labelPump, nullptr, togglePumpCallBack, &actuators},
+    {(const __FlashStringHelper *)labelLight, nullptr, toggleLightCallBack, &actuators},
+    {(const __FlashStringHelper *)labelFan, nullptr, toggleFanCallBack, &actuators},
     {(const __FlashStringHelper *)labelBack, &mainPage, nullptr, nullptr},
 };

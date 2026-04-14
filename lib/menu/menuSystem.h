@@ -5,6 +5,7 @@
 
 #include "pages/pages.h"
 #include "navigationKeys/keys.h"
+#include "callbacks/callbacks.h"
 
 #include "displayActionsInterface.h"
 #include "sensorActionsInterface.h"
