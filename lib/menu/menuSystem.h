@@ -3,9 +3,9 @@
 
 #include <config.h>
 
-#include "navigationKeys/keys.h"
 #include "pages/pages.h"
-#include "structs/plantSlot.h"
+#include "navigationKeys/keys.h"
+
 #include "displayActionsInterface.h"
 #include "sensorActionsInterface.h"
 #include "actuatorActionsInterface.h"
@@ -29,7 +29,6 @@ private:
     const MenuPage *currentPage;
     SensorReadings currentReadings;
 
-    void drawDynamicSensorData();
+    void drawMenuItems();
     void drawItem(int y, const char *text, bool selected);
-    void getSensorString(int index, char *buffer);
 };

@@ -3,14 +3,7 @@
 
 #include "MenuSystem.h"
 
-// static char typesPlants[PLANT_TYPE_COUNT][16];
-
 uint8_t activePlantIndex = 0;
-
-static IActuatorActions *actuatorActionsContext = nullptr;
-static MenuSystem *globalMenuPtr = nullptr;
-
-// static char valBuffer[20];
 
 MenuSystem::MenuSystem(IDisplayActions &display, ISensorActions &sensorActions, IActuatorActions &actuatorActions)
     : display(display),
@@ -24,13 +17,7 @@ MenuSystem::MenuSystem(IDisplayActions &display, ISensorActions &sensorActions, 
 
 void MenuSystem::begin()
 {
-    globalMenuPtr = this;
-    actuatorActionsContext = &actuatorActions;
     currentPage = &homePage;
-
-    // reset EEPROM
-    // savePlantData();
-    // loadPlantData();
     draw();
 }
 
@@ -84,7 +71,7 @@ void MenuSystem::updateSensorValues()
     static unsigned long lastSerialWrite = 0;
     if (currentPage == &sensorPage && millis() - lastSerialWrite > 2000)
     {
-        drawDynamicSensorData();
+        drawMenuItems();
         lastSerialWrite = millis();
     }
 }
@@ -92,22 +79,14 @@ void MenuSystem::updateSensorValues()
 void MenuSystem::draw()
 {
     const __FlashStringHelper *title = (const __FlashStringHelper *)pgm_read_ptr(&(currentPage->title));
-    const uint8_t count = pgm_read_byte(&(currentPage->itemCount));
-    const MenuItem *items = (const MenuItem *)pgm_read_ptr(&(currentPage->items));
 
     display.clearScreen();
     display.printTitle(title);
 
-    for (uint8_t i = 0; i < count; i++)
-    {
-        const char *label = (const char *)pgm_read_ptr(&(items[i].label));
-
-        bool isSelected = (i == currentCursor);
-        drawItem(28 + (i * 16), label, isSelected);
-    }
+    drawMenuItems();
 }
 
-void MenuSystem::drawDynamicSensorData()
+void MenuSystem::drawMenuItems()
 {
     const uint8_t count = pgm_read_byte(&(currentPage->itemCount));
     const MenuItem *items = (const MenuItem *)pgm_read_ptr(&(currentPage->items));
@@ -142,41 +121,4 @@ void MenuSystem::drawItem(int y, const char *text, bool selected)
     display.setCursor(10, y);
     display.setTextSize(1);
     display.print((const __FlashStringHelper *)text);
-}
-
-void MenuSystem::getSensorString(int index, char *buffer)
-{
-    switch (index)
-    {
-    case 0:
-        sprintf(buffer, "Light: %s", currentReadings.light ? "FALSE" : "TRUE");
-        break;
-    case 1:
-    {
-        int s_whole = (int)currentReadings.soilTemp;
-        int s_dec = (int)((currentReadings.soilTemp - s_whole) * 100);
-        sprintf(buffer, "Soil Temp:  %d.%02d C", s_whole, s_dec);
-        break;
-    }
-    case 2:
-    {
-        int h_whole = (int)currentReadings.humidity;
-        int h_dec = (int)((currentReadings.humidity - h_whole) * 100);
-        sprintf(buffer, "Humidity: %d.%02d%%", h_whole, h_dec);
-        break;
-    }
-    case 3:
-    {
-        int a_whole = (int)currentReadings.airTemp;
-        int a_dec = (int)((currentReadings.airTemp - a_whole) * 100);
-        sprintf(buffer, "Air Temp:   %d.%02d C", a_whole, a_dec);
-        break;
-    }
-    case 4:
-        sprintf(buffer, "Soil Moisture: %d", currentReadings.soilMoisture);
-        break;
-    default:
-        sprintf(buffer, "Unknown Sensor");
-        break;
-    }
 }
