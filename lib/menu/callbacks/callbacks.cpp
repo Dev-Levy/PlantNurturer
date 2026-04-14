@@ -22,6 +22,17 @@ void MenuSystem::plantSelectionCallback(void *ctx)
     }
 }
 
+void MenuSystem::plantRemoveCallback(void *ctx)
+{
+    selectedPlantPages[activePlantIndex] = nullptr;
+
+    if (globalMenuPtr)
+    {
+        globalMenuPtr->currentPage = &plantsPage;
+        globalMenuPtr->currentCursor = 0;
+    }
+}
+
 void MenuSystem::togglePumpCallBack(void *ctx)
 {
     if (ctx)
