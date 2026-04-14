@@ -32,10 +32,4 @@ private:
     void drawDynamicSensorData();
     void drawItem(int y, const char *text, bool selected);
     void getSensorString(int index, char *buffer);
-
-    // static void commitSelectedPlantTypeCallback(void *ctx);
-    // static void setActivePlantCallback(void *ctx);
-
-    // void savePlantData();
-    // void loadPlantData();
 };
