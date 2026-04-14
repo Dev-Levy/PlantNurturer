@@ -14,6 +14,7 @@ SensorManager sensors;
 TFTManager tft;
 MenuSystem menu(tft, sensors, actuators);
 static unsigned long lastSensorRead = 0;
+static KeyPress lastKey = KeyPress::NONE;
 
 void setup()
 {
@@ -26,17 +27,21 @@ void setup()
 
 void loop()
 {
-  if (millis() - lastSensorRead > 200)
+  KeyPress key = readKeys();
+
+  if (key != KeyPress::NONE && lastKey == KeyPress::NONE)
+  {
+    Serial.print(F("pressed: "));
+    Serial.println((int)key);
+    menu.processKey(key);
+    menu.draw();
+  }
+
+  lastKey = key;
+
+  if (millis() - lastSensorRead > 2000)
   {
     menu.updateSensorValues();
     lastSensorRead = millis();
-  }
-
-  KeyPress key = readKeys();
-  if (key != KeyPress::NONE)
-  {
-    menu.processKey(key);
-    menu.draw();
-    delay(100);
   }
 }
