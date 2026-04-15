@@ -6,6 +6,7 @@
 #include "pages/pages.h"
 #include "navigationKeys/keys.h"
 
+#include "TimeActionsInterface.h"
 #include "displayActionsInterface.h"
 #include "sensorActionsInterface.h"
 #include "actuatorActionsInterface.h"
@@ -13,7 +14,7 @@
 class MenuSystem
 {
 public:
-    explicit MenuSystem(IDisplayActions &display, ISensorActions &sensorActions, IActuatorActions &actuatorActions);
+    explicit MenuSystem(ITimeActions &time, IDisplayActions &display, ISensorActions &sensorActions, IActuatorActions &actuatorActions);
 
     void begin();
     void draw();
@@ -28,6 +29,7 @@ public:
     static void toggleFanCallBack(void *ctx);
 
 private:
+    ITimeActions &time;
     IDisplayActions &display;
     ISensorActions &sensorActions;
     IActuatorActions &actuatorActions;
@@ -42,6 +44,7 @@ private:
 
     SensorReadings currentReadings;
 
+    void drawTimeRow();
     void drawHomePageMenuItems();
     // void drawMainPageMenuItems();
     void drawPlantsPageMenuItems();
@@ -51,4 +54,5 @@ private:
     void drawItem(int y, const __FlashStringHelper *text, bool selected);
     void drawItem(int y, const char *text, bool selected);
     void getSensorString(uint8_t index, char *buffer);
+    const char *getMonthName(uint8_t month);
 };

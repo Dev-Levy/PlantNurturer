@@ -1,6 +1,7 @@
 #include <Arduino.h>
 
 #include <tftManager.h>
+#include <timeManager.h>
 #include <sensorManager.h>
 #include <actuatorManager.h>
 
@@ -9,11 +10,14 @@
 
 #include <config.h>
 
-ActuatorManager actuators;
-SensorManager sensors;
+TimeManager clock;
 TFTManager tft;
-MenuSystem menu(tft, sensors, actuators);
-static unsigned long lastSensorRead = 0;
+SensorManager sensors;
+ActuatorManager actuators;
+
+MenuSystem menu(clock, tft, sensors, actuators);
+static uint8_t lastMinute = 0;
+static unsigned long lastUpdate = 0;
 static KeyPress lastKey = KeyPress::NONE;
 
 void setup()
@@ -21,6 +25,7 @@ void setup()
   Serial.begin(9600);
 
   setupPins();
+  clock.begin();
   tft.begin();
   menu.begin();
 }
@@ -37,9 +42,16 @@ void loop()
 
   lastKey = key;
 
-  if (millis() - lastSensorRead > 2000)
+  if (millis() - lastUpdate > 2000)
   {
     menu.updateSensorValues();
-    lastSensorRead = millis();
+    clock.updateTime();
+    lastUpdate = millis();
+  }
+
+  if (lastMinute != clock.getMinute())
+  {
+    menu.draw();
+    lastMinute = clock.getMinute();
   }
 }
