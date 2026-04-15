@@ -86,7 +86,7 @@ void MenuSystem::updateSensorValues()
 
     if (currentPage == &sensorPage && millis() - lastMenuRefresh > 2000)
     {
-        drawMenuItems();
+        drawSensorPageMenuItems();
         lastMenuRefresh = millis();
     }
 }
