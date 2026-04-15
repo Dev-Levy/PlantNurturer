@@ -16,6 +16,7 @@ SensorManager sensors;
 ActuatorManager actuators;
 
 MenuSystem menu(clock, tft, sensors, actuators);
+static uint8_t lastMinute = 0;
 static unsigned long lastUpdate = 0;
 static KeyPress lastKey = KeyPress::NONE;
 
@@ -46,5 +47,11 @@ void loop()
     menu.updateSensorValues();
     clock.updateTime();
     lastUpdate = millis();
+  }
+
+  if (lastMinute != clock.getMinute())
+  {
+    menu.draw();
+    lastMinute = clock.getMinute();
   }
 }
