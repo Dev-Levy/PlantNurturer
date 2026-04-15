@@ -36,5 +36,7 @@ private:
     SensorReadings currentReadings;
 
     void drawMenuItems();
+    void drawItem(int y, const __FlashStringHelper *text, bool selected);
     void drawItem(int y, const char *text, bool selected);
+    void getSensorString(uint8_t index, char *buffer);
 };

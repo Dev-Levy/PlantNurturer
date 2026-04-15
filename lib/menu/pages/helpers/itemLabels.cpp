@@ -2,7 +2,7 @@
 
 // special
 const char labelBack[] PROGMEM = "(back)";
-const char labelSetting[] PROGMEM = "(some setting)";
+const char labelSetting[] PROGMEM = "Some Setting";
 
 // home
 const char labelEnterMain[] PROGMEM = "Enter Main Menu";
