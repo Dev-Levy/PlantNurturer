@@ -7,30 +7,37 @@ SensorManager::SensorManager()
       lastReadings()
 {
 }
+void SensorManager::begin()
+{
+    // dht.begin();
+    // sensors.begin();
+    // pinMode(LDR_PIN, INPUT);
+}
+
 SensorReadings SensorManager::readAll()
 {
-    if (millis() - lastDhtRead > 2000)
-    {
-        float h = dht.readHumidity();
-        float t = dht.readTemperature();
+    // if (millis() - lastDhtRead > 2000)
+    // {
+    //     float h = dht.readHumidity();
+    //     float t = dht.readTemperature();
+    //     sensors.requestTemperatures();
 
-        if (!isnan(h))
-        {
-            lastReadings.airHumidity = h;
-        }
-        if (!isnan(t))
-        {
-            lastReadings.airTemp = t;
-        }
+    //     if (!isnan(h))
+    //     {
+    //         lastReadings.airHumidity = h;
+    //     }
+    //     if (!isnan(t))
+    //     {
+    //         lastReadings.airTemp = t;
+    //     }
 
-        lastDhtRead = millis();
-    }
+    //     lastDhtRead = millis();
+    // }
 
-    lastReadings.light = !digitalRead(LDR_PIN);
-    lastReadings.soilMoisture = analogRead(SOIL_MOIST_PIN);
+    // lastReadings.light = !digitalRead(LDR_PIN);
+    // lastReadings.soilMoisture = analogRead(SOIL_MOIST_PIN);
 
-    sensors.requestTemperatures();
-    lastReadings.soilTemp = sensors.getTempCByIndex(0);
+    // lastReadings.soilTemp = sensors.getTempCByIndex(0);
 
     return lastReadings;
 }
