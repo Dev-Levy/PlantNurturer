@@ -98,10 +98,25 @@ void MenuSystem::draw()
     display.clearScreen();
     display.printTitle(title);
 
-    drawMenuItems();
+    if (currentPage == &homePage)
+    {
+        drawHomePageMenuItems();
+    }
+    else if (currentPage == &plantsPage)
+    {
+        drawPlantsPageMenuItems();
+    }
+    else if (currentPage == &sensorPage)
+    {
+        drawSensorPageMenuItems();
+    }
+    else
+    {
+        drawMenuItems();
+    }
 }
 
-void MenuSystem::drawMenuItems()
+void MenuSystem::drawHomePageMenuItems()
 {
     const uint8_t count = pgm_read_byte(&(currentPage->itemCount));
     const MenuItem *items = (const MenuItem *)pgm_read_ptr(&(currentPage->items));
@@ -112,7 +127,7 @@ void MenuSystem::drawMenuItems()
         bool isSelected = (i == currentCursor);
         int yPos = 28 + (i * 16);
 
-        if (currentPage == &homePage && i == 0)
+        if (i == 0)
         {
             if (selectedPlantPages[mainPlantIndex] != nullptr)
             {
@@ -126,7 +141,25 @@ void MenuSystem::drawMenuItems()
             }
             drawItem(yPos, dynamicBuffer, isSelected); // RAM
         }
-        else if (currentPage == &plantsPage && i < PLANTS_PAGE_ITEMS - 1)
+        else
+        {
+            auto *label = (const __FlashStringHelper *)pgm_read_ptr(&(items[i].label));
+            drawItem(yPos, label, isSelected); // flash
+        }
+    }
+}
+
+void MenuSystem::drawPlantsPageMenuItems()
+{
+    const uint8_t count = pgm_read_byte(&(currentPage->itemCount));
+    const MenuItem *items = (const MenuItem *)pgm_read_ptr(&(currentPage->items));
+
+    for (uint8_t i = 0; i < count; i++)
+    {
+        bool isSelected = (i == currentCursor);
+        int yPos = 28 + (i * 16);
+
+        if (i < PLANTS_PAGE_ITEMS - 1)
         {
             if (selectedPlantPages[i] != nullptr)
             {
@@ -144,7 +177,26 @@ void MenuSystem::drawMenuItems()
                 drawItem(yPos, label, isSelected); // flash
             }
         }
-        else if (currentPage == &sensorPage && i < SENSORS_PAGE_ITEMS - 1)
+        else
+        {
+            auto *label = (const __FlashStringHelper *)pgm_read_ptr(&(items[i].label));
+            drawItem(yPos, label, isSelected); // flash
+        }
+    }
+}
+
+void MenuSystem::drawSensorPageMenuItems()
+{
+    const uint8_t count = pgm_read_byte(&(currentPage->itemCount));
+    const MenuItem *items = (const MenuItem *)pgm_read_ptr(&(currentPage->items));
+    static char dynamicBuffer[32];
+
+    for (uint8_t i = 0; i < count; i++)
+    {
+        bool isSelected = (i == currentCursor);
+        int yPos = 28 + (i * 16);
+
+        if (i < SENSORS_PAGE_ITEMS - 1)
         {
             getSensorString(i, dynamicBuffer);
             drawItem(yPos, dynamicBuffer, isSelected); // RAM
@@ -154,6 +206,21 @@ void MenuSystem::drawMenuItems()
             auto *label = (const __FlashStringHelper *)pgm_read_ptr(&(items[i].label));
             drawItem(yPos, label, isSelected); // flash
         }
+    }
+}
+
+void MenuSystem::drawMenuItems()
+{
+    const uint8_t count = pgm_read_byte(&(currentPage->itemCount));
+    const MenuItem *items = (const MenuItem *)pgm_read_ptr(&(currentPage->items));
+
+    for (uint8_t i = 0; i < count; i++)
+    {
+        bool isSelected = (i == currentCursor);
+        int yPos = 28 + (i * 16);
+
+        auto *label = (const __FlashStringHelper *)pgm_read_ptr(&(items[i].label));
+        drawItem(yPos, label, isSelected); // flash
     }
 }
 

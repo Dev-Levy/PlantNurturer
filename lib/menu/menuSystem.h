@@ -42,6 +42,11 @@ private:
 
     SensorReadings currentReadings;
 
+    void drawHomePageMenuItems();
+    // void drawMainPageMenuItems();
+    void drawPlantsPageMenuItems();
+    void drawSensorPageMenuItems();
+    // void drawActuatorPageMenuItems();
     void drawMenuItems();
     void drawItem(int y, const __FlashStringHelper *text, bool selected);
     void drawItem(int y, const char *text, bool selected);
