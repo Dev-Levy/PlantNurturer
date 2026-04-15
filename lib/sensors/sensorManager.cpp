@@ -16,7 +16,7 @@ SensorReadings SensorManager::readAll()
 
         if (!isnan(h))
         {
-            lastReadings.humidity = h;
+            lastReadings.airHumidity = h;
         }
         if (!isnan(t))
         {
@@ -26,7 +26,7 @@ SensorReadings SensorManager::readAll()
         lastDhtRead = millis();
     }
 
-    lastReadings.light = digitalRead(LDR_PIN);
+    lastReadings.light = !digitalRead(LDR_PIN);
     lastReadings.soilMoisture = analogRead(SOIL_MOIST_PIN);
 
     sensors.requestTemperatures();
