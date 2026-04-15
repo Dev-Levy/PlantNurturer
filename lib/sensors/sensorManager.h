@@ -13,6 +13,7 @@ class SensorManager : public ISensorActions
 {
 public:
     SensorManager();
+    void begin() override;
     SensorReadings readAll() override;
 
 private:

@@ -2,7 +2,7 @@
 
 struct SensorReadings
 {
-    uint16_t soilMoisture;
+    uint8_t soilMoisture;
     float airHumidity;
     float airTemp;
     float soilTemp;
