@@ -1,6 +1,7 @@
 #include <Arduino.h>
 
 #include <tftManager.h>
+#include <timeManager.h>
 #include <sensorManager.h>
 #include <actuatorManager.h>
 
@@ -9,9 +10,11 @@
 
 #include <config.h>
 
-ActuatorManager actuators;
-SensorManager sensors;
+TimeManager clock;
 TFTManager tft;
+SensorManager sensors;
+ActuatorManager actuators;
+
 MenuSystem menu(tft, sensors, actuators);
 static unsigned long lastSensorRead = 0;
 static KeyPress lastKey = KeyPress::NONE;
@@ -21,6 +24,7 @@ void setup()
   Serial.begin(9600);
 
   setupPins();
+  clock.begin();
   tft.begin();
   menu.begin();
 }
