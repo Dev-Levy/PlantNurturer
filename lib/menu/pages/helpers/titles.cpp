@@ -1,6 +1,6 @@
 #include <Arduino.h>
 
-const char titleHome[] PROGMEM = "Home";
+const char titleHome[] PROGMEM = "PlantNurturer";
 const char titleMain[] PROGMEM = "Main Menu";
 
 const char titlePlants[] PROGMEM = "Plants";
