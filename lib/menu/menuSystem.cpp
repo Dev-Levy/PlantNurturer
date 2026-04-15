@@ -25,6 +25,7 @@ void MenuSystem::begin()
 {
     globalMenuPtr = this;
     currentPage = &homePage;
+    time.updateTime();
     draw();
 }
 
@@ -101,6 +102,7 @@ void MenuSystem::draw()
 
     if (currentPage == &homePage)
     {
+        drawTimeRow();
         drawHomePageMenuItems();
     }
     else if (currentPage == &plantsPage)
@@ -117,6 +119,22 @@ void MenuSystem::draw()
     }
 }
 
+void MenuSystem::drawTimeRow()
+{
+    int yPos = 2 * LINE_HEIGHT;
+    static char dateBuffer[32];
+
+    snprintf(dateBuffer, sizeof(dateBuffer), "%s %02d. | %02d:%02d | Week %d",
+             getMonthName(time.getMonth()), time.getDay(),
+             time.getHour(), time.getMinute(), time.getGrowthWeek(time.getUnixNow()));
+
+    display.fillRectangle(0, yPos - 2, display.getWidth(), LINE_HEIGHT, ST77XX_BLACK);
+    display.setTextColor(ST77XX_WHITE);
+    display.setCursor(4, yPos);
+    display.setTextSize(1);
+    display.print(dateBuffer);
+}
+
 void MenuSystem::drawHomePageMenuItems()
 {
     const uint8_t count = pgm_read_byte(&(currentPage->itemCount));
@@ -126,7 +144,7 @@ void MenuSystem::drawHomePageMenuItems()
     for (uint8_t i = 0; i < count; i++)
     {
         bool isSelected = (i == currentCursor);
-        int yPos = 28 + (i * 16);
+        int yPos = 3 * LINE_HEIGHT + (i * (LINE_HEIGHT + PADDING));
 
         if (i == 0)
         {
@@ -158,7 +176,7 @@ void MenuSystem::drawPlantsPageMenuItems()
     for (uint8_t i = 0; i < count; i++)
     {
         bool isSelected = (i == currentCursor);
-        int yPos = 28 + (i * 16);
+        int yPos = 2 * LINE_HEIGHT + (i * (LINE_HEIGHT + PADDING));
 
         if (i < PLANTS_PAGE_ITEMS - 1)
         {
@@ -195,7 +213,7 @@ void MenuSystem::drawSensorPageMenuItems()
     for (uint8_t i = 0; i < count; i++)
     {
         bool isSelected = (i == currentCursor);
-        int yPos = 28 + (i * 16);
+        int yPos = 2 * LINE_HEIGHT + (i * (LINE_HEIGHT + PADDING));
 
         if (i < SENSORS_PAGE_ITEMS - 1)
         {
@@ -218,7 +236,7 @@ void MenuSystem::drawMenuItems()
     for (uint8_t i = 0; i < count; i++)
     {
         bool isSelected = (i == currentCursor);
-        int yPos = 28 + (i * 16);
+        int yPos = 2 * LINE_HEIGHT + (i * (LINE_HEIGHT + PADDING));
 
         auto *label = (const __FlashStringHelper *)pgm_read_ptr(&(items[i].label));
         drawItem(yPos, label, isSelected); // flash
@@ -227,11 +245,9 @@ void MenuSystem::drawMenuItems()
 
 void MenuSystem::drawItem(int y, const __FlashStringHelper *text, bool selected)
 {
-    uint16_t itemHeight = 14;
-
     if (selected)
     {
-        display.fillRectangle(0, y - 2, display.getWidth(), itemHeight, ST77XX_WHITE);
+        display.fillRectangle(0, y - 2, display.getWidth(), LINE_HEIGHT, ST77XX_WHITE);
         display.setTextColor(ST77XX_BLACK);
         display.setCursor(2, y);
         display.setTextSize(1);
@@ -239,7 +255,7 @@ void MenuSystem::drawItem(int y, const __FlashStringHelper *text, bool selected)
     }
     else
     {
-        display.fillRectangle(0, y - 2, display.getWidth(), itemHeight, ST77XX_BLACK);
+        display.fillRectangle(0, y - 2, display.getWidth(), LINE_HEIGHT, ST77XX_BLACK);
         display.setTextColor(ST77XX_WHITE);
     }
 
@@ -250,11 +266,9 @@ void MenuSystem::drawItem(int y, const __FlashStringHelper *text, bool selected)
 
 void MenuSystem::drawItem(int y, const char *text, bool selected)
 {
-    uint16_t itemHeight = 14;
-
     if (selected)
     {
-        display.fillRectangle(0, y - 2, display.getWidth(), itemHeight, ST77XX_WHITE);
+        display.fillRectangle(0, y - 2, display.getWidth(), LINE_HEIGHT, ST77XX_WHITE);
         display.setTextColor(ST77XX_BLACK);
         display.setCursor(2, y);
         display.setTextSize(1);
@@ -262,7 +276,7 @@ void MenuSystem::drawItem(int y, const char *text, bool selected)
     }
     else
     {
-        display.fillRectangle(0, y - 2, display.getWidth(), itemHeight, ST77XX_BLACK);
+        display.fillRectangle(0, y - 2, display.getWidth(), LINE_HEIGHT, ST77XX_BLACK);
         display.setTextColor(ST77XX_WHITE);
     }
 
@@ -301,4 +315,21 @@ void MenuSystem::getSensorString(uint8_t index, char *buffer)
         strcat(buffer, "C");
         break;
     }
+}
+
+const char *MenuSystem::getMonthName(uint8_t month)
+{
+    static const char *months[] = {
+        "Inv",
+        "Jan", "Feb", "Mar",
+        "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep",
+        "Oct", "Nov", "Dec"};
+
+    if (month > 12)
+    {
+        return months[0];
+    }
+
+    return months[month];
 }

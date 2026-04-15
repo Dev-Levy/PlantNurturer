@@ -6,7 +6,7 @@
 #include "pages/pages.h"
 #include "navigationKeys/keys.h"
 
-#include "TImeActionsInterface.h"
+#include "TimeActionsInterface.h"
 #include "displayActionsInterface.h"
 #include "sensorActionsInterface.h"
 #include "actuatorActionsInterface.h"
@@ -44,6 +44,7 @@ private:
 
     SensorReadings currentReadings;
 
+    void drawTimeRow();
     void drawHomePageMenuItems();
     // void drawMainPageMenuItems();
     void drawPlantsPageMenuItems();
@@ -53,4 +54,5 @@ private:
     void drawItem(int y, const __FlashStringHelper *text, bool selected);
     void drawItem(int y, const char *text, bool selected);
     void getSensorString(uint8_t index, char *buffer);
+    const char *getMonthName(uint8_t month);
 };
