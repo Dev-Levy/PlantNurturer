@@ -5,7 +5,7 @@
 
 #include "TImeActionsInterface.h"
 
-class TimeManager : ITimeActions
+class TimeManager : public ITimeActions
 {
 public:
     TimeManager();

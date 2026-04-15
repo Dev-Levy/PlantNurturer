@@ -14,8 +14,9 @@ const MenuPage *MenuSystem::selectedPlantPages[3] = {nullptr, nullptr, nullptr};
 
 static unsigned long lastMenuRefresh = 0;
 
-MenuSystem::MenuSystem(IDisplayActions &display, ISensorActions &sensorActions, IActuatorActions &actuatorActions)
-    : display(display), sensorActions(sensorActions), actuatorActions(actuatorActions),
+MenuSystem::MenuSystem(ITimeActions &time, IDisplayActions &display, ISensorActions &sensorActions, IActuatorActions &actuatorActions)
+    : time(time), display(display),
+      sensorActions(sensorActions), actuatorActions(actuatorActions),
       currentReadings()
 {
 }

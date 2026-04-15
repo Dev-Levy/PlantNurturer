@@ -15,8 +15,8 @@ TFTManager tft;
 SensorManager sensors;
 ActuatorManager actuators;
 
-MenuSystem menu(tft, sensors, actuators);
-static unsigned long lastSensorRead = 0;
+MenuSystem menu(clock, tft, sensors, actuators);
+static unsigned long lastUpdate = 0;
 static KeyPress lastKey = KeyPress::NONE;
 
 void setup()
@@ -41,9 +41,10 @@ void loop()
 
   lastKey = key;
 
-  if (millis() - lastSensorRead > 2000)
+  if (millis() - lastUpdate > 2000)
   {
     menu.updateSensorValues();
-    lastSensorRead = millis();
+    clock.updateTime();
+    lastUpdate = millis();
   }
 }

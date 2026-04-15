@@ -6,6 +6,7 @@
 #include "pages/pages.h"
 #include "navigationKeys/keys.h"
 
+#include "TImeActionsInterface.h"
 #include "displayActionsInterface.h"
 #include "sensorActionsInterface.h"
 #include "actuatorActionsInterface.h"
@@ -13,7 +14,7 @@
 class MenuSystem
 {
 public:
-    explicit MenuSystem(IDisplayActions &display, ISensorActions &sensorActions, IActuatorActions &actuatorActions);
+    explicit MenuSystem(ITimeActions &time, IDisplayActions &display, ISensorActions &sensorActions, IActuatorActions &actuatorActions);
 
     void begin();
     void draw();
@@ -28,6 +29,7 @@ public:
     static void toggleFanCallBack(void *ctx);
 
 private:
+    ITimeActions &time;
     IDisplayActions &display;
     ISensorActions &sensorActions;
     IActuatorActions &actuatorActions;
