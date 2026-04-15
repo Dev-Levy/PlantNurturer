@@ -1,19 +1,24 @@
 #include "menuSystem.h"
 #include <Arduino.h>
 
-extern uint8_t activePlantIndex;
-extern const MenuPage *selectedPlantPages[3];
-extern MenuSystem *globalMenuPtr;
-
 void MenuSystem::plantSelectionCallback(void *ctx)
 {
-    const MenuPage *chosenPage = (const MenuPage *)ctx;
-
-    selectedPlantPages[activePlantIndex] = chosenPage;
+    selectedPlantPages[activePlantIndex] = (const MenuPage *)ctx;
 
     if (globalMenuPtr)
     {
         globalMenuPtr->currentPage = &plantsPage;
+        globalMenuPtr->currentCursor = 0;
+    }
+}
+
+void MenuSystem::plantSetAsMainCallback(void *ctx)
+{
+    if (globalMenuPtr)
+    {
+        globalMenuPtr->mainPlantIndex = activePlantIndex;
+
+        globalMenuPtr->currentPage = &homePage;
         globalMenuPtr->currentCursor = 0;
     }
 }

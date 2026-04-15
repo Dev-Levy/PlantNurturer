@@ -21,6 +21,7 @@ public:
     void updateSensorValues();
 
     static void plantSelectionCallback(void *ctx);
+    static void plantSetAsMainCallback(void *ctx);
     static void plantRemoveCallback(void *ctx);
     static void togglePumpCallBack(void *ctx);
     static void toggleLightCallBack(void *ctx);
@@ -31,10 +32,21 @@ private:
     ISensorActions &sensorActions;
     IActuatorActions &actuatorActions;
 
-    uint8_t currentCursor;
-    const MenuPage *currentPage;
+    static MenuSystem *globalMenuPtr;
+    static uint8_t currentCursor;
+    static const MenuPage *currentPage;
+
+    static uint8_t mainPlantIndex;
+    static uint8_t activePlantIndex;
+    static const MenuPage *selectedPlantPages[3];
+
     SensorReadings currentReadings;
 
+    void drawHomePageMenuItems();
+    // void drawMainPageMenuItems();
+    void drawPlantsPageMenuItems();
+    void drawSensorPageMenuItems();
+    // void drawActuatorPageMenuItems();
     void drawMenuItems();
     void drawItem(int y, const __FlashStringHelper *text, bool selected);
     void drawItem(int y, const char *text, bool selected);
