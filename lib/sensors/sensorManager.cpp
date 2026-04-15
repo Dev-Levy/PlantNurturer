@@ -7,12 +7,20 @@ SensorManager::SensorManager()
       lastReadings()
 {
 }
+void SensorManager::begin()
+{
+    dht.begin();
+    sensors.begin();
+    pinMode(LDR_PIN, INPUT);
+}
+
 SensorReadings SensorManager::readAll()
 {
     if (millis() - lastDhtRead > 2000)
     {
         float h = dht.readHumidity();
         float t = dht.readTemperature();
+        sensors.requestTemperatures();
 
         if (!isnan(h))
         {
@@ -27,9 +35,11 @@ SensorReadings SensorManager::readAll()
     }
 
     lastReadings.light = !digitalRead(LDR_PIN);
-    lastReadings.soilMoisture = analogRead(SOIL_MOIST_PIN);
 
-    sensors.requestTemperatures();
+    int rawMoisture = analogRead(SOIL_MOIST_PIN);
+    int percentage = map(rawMoisture, 1023, 200, 0, 100);
+    lastReadings.soilMoisture = (uint8_t)constrain(percentage, 0, 100);
+
     lastReadings.soilTemp = sensors.getTempCByIndex(0);
 
     return lastReadings;
