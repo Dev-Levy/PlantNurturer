@@ -1,10 +1,10 @@
 #include <Arduino.h>
 
 // special
-const char labelBack[] PROGMEM = "(back)";
-const char labelSetting[] PROGMEM = "Some Setting";
+const char labelBack[] PROGMEM = "# back";
 
 // home
+const char labelMainPlant[] PROGMEM = "## plant name ##";
 const char labelEnterMain[] PROGMEM = "Enter Main Menu";
 
 // main
@@ -13,12 +13,16 @@ const char labelSensors[] PROGMEM = "Sensors";
 const char labelActuators[] PROGMEM = "Actuators";
 
 // select plant
-const char labelSelect[] PROGMEM = "(select a plant)";
-const char labelRemove[] PROGMEM = "(remove plant)";
+const char labelSelect[] PROGMEM = "# select a plant";
 const char labelTomato[] PROGMEM = "Tomato";
 const char labelChili[] PROGMEM = "Chili";
 const char labelMint[] PROGMEM = "Mint";
 const char labelBasil[] PROGMEM = "Basil";
+
+// plant
+const char labelSetting[] PROGMEM = "Some Setting";
+const char labelSetMain[] PROGMEM = "# select for growing";
+const char labelRemove[] PROGMEM = "# remove plant";
 
 // sensors
 const char labelLightSensor[] PROGMEM = "Light: ";
