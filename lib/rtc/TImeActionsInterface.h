@@ -8,6 +8,10 @@ public:
     virtual bool begin() = 0;
     virtual void updateTime() = 0;
     virtual void forceSetTime(int year, int month, int day, int hour, int minute, int second) = 0;
+    virtual uint8_t getGrowthWeek(uint32_t currentTime) = 0;
+    virtual void resetWeekCounter(uint32_t currentTime) = 0;
+
+    virtual long getUnixNow() = 0;
 
     virtual uint8_t getHour() = 0;
     virtual uint8_t getMinute() = 0;
