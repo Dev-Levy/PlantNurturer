@@ -17,6 +17,10 @@ constexpr uint8_t PLANT_TYPE_COUNT = 4;
 constexpr uint8_t PLANT_COUNT = 3;
 constexpr uint8_t EEPROM_ADDR = 0;
 
+constexpr uint8_t LINE_HEIGHT = 14;
+constexpr uint8_t PADDING = 2;
+constexpr uint32_t SECONDS_IN_A_WEEK = 604800L;
+
 // pins
 constexpr uint8_t TFT_CS = 10;
 constexpr uint8_t TFT_RST = 8;
