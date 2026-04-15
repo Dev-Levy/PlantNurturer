@@ -113,25 +113,25 @@ void MenuSystem::drawMenuItems()
         if (currentPage == &sensorPage && i < SENSORS_PAGE_ITEMS - 1)
         {
             getSensorString(i, dynamicBuffer);
-            drawItem(yPos, dynamicBuffer, isSelected); // Calls the RAM version
+            drawItem(yPos, dynamicBuffer, isSelected); // RAM
         }
         else if (currentPage == &plantsPage && i < PLANTS_PAGE_ITEMS - 1)
         {
             if (selectedPlantPages[i] != nullptr)
             {
                 const __FlashStringHelper *title = (const __FlashStringHelper *)pgm_read_ptr(&(selectedPlantPages[i]->title));
-                drawItem(yPos, title, isSelected); // Calls the Flash version
+                drawItem(yPos, title, isSelected); // flash
             }
             else
             {
                 const __FlashStringHelper *label = (const __FlashStringHelper *)pgm_read_ptr(&(items[i].label));
-                drawItem(yPos, label, isSelected);
+                drawItem(yPos, label, isSelected); // flash
             }
         }
         else
         {
             const __FlashStringHelper *label = (const __FlashStringHelper *)pgm_read_ptr(&(items[i].label));
-            drawItem(yPos, label, isSelected);
+            drawItem(yPos, label, isSelected); // flash
         }
     }
 }
