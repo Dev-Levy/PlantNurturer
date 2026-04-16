@@ -10,26 +10,32 @@ public:
 
     void begin();
     void clearScreen();
-
     void printTitle(const __FlashStringHelper *text);
 
-    void setCursor(uint8_t x, uint8_t y);
-    void setTextSize(uint8_t size);
-    void setTextColor(uint16_t color);
-    void setTextColor(uint16_t color, uint16_t bgColor);
-    void fillRectangle(int16_t x, int16_t y, int16_t width, int16_t height, uint16_t color);
-    void drawFastHLine(int16_t x, int16_t y, int16_t width, uint16_t color);
+    inline void setCursor(uint8_t x, uint8_t y) { tft.setCursor(x, y); }
+    inline void setTextSize(uint8_t size) { tft.setTextSize(size); }
+    inline void setTextColor(uint16_t color) { tft.setTextColor(color); }
+    inline void setTextColor(uint16_t color, uint16_t bgColor) { tft.setTextColor(color, bgColor); }
 
-    void print(const char *text);
-    void print(const __FlashStringHelper *text);
-    void print(const int16_t value);
+    inline void fillRectangle(int16_t x, int16_t y, int16_t width, int16_t height, uint16_t color)
+    {
+        tft.fillRect(x, y, width, height, color);
+    }
 
-    void println(const char *text);
-    void println(const __FlashStringHelper *text);
-    void println(const int16_t value);
+    inline void drawFastHLine(int16_t x, int16_t y, int16_t width, uint16_t color)
+    {
+        tft.drawFastHLine(x, y, width, color);
+    }
+    inline void print(const char *text) { tft.print(text); }
+    inline void print(const __FlashStringHelper *text) { tft.print(text); }
+    inline void print(const int16_t value) { tft.print(value); }
 
-    int16_t getWidth();
-    int16_t getHeight();
+    inline void println(const char *text) { tft.println(text); }
+    inline void println(const __FlashStringHelper *text) { tft.println(text); }
+    inline void println(const int16_t value) { tft.println(value); }
+
+    inline int16_t getWidth() { return tft.width(); }
+    inline int16_t getHeight() { return tft.height(); }
 
 private:
     Adafruit_ST7735 tft;
