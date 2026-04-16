@@ -6,9 +6,10 @@
 static unsigned long lastMenuRefresh = 0;
 MenuSystem *globalMenuPtr = nullptr;
 
-MenuSystem::MenuSystem(TimeManager &time, DisplayManager &display, SensorManager &sensor, ActuatorManager &actuator)
+MenuSystem::MenuSystem(TimeManager &time, DisplayManager &display, SensorManager &sensor, ActuatorManager &actuator, PlantManager &plant)
     : time(time), display(display),
-      sensor(sensor), actuator(actuator)
+      sensor(sensor), actuator(actuator),
+      plant(plant)
 {
 }
 
@@ -235,15 +236,26 @@ void MenuSystem::drawMenuItems()
     const uint8_t count = pgm_read_byte(&(currentPage->itemCount));
     const MenuItem *items = (const MenuItem *)pgm_read_ptr(&(currentPage->items));
 
-    for (uint8_t i = 0; i < count; i++)
+    uint8_t startY = 2 * LINE_HEIGHT;
+    uint8_t topIndex = (currentCursor / MAX_VISIBLE) * MAX_VISIBLE;
+
+    for (uint8_t i = 0; i < MAX_VISIBLE; i++)
     {
-        bool isSelected = (i == currentCursor);
-        int yPos = 2 * LINE_HEIGHT + (i * (LINE_HEIGHT + PADDING));
+        uint8_t itemIndex = topIndex + i;
+        uint8_t yPos = startY + (i * LINE_HEIGHT);
 
-        auto *label = (const __FlashStringHelper *)pgm_read_ptr(&(items[i].label));
+        if (itemIndex < count)
+        {
+            bool isSelected = (currentCursor == itemIndex);
+            auto *label = (const __FlashStringHelper *)pgm_read_ptr(&(items[itemIndex].label));
 
-        setItemDrawingProps(isSelected, yPos);
-        display.print(label);
+            setItemDrawingProps(isSelected, yPos);
+            display.print(label);
+        }
+        else
+        {
+            display.fillRectangle(0, yPos - PADDING, display.getWidth(), LINE_HEIGHT, ST77XX_BLACK);
+        }
     }
 }
 
@@ -282,23 +294,6 @@ void MenuSystem::drawSensorPageMenuItem(uint8_t index, uint8_t y, bool isSelecte
         display.print(F("%"));
         break;
     }
-}
-
-const char *MenuSystem::getMonthName(uint8_t month)
-{
-    static const char *months[] = {
-        "Inv",
-        "Jan", "Feb", "Mar",
-        "Apr", "May", "Jun",
-        "Jul", "Aug", "Sep",
-        "Oct", "Nov", "Dec"};
-
-    if (month > 12)
-    {
-        return months[0];
-    }
-
-    return months[month];
 }
 
 void MenuSystem::setItemDrawingProps(bool isSelected, uint8_t y)
