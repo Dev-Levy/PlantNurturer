@@ -23,6 +23,11 @@ static constexpr uint8_t PADDING = 2;
 static constexpr uint32_t SECONDS_IN_A_WEEK = 604800UL;
 
 // pins
+#define RELAY_1 2
+// #define RELAY_2 0
+// #define RELAY_3 2
+// #define RELAY_4 3
+
 #define TFT_CS 10
 #define TFT_RST 8
 #define TFT_DC 9
@@ -38,6 +43,11 @@ static constexpr uint32_t SECONDS_IN_A_WEEK = 604800UL;
 
 inline void setupPins()
 {
+    pinMode(RELAY_1, OUTPUT);
+    // pinMode(RELAY_2, OUTPUT);
+    // pinMode(RELAY_3, OUTPUT);
+    // pinMode(RELAY_4, OUTPUT);
+
     pinMode(BUTTON_UP, INPUT);
     pinMode(BUTTON_DOWN, INPUT);
     pinMode(BUTTON_SELECT, INPUT);
