@@ -75,6 +75,8 @@ void MenuSystem::processKey(KeyPress key)
 
 void MenuSystem::updateSensorValues()
 {
+    currentReading = sensor.readAll();
+
     if (currentPage == &sensorPage && millis() - lastMenuRefresh > 2000)
     {
         drawSensorPageMenuItems();
@@ -210,8 +212,6 @@ void MenuSystem::drawSensorPageMenuItems()
     const uint8_t count = pgm_read_byte(&(currentPage->itemCount));
     const MenuItem *items = (const MenuItem *)pgm_read_ptr(&(currentPage->items));
 
-    SensorReadings currentData = sensor.readAll();
-
     for (uint8_t i = 0; i < count; i++)
     {
         bool isSelected = (i == currentCursor);
@@ -220,7 +220,7 @@ void MenuSystem::drawSensorPageMenuItems()
 
         if (i < SENSORS_PAGE_ITEMS - 1)
         {
-            drawSensorPageMenuItem(i, yPos, isSelected, currentData, label);
+            drawSensorPageMenuItem(i, yPos, isSelected, currentReading, label);
         }
         else
         {
@@ -250,35 +250,36 @@ void MenuSystem::drawMenuItems()
 void MenuSystem::drawSensorPageMenuItem(uint8_t index, uint8_t y, bool isSelected, const SensorReadings &data, const __FlashStringHelper *label)
 {
     setItemDrawingProps(isSelected, y);
+    display.print(label);
 
     switch (index)
     {
     case 0:
-        display.print(data.light ? F("ON") : F("OFF"));
+        display.print(data.light ? F("LIGHT") : F("DARK"));
         break;
     case 1:
         display.print(data.airTemp / 10);
-        display.print('.');
-        display.print(data.airTemp % 10);
-        display.print('C');
+        display.print(F("."));
+        display.print(data.airTemp % 10 < 0 ? -data.airTemp % 10 : data.airTemp % 10);
+        display.print(F("C"));
         break;
     case 2:
         display.print(data.airHumidity / 10);
-        display.print('.');
-        display.print(data.airHumidity % 10);
-        display.print('%');
+        display.print(F("."));
+        display.print(data.airHumidity % 10 < 0 ? -data.airHumidity % 10 : data.airHumidity % 10);
+        display.print(F("%"));
         break;
     case 3:
-        display.print(data.soilMoisture / 10);
-        display.print('.');
-        display.print(data.soilMoisture % 10);
-        display.print('%');
+        display.print(data.soilTemp / 10);
+        display.print(F("."));
+        display.print(data.soilTemp % 10 < 0 ? -data.soilTemp % 10 : data.soilTemp % 10);
+        display.print(F("C"));
         break;
     case 4:
-        display.print(data.soilTemp / 10);
-        display.print('.');
-        display.print(data.soilTemp % 10);
-        display.print('C');
+        display.print(data.soilMoisture / 10);
+        display.print(F("."));
+        display.print(data.soilMoisture % 10 < 0 ? -data.soilMoisture % 10 : data.soilMoisture % 10);
+        display.print(F("%"));
         break;
     }
 }
