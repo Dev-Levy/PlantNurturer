@@ -5,7 +5,6 @@
 #include "forwardDeclarations.h"
 
 const MenuItem homeItems[] PROGMEM = {
-    {(const __FlashStringHelper *)labelMainPlant, nullptr, nullptr, nullptr},
     {(const __FlashStringHelper *)labelEnterMain, &mainPage, nullptr, nullptr},
 };
 const MenuItem mainItems[] PROGMEM = {

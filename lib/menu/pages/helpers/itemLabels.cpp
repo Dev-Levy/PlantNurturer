@@ -4,7 +4,6 @@
 const char labelBack[] PROGMEM = "# back";
 
 // home
-const char labelMainPlant[] PROGMEM = "## plant name ##";
 const char labelEnterMain[] PROGMEM = "Enter Main Menu";
 
 // main
