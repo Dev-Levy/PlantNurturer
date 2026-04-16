@@ -19,7 +19,10 @@ const char labelMint[] PROGMEM = "Mint";
 const char labelBasil[] PROGMEM = "Basil";
 
 // plant
-const char labelSetting[] PROGMEM = "Some Setting";
+const char labelSunnyHours[] PROGMEM = "Sunny hours: ";
+const char labelWaterInMl[] PROGMEM = "Water (ml): ";
+const char labelMinTemp[] PROGMEM = "Min temp: ";
+const char labelMaxTemp[] PROGMEM = "Max temp: ";
 const char labelSetMain[] PROGMEM = "# select for growing";
 const char labelRemove[] PROGMEM = "# remove plant";
 
