@@ -12,14 +12,15 @@
 
 #include <config.h>
 
-NurturerLogic logic;
-
 TimeManager clock;
 DisplayManager tft;
 SensorManager sensors;
 ActuatorManager actuators;
+PlantManager plant;
 
-MenuSystem menu(clock, tft, sensors, actuators);
+NurturerLogic logic(sensors);
+
+MenuSystem menu(clock, tft, sensors, actuators, plant);
 static uint8_t lastMinute = 0;
 static unsigned long lastUpdate = 0;
 static KeyPress lastKey = KeyPress::NONE;
