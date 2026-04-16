@@ -1,5 +1,7 @@
 #include <Arduino.h>
 
+#include <control/nurturerLogic.h>
+
 #include <displayManager.h>
 #include <timeManager.h>
 #include <sensorManager.h>
@@ -9,6 +11,8 @@
 #include <navigationKeys/keys.h>
 
 #include <config.h>
+
+NurturerLogic logic;
 
 TimeManager clock;
 DisplayManager tft;
