@@ -21,10 +21,8 @@ bool TimeManager::begin()
     {
         return false;
     }
-
     if (!rtc.isrunning())
     {
-        // Sets the time to the moment the code was compiled
         rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
     }
     return true;
@@ -48,9 +46,6 @@ uint8_t TimeManager::getGrowthWeek(uint32_t currentTime)
     }
 
     uint32_t diffInSeconds = currentTime - growthStartTime;
-    Serial.println(currentTime);
-    Serial.println(growthStartTime);
-    Serial.println(diffInSeconds);
 
     return (diffInSeconds / SECONDS_IN_A_WEEK) + 1;
 }
