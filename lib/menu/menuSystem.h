@@ -11,6 +11,8 @@
 #include "sensorManager.h"
 #include "actuatorManager.h"
 
+class MenuSystem;
+extern MenuSystem *globalMenuPtr;
 class MenuSystem
 {
 public:
@@ -34,25 +36,23 @@ private:
     SensorManager &sensor;
     ActuatorManager &actuator;
 
-    static MenuSystem *globalMenuPtr;
-    static uint8_t currentCursor;
-    static const MenuPage *currentPage;
+    uint8_t currentCursor = 0;
+    const MenuPage *currentPage = nullptr;
 
-    static uint8_t mainPlantIndex;
-    static uint8_t activePlantIndex;
-    static const MenuPage *selectedPlantPages[3];
-
-    SensorReadings currentReadings;
+    uint8_t mainPlantIndex = 0;
+    uint8_t activePlantIndex = 0;
+    const MenuPage *selectedPlantPages[PLANT_COUNT] = {nullptr};
 
     void drawTimeRow();
+    void drawGrowingRow();
     void drawHomePageMenuItems();
     // void drawMainPageMenuItems();
     void drawPlantsPageMenuItems();
     void drawSensorPageMenuItems();
     // void drawActuatorPageMenuItems();
     void drawMenuItems();
-    void drawItem(int y, const __FlashStringHelper *text, bool selected);
-    void drawItem(int y, const char *text, bool selected);
-    void getSensorString(uint8_t index, char *buffer);
+
+    void drawSensorPageMenuItem(uint8_t index, uint8_t y, bool isSelected, const SensorReadings &data, const __FlashStringHelper *label);
     const char *getMonthName(uint8_t month);
+    void setItemDrawingProps(bool isSelected, uint8_t y);
 };

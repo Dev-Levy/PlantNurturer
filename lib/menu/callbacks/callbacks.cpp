@@ -3,60 +3,51 @@
 
 void MenuSystem::plantSelectionCallback(void *ctx)
 {
-    selectedPlantPages[activePlantIndex] = (const MenuPage *)ctx;
+    if (!globalMenuPtr)
+        return;
 
-    if (globalMenuPtr)
-    {
-        globalMenuPtr->currentPage = &plantsPage;
-        globalMenuPtr->currentCursor = 0;
-    }
+    globalMenuPtr->selectedPlantPages[globalMenuPtr->activePlantIndex] = (const MenuPage *)ctx;
+    globalMenuPtr->currentPage = &plantsPage;
+    globalMenuPtr->currentCursor = 0;
 }
 
 void MenuSystem::plantSetAsMainCallback(void *ctx)
 {
-    if (globalMenuPtr)
-    {
-        globalMenuPtr->mainPlantIndex = activePlantIndex;
+    if (!globalMenuPtr)
+        return;
 
-        globalMenuPtr->currentPage = &homePage;
-        globalMenuPtr->currentCursor = 0;
-    }
+    globalMenuPtr->mainPlantIndex = globalMenuPtr->activePlantIndex;
+    globalMenuPtr->currentPage = &homePage;
+    globalMenuPtr->currentCursor = 0;
 }
 
 void MenuSystem::plantRemoveCallback(void *ctx)
 {
-    selectedPlantPages[activePlantIndex] = nullptr;
+    if (!globalMenuPtr)
+        return;
 
-    if (globalMenuPtr)
-    {
-        globalMenuPtr->currentPage = &plantsPage;
-        globalMenuPtr->currentCursor = 0;
-    }
+    globalMenuPtr->selectedPlantPages[globalMenuPtr->activePlantIndex] = nullptr;
+    globalMenuPtr->currentPage = &plantsPage;
+    globalMenuPtr->currentCursor = 0;
 }
 
 void MenuSystem::togglePumpCallBack(void *ctx)
 {
-    if (ctx)
-    {
-        ActuatorManager *actuators = (ActuatorManager *)ctx;
-        actuators->togglePump();
-    }
+    if (!ctx)
+        return;
+    ((ActuatorManager *)ctx)->togglePump();
 }
 
 void MenuSystem::toggleLightCallBack(void *ctx)
 {
-    if (ctx)
-    {
-        ActuatorManager *actuators = (ActuatorManager *)ctx;
-        actuators->toggleLight();
-    }
+    if (!ctx)
+        return;
+    ((ActuatorManager *)ctx)->toggleLight();
 }
 
 void MenuSystem::toggleFanCallBack(void *ctx)
 {
-    if (ctx)
-    {
-        ActuatorManager *actuators = (ActuatorManager *)ctx;
-        actuators->toggleFan();
-    }
+    if (!ctx)
+        return;
+    ((ActuatorManager *)ctx)->toggleFan();
 }

@@ -5,7 +5,7 @@
 #define DHT_TYPE DHT22
 
 // constants
-static constexpr uint8_t HOME_PAGE_ITEMS = 2;
+static constexpr uint8_t HOME_PAGE_ITEMS = 1;
 static constexpr uint8_t MAIN_PAGE_ITEMS = 4;
 static constexpr uint8_t PLANTS_PAGE_ITEMS = 4;
 static constexpr uint8_t PLANT_SELECT_PAGE_ITEMS = 5;
@@ -41,6 +41,4 @@ inline void setupPins()
     pinMode(BUTTON_UP, INPUT);
     pinMode(BUTTON_DOWN, INPUT);
     pinMode(BUTTON_SELECT, INPUT);
-
-    pinMode(SOIL_MOIST_PIN, INPUT);
 }

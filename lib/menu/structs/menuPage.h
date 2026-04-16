@@ -2,12 +2,13 @@
 #include <Arduino.h>
 
 struct MenuPage;
+typedef void (*MenuCallback)(void *ctx);
 
 struct MenuItem
 {
     const __FlashStringHelper *label;
     const MenuPage *targetPage;
-    void (*callback)(void *ctx);
+    MenuCallback callback;
     void *callbackContext;
 };
 
