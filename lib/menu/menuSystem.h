@@ -38,6 +38,7 @@ private:
 
     uint8_t currentCursor = 0;
     const MenuPage *currentPage = nullptr;
+    SensorReadings currentReading;
 
     uint8_t mainPlantIndex = 0;
     uint8_t activePlantIndex = 0;
