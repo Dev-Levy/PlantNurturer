@@ -4,17 +4,16 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
-#include "sensorActionsInterface.h"
 #include "structs/sensorReadings.h"
 
 #include "config.h"
 
-class SensorManager : public ISensorActions
+class SensorManager
 {
 public:
     SensorManager();
-    void begin() override;
-    SensorReadings readAll() override;
+    void begin();
+    SensorReadings readAll();
 
 private:
     DHT dht;

@@ -2,9 +2,7 @@
 
 ActuatorManager::ActuatorManager()
 {
-    state.pumpOn = 0;
-    state.lightOn = 0;
-    state.fanOn = 0;
+    *(uint8_t *)&state = 0;
 }
 
 void ActuatorManager::togglePump()

@@ -2,9 +2,9 @@
 
 struct SensorReadings
 {
+    int16_t airHumidity;
+    int16_t airTemp;
+    int16_t soilTemp;
     uint8_t soilMoisture;
-    float airHumidity;
-    float airTemp;
-    float soilTemp;
-    bool light;
+    uint8_t light : 1;
 } __attribute__((packed));

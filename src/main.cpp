@@ -1,6 +1,6 @@
 #include <Arduino.h>
 
-#include <tftManager.h>
+#include <displayManager.h>
 #include <timeManager.h>
 #include <sensorManager.h>
 #include <actuatorManager.h>
@@ -11,7 +11,7 @@
 #include <config.h>
 
 TimeManager clock;
-TFTManager tft;
+DisplayManager tft;
 SensorManager sensors;
 ActuatorManager actuators;
 

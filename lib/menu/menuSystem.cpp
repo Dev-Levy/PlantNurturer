@@ -3,21 +3,12 @@
 
 #include "MenuSystem.h"
 
-// static members
-MenuSystem *MenuSystem::globalMenuPtr = nullptr;
-uint8_t MenuSystem::currentCursor = 0;
-const MenuPage *MenuSystem::currentPage = nullptr;
-
-uint8_t MenuSystem::mainPlantIndex = 0;
-uint8_t MenuSystem::activePlantIndex = 0;
-const MenuPage *MenuSystem::selectedPlantPages[3] = {nullptr, nullptr, nullptr};
-
 static unsigned long lastMenuRefresh = 0;
+MenuSystem *globalMenuPtr = nullptr;
 
-MenuSystem::MenuSystem(ITimeActions &time, IDisplayActions &display, ISensorActions &sensorActions, IActuatorActions &actuatorActions)
+MenuSystem::MenuSystem(TimeManager &time, DisplayManager &display, SensorManager &sensor, ActuatorManager &actuator)
     : time(time), display(display),
-      sensorActions(sensorActions), actuatorActions(actuatorActions),
-      currentReadings()
+      sensor(sensor), actuator(actuator)
 {
 }
 
@@ -84,8 +75,6 @@ void MenuSystem::processKey(KeyPress key)
 
 void MenuSystem::updateSensorValues()
 {
-    currentReadings = sensorActions.readAll();
-
     if (currentPage == &sensorPage && millis() - lastMenuRefresh > 2000)
     {
         drawSensorPageMenuItems();
@@ -103,6 +92,7 @@ void MenuSystem::draw()
     if (currentPage == &homePage)
     {
         drawTimeRow();
+        drawGrowingRow();
         drawHomePageMenuItems();
     }
     else if (currentPage == &plantsPage)
@@ -122,49 +112,58 @@ void MenuSystem::draw()
 void MenuSystem::drawTimeRow()
 {
     int yPos = 2 * LINE_HEIGHT;
-    static char dateBuffer[32];
 
-    snprintf(dateBuffer, sizeof(dateBuffer), "%s %02d. | %02d:%02d | Week %d",
-             getMonthName(time.getMonth()), time.getDay(),
-             time.getHour(), time.getMinute(), time.getGrowthWeek(time.getUnixNow()));
-
-    display.fillRectangle(0, yPos - 2, display.getWidth(), LINE_HEIGHT, ST77XX_BLACK);
+    display.fillRectangle(0, yPos - PADDING, display.getWidth(), LINE_HEIGHT, ST77XX_BLACK);
     display.setTextColor(ST77XX_WHITE);
     display.setCursor(4, yPos);
     display.setTextSize(1);
-    display.print(dateBuffer);
+
+    display.print(getMonthName(time.getMonth()));
+    display.print(F(" "));
+    display.print(time.getDay());
+    display.print(F(". | "));
+    display.print(time.getHour());
+    display.print(F(":"));
+    display.print(time.getMinute());
+    display.print(F(" | Week "));
+    display.print(time.getGrowthWeek(time.getUnixNow()));
+}
+
+void MenuSystem::drawGrowingRow()
+{
+    int yPos = 3 * LINE_HEIGHT;
+
+    display.fillRectangle(0, yPos - PADDING, display.getWidth(), LINE_HEIGHT, ST77XX_BLACK);
+    display.setTextColor(ST77XX_WHITE);
+    display.setCursor(4, yPos);
+    display.setTextSize(1);
+
+    if (selectedPlantPages[mainPlantIndex] != nullptr)
+    {
+        auto plantName = (const __FlashStringHelper *)pgm_read_ptr(&(selectedPlantPages[mainPlantIndex]->title));
+        display.print(F("Growing: "));
+        display.print(plantName);
+    }
+    else
+    {
+        display.print(F("Growing: ---"));
+    }
 }
 
 void MenuSystem::drawHomePageMenuItems()
 {
     const uint8_t count = pgm_read_byte(&(currentPage->itemCount));
     const MenuItem *items = (const MenuItem *)pgm_read_ptr(&(currentPage->items));
-    static char dynamicBuffer[32];
 
     for (uint8_t i = 0; i < count; i++)
     {
         bool isSelected = (i == currentCursor);
-        int yPos = 3 * LINE_HEIGHT + (i * (LINE_HEIGHT + PADDING));
+        int yPos = 4 * LINE_HEIGHT + (i * (LINE_HEIGHT + PADDING));
 
-        if (i == 0)
-        {
-            if (selectedPlantPages[mainPlantIndex] != nullptr)
-            {
-                auto plantName = (const char *)pgm_read_ptr(&(selectedPlantPages[mainPlantIndex]->title));
-                strcpy_P(dynamicBuffer, (const char *)F("Growing: "));
-                strcat_P(dynamicBuffer, plantName);
-            }
-            else
-            {
-                strcpy_P(dynamicBuffer, (const char *)F("Growing: ---"));
-            }
-            drawItem(yPos, dynamicBuffer, isSelected); // RAM
-        }
-        else
-        {
-            auto *label = (const __FlashStringHelper *)pgm_read_ptr(&(items[i].label));
-            drawItem(yPos, label, isSelected); // flash
-        }
+        auto *label = (const __FlashStringHelper *)pgm_read_ptr(&(items[i].label));
+
+        setItemDrawingProps(isSelected, yPos);
+        display.print(label);
     }
 }
 
@@ -177,13 +176,15 @@ void MenuSystem::drawPlantsPageMenuItems()
     {
         bool isSelected = (i == currentCursor);
         int yPos = 2 * LINE_HEIGHT + (i * (LINE_HEIGHT + PADDING));
+        setItemDrawingProps(isSelected, yPos);
 
         if (i < PLANTS_PAGE_ITEMS - 1)
         {
             if (selectedPlantPages[i] != nullptr)
             {
                 auto *title = (const __FlashStringHelper *)pgm_read_ptr(&(selectedPlantPages[i]->title));
-                drawItem(yPos, title, isSelected); // flash
+                display.print(title);
+
                 if (i == mainPlantIndex)
                 {
                     display.setTextColor(isSelected ? ST77XX_BLACK : ST77XX_YELLOW);
@@ -193,13 +194,13 @@ void MenuSystem::drawPlantsPageMenuItems()
             else
             {
                 auto *label = (const __FlashStringHelper *)pgm_read_ptr(&(items[i].label));
-                drawItem(yPos, label, isSelected); // flash
+                display.print(label);
             }
         }
         else
         {
             auto *label = (const __FlashStringHelper *)pgm_read_ptr(&(items[i].label));
-            drawItem(yPos, label, isSelected); // flash
+            display.print(label);
         }
     }
 }
@@ -208,22 +209,23 @@ void MenuSystem::drawSensorPageMenuItems()
 {
     const uint8_t count = pgm_read_byte(&(currentPage->itemCount));
     const MenuItem *items = (const MenuItem *)pgm_read_ptr(&(currentPage->items));
-    static char dynamicBuffer[32];
+
+    SensorReadings currentData = sensor.readAll();
 
     for (uint8_t i = 0; i < count; i++)
     {
         bool isSelected = (i == currentCursor);
         int yPos = 2 * LINE_HEIGHT + (i * (LINE_HEIGHT + PADDING));
+        auto *label = (const __FlashStringHelper *)pgm_read_ptr(&(items[i].label));
 
         if (i < SENSORS_PAGE_ITEMS - 1)
         {
-            getSensorString(i, dynamicBuffer);
-            drawItem(yPos, dynamicBuffer, isSelected); // RAM
+            drawSensorPageMenuItem(i, yPos, isSelected, currentData, label);
         }
         else
         {
-            auto *label = (const __FlashStringHelper *)pgm_read_ptr(&(items[i].label));
-            drawItem(yPos, label, isSelected); // flash
+            setItemDrawingProps(isSelected, yPos);
+            display.print(label);
         }
     }
 }
@@ -239,80 +241,44 @@ void MenuSystem::drawMenuItems()
         int yPos = 2 * LINE_HEIGHT + (i * (LINE_HEIGHT + PADDING));
 
         auto *label = (const __FlashStringHelper *)pgm_read_ptr(&(items[i].label));
-        drawItem(yPos, label, isSelected); // flash
+
+        setItemDrawingProps(isSelected, yPos);
+        display.print(label);
     }
 }
 
-void MenuSystem::drawItem(int y, const __FlashStringHelper *text, bool selected)
+void MenuSystem::drawSensorPageMenuItem(uint8_t index, uint8_t y, bool isSelected, const SensorReadings &data, const __FlashStringHelper *label)
 {
-    if (selected)
-    {
-        display.fillRectangle(0, y - 2, display.getWidth(), LINE_HEIGHT, ST77XX_WHITE);
-        display.setTextColor(ST77XX_BLACK);
-        display.setCursor(2, y);
-        display.setTextSize(1);
-        display.print(F("> "));
-    }
-    else
-    {
-        display.fillRectangle(0, y - 2, display.getWidth(), LINE_HEIGHT, ST77XX_BLACK);
-        display.setTextColor(ST77XX_WHITE);
-    }
-
-    display.setCursor(10, y);
-    display.setTextSize(1);
-    display.print(text);
-}
-
-void MenuSystem::drawItem(int y, const char *text, bool selected)
-{
-    if (selected)
-    {
-        display.fillRectangle(0, y - 2, display.getWidth(), LINE_HEIGHT, ST77XX_WHITE);
-        display.setTextColor(ST77XX_BLACK);
-        display.setCursor(2, y);
-        display.setTextSize(1);
-        display.print(F("> "));
-    }
-    else
-    {
-        display.fillRectangle(0, y - 2, display.getWidth(), LINE_HEIGHT, ST77XX_BLACK);
-        display.setTextColor(ST77XX_WHITE);
-    }
-
-    display.setCursor(10, y);
-    display.setTextSize(1);
-    display.print(text);
-}
-
-void MenuSystem::getSensorString(uint8_t index, char *buffer)
-{
-    const MenuItem *items = (const MenuItem *)pgm_read_ptr(&(sensorPage.items));
-    const char *label = (const char *)pgm_read_ptr(&(items[index].label));
-
-    strcpy_P(buffer, label);
-    char *valuePos = buffer + strlen(buffer);
+    setItemDrawingProps(isSelected, y);
 
     switch (index)
     {
     case 0:
-        dtostrf(currentReadings.light, 4, 0, valuePos);
+        display.print(data.light ? F("ON") : F("OFF"));
         break;
     case 1:
-        dtostrf(currentReadings.airTemp, 4, 1, valuePos);
-        strcat(buffer, "C");
+        display.print(data.airTemp / 10);
+        display.print('.');
+        display.print(data.airTemp % 10);
+        display.print('C');
         break;
     case 2:
-        dtostrf(currentReadings.airHumidity, 4, 1, valuePos);
-        strcat(buffer, "%");
+        display.print(data.airHumidity / 10);
+        display.print('.');
+        display.print(data.airHumidity % 10);
+        display.print('%');
         break;
     case 3:
-        dtostrf(currentReadings.soilMoisture, 4, 0, valuePos);
-        strcat(buffer, "%");
+        display.print(data.soilMoisture / 10);
+        display.print('.');
+        display.print(data.soilMoisture % 10);
+        display.print('%');
         break;
     case 4:
-        dtostrf(currentReadings.soilTemp, 4, 1, valuePos);
-        strcat(buffer, "C");
+        display.print(data.soilTemp / 10);
+        display.print('.');
+        display.print(data.soilTemp % 10);
+        display.print('C');
         break;
     }
 }
@@ -332,4 +298,23 @@ const char *MenuSystem::getMonthName(uint8_t month)
     }
 
     return months[month];
+}
+
+void MenuSystem::setItemDrawingProps(bool isSelected, uint8_t y)
+{
+    if (isSelected)
+    {
+        display.fillRectangle(0, y - 2, display.getWidth(), LINE_HEIGHT, ST77XX_WHITE);
+        display.setTextColor(ST77XX_BLACK);
+        display.setCursor(2, y);
+        display.setTextSize(1);
+        display.print(F("> "));
+    }
+    else
+    {
+        display.fillRectangle(0, y - 2, display.getWidth(), LINE_HEIGHT, ST77XX_BLACK);
+        display.setTextColor(ST77XX_WHITE);
+    }
+    display.setCursor(10, y);
+    display.setTextSize(1);
 }

@@ -5,34 +5,35 @@
 #define DHT_TYPE DHT22
 
 // constants
-constexpr uint8_t HOME_PAGE_ITEMS = 2;
-constexpr uint8_t MAIN_PAGE_ITEMS = 4;
-constexpr uint8_t PLANTS_PAGE_ITEMS = 4;
-constexpr uint8_t PLANT_SELECT_PAGE_ITEMS = 5;
-constexpr uint8_t PLANT_PAGE_ITEMS = 4;
-constexpr uint8_t SENSORS_PAGE_ITEMS = 6;
-constexpr uint8_t ACTUATORS_PAGE_ITEMS = 4;
+static constexpr uint8_t HOME_PAGE_ITEMS = 1;
+static constexpr uint8_t MAIN_PAGE_ITEMS = 4;
+static constexpr uint8_t PLANTS_PAGE_ITEMS = 4;
+static constexpr uint8_t PLANT_SELECT_PAGE_ITEMS = 5;
+static constexpr uint8_t PLANT_PAGE_ITEMS = 4;
+static constexpr uint8_t SENSORS_PAGE_ITEMS = 6;
+static constexpr uint8_t ACTUATORS_PAGE_ITEMS = 4;
 
-constexpr uint8_t PLANT_TYPE_COUNT = 4;
-constexpr uint8_t PLANT_COUNT = 3;
-constexpr uint8_t EEPROM_ADDR = 0;
+static constexpr uint8_t PLANT_TYPE_COUNT = 4;
+static constexpr uint8_t PLANT_COUNT = 3;
+static constexpr uint8_t EEPROM_ADDR = 0;
 
-constexpr uint8_t LINE_HEIGHT = 14;
-constexpr uint8_t PADDING = 2;
-constexpr uint32_t SECONDS_IN_A_WEEK = 604800L;
+static constexpr uint8_t LINE_HEIGHT = 14;
+static constexpr uint8_t PADDING = 2;
+
+static constexpr uint32_t SECONDS_IN_A_WEEK = 604800UL;
 
 // pins
-constexpr uint8_t TFT_CS = 10;
-constexpr uint8_t TFT_RST = 8;
-constexpr uint8_t TFT_DC = 9;
+#define TFT_CS 10
+#define TFT_RST 8
+#define TFT_DC 9
 
-constexpr uint8_t BUTTON_UP = 5;
-constexpr uint8_t BUTTON_DOWN = 6;
-constexpr uint8_t BUTTON_SELECT = 7;
+#define BUTTON_UP 5
+#define BUTTON_DOWN 6
+#define BUTTON_SELECT 7
 
-constexpr uint8_t SOIL_TEMP_PIN = 2;
-constexpr uint8_t LDR_PIN = 3;
-constexpr uint8_t DHT_PIN = 4;
+#define SOIL_TEMP_PIN 2
+#define LDR_PIN 3
+#define DHT_PIN 4
 #define SOIL_MOIST_PIN A1
 
 inline void setupPins()
