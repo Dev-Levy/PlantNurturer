@@ -5,18 +5,20 @@
 
 #include "pages/pages.h"
 #include "navigationKeys/keys.h"
+#include "helpers/helper.h"
 
 #include "timeManager.h"
 #include "displayManager.h"
 #include "sensorManager.h"
 #include "actuatorManager.h"
+#include "plantManager.h"
 
 class MenuSystem;
 extern MenuSystem *globalMenuPtr;
 class MenuSystem
 {
 public:
-    explicit MenuSystem(TimeManager &time, DisplayManager &display, SensorManager &sensor, ActuatorManager &actuator);
+    explicit MenuSystem(TimeManager &time, DisplayManager &display, SensorManager &sensor, ActuatorManager &actuator, PlantManager &plant);
 
     void begin();
     void draw();
@@ -35,6 +37,7 @@ private:
     DisplayManager &display;
     SensorManager &sensor;
     ActuatorManager &actuator;
+    PlantManager &plant;
 
     uint8_t currentCursor = 0;
     const MenuPage *currentPage = nullptr;
@@ -54,7 +57,6 @@ private:
     void drawMenuItems();
 
     void drawSensorPageMenuItem(uint8_t index, uint8_t y, bool isSelected, const SensorReadings &data, const __FlashStringHelper *label);
-    const char *getMonthName(uint8_t month);
     void setItemDrawingProps(bool isSelected, uint8_t y);
     void print2Digits(uint8_t value);
 };
