@@ -4,9 +4,7 @@
 #include <config.h>
 #include "RTClib.h"
 
-#include "TimeActionsInterface.h"
-
-class TimeManager : public ITimeActions
+class TimeManager
 {
 public:
     TimeManager();

@@ -6,15 +6,15 @@
 #include "pages/pages.h"
 #include "navigationKeys/keys.h"
 
-#include "TimeActionsInterface.h"
-#include "displayActionsInterface.h"
-#include "sensorActionsInterface.h"
-#include "actuatorActionsInterface.h"
+#include "timeManager.h"
+#include "displayManager.h"
+#include "sensorManager.h"
+#include "actuatorManager.h"
 
 class MenuSystem
 {
 public:
-    explicit MenuSystem(ITimeActions &time, IDisplayActions &display, ISensorActions &sensorActions, IActuatorActions &actuatorActions);
+    explicit MenuSystem(TimeManager &time, DisplayManager &display, SensorManager &sensor, ActuatorManager &actuator);
 
     void begin();
     void draw();
@@ -29,10 +29,10 @@ public:
     static void toggleFanCallBack(void *ctx);
 
 private:
-    ITimeActions &time;
-    IDisplayActions &display;
-    ISensorActions &sensorActions;
-    IActuatorActions &actuatorActions;
+    TimeManager &time;
+    DisplayManager &display;
+    SensorManager &sensor;
+    ActuatorManager &actuator;
 
     static MenuSystem *globalMenuPtr;
     static uint8_t currentCursor;

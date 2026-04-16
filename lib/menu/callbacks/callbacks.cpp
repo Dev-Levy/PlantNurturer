@@ -38,7 +38,7 @@ void MenuSystem::togglePumpCallBack(void *ctx)
 {
     if (ctx)
     {
-        IActuatorActions *actuators = (IActuatorActions *)ctx;
+        ActuatorManager *actuators = (ActuatorManager *)ctx;
         actuators->togglePump();
     }
 }
@@ -47,7 +47,7 @@ void MenuSystem::toggleLightCallBack(void *ctx)
 {
     if (ctx)
     {
-        IActuatorActions *actuators = (IActuatorActions *)ctx;
+        ActuatorManager *actuators = (ActuatorManager *)ctx;
         actuators->toggleLight();
     }
 }
@@ -56,7 +56,7 @@ void MenuSystem::toggleFanCallBack(void *ctx)
 {
     if (ctx)
     {
-        IActuatorActions *actuators = (IActuatorActions *)ctx;
+        ActuatorManager *actuators = (ActuatorManager *)ctx;
         actuators->toggleFan();
     }
 }

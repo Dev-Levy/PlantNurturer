@@ -14,9 +14,9 @@ const MenuPage *MenuSystem::selectedPlantPages[3] = {nullptr, nullptr, nullptr};
 
 static unsigned long lastMenuRefresh = 0;
 
-MenuSystem::MenuSystem(ITimeActions &time, IDisplayActions &display, ISensorActions &sensorActions, IActuatorActions &actuatorActions)
+MenuSystem::MenuSystem(TimeManager &time, DisplayManager &display, SensorManager &sensor, ActuatorManager &actuator)
     : time(time), display(display),
-      sensorActions(sensorActions), actuatorActions(actuatorActions),
+      sensor(sensor), actuator(actuator),
       currentReadings()
 {
 }
@@ -84,7 +84,7 @@ void MenuSystem::processKey(KeyPress key)
 
 void MenuSystem::updateSensorValues()
 {
-    currentReadings = sensorActions.readAll();
+    currentReadings = sensor.readAll();
 
     if (currentPage == &sensorPage && millis() - lastMenuRefresh > 2000)
     {

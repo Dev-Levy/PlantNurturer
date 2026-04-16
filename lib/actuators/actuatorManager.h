@@ -2,15 +2,13 @@
 #include <Arduino.h>
 #include <config.h>
 
-#include "actuatorActionsInterface.h"
-
-class ActuatorManager : public IActuatorActions
+class ActuatorManager
 {
 public:
     ActuatorManager();
-    void togglePump() override;
-    void toggleLight() override;
-    void toggleFan() override;
+    void togglePump();
+    void toggleLight();
+    void toggleFan();
 
 private:
     struct
