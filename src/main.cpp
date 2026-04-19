@@ -32,11 +32,6 @@ void setup()
 
 void loop()
 {
-  digitalWrite(RELAY_1, LOW); // Relay should CLICK ON
-  delay(2000);
-  digitalWrite(RELAY_1, HIGH); // Relay should CLICK OFF
-  delay(2000);
-
   KeyPress key = readKeys();
 
   if (key != KeyPress::NONE && lastKey == KeyPress::NONE)
