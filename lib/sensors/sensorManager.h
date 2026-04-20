@@ -29,5 +29,5 @@ private:
     // DallasTemperature sensors;
 
     SensorReadings lastReadings;
-    uint32_t lastDhtRead = 0;
+    uint32_t lastSlowRead = 0;
 };

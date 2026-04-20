@@ -22,8 +22,8 @@ void SensorManager::begin()
     }
 
     // sensors.begin();
+    // pinMode(LDR_PIN, INPUT);
 
-    pinMode(LDR_PIN, INPUT);
     pinMode(SOIL_MOIST_PIN, INPUT);
 }
 
@@ -31,9 +31,8 @@ SensorReadings SensorManager::readAll()
 {
     uint32_t currentMillis = millis();
 
-    if (currentMillis - lastDhtRead > 2000)
+    if (currentMillis - lastSlowRead > 2000)
     {
-        // sensors.requestTemperatures();
 
         sensors_event_t humidity, temp;
         aht.getEvent(&humidity, &temp);
@@ -56,13 +55,14 @@ SensorReadings SensorManager::readAll()
         //     lastReadings.airTemp = (int16_t)(airTemp * 10);
         // }
 
+        // sensors.requestTemperatures();
         // float soilTemp = sensors.getTempCByIndex(0);
         // if (soilTemp > -50)
         // {
         //     lastReadings.soilTemp = (int16_t)(soilTemp * 10);
         // }
 
-        lastDhtRead = currentMillis;
+        lastSlowRead = currentMillis;
     }
 
     float lux = lightMeter.readLightLevel();
