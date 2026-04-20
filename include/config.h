@@ -39,10 +39,10 @@ static constexpr uint32_t SECONDS_IN_A_WEEK = 604800UL;
 
 // sensor pins
 // DELETE LATER: these are just placeholders, the actual pins will depend on the hardware setup
-#define DHT_PIN A0
+// #define DHT_PIN A0
+// #define LDR_PIN A3
 #define SOIL_MOIST_PIN A1
-#define SOIL_TEMP_PIN A2
-#define LDR_PIN A3
+#define SOIL_TEMP_PIN 12
 
 inline void setupPins()
 {

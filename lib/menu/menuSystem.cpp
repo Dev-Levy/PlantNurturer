@@ -270,10 +270,11 @@ void MenuSystem::drawSensorPageMenuItem(uint8_t index, uint8_t y, bool isSelecte
         display.print(F("%"));
         break;
     case 3:
-        display.print(data.soilTemp / 10);
-        display.print(F("."));
-        display.print(data.soilTemp % 10 < 0 ? -data.soilTemp % 10 : data.soilTemp % 10);
-        display.print(F("C"));
+        // display.print(data.soilTemp / 10);
+        // display.print(F("."));
+        // display.print(data.soilTemp % 10 < 0 ? -data.soilTemp % 10 : data.soilTemp % 10);
+        // display.print(F("C"));
+        display.print(F("NA"));
         break;
     case 4:
         display.print(data.soilMoisture / 10);
