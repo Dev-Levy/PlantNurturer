@@ -23,31 +23,36 @@ static constexpr uint8_t MAX_VISIBLE = 6;
 
 static constexpr uint32_t SECONDS_IN_A_WEEK = 604800UL;
 
-// pins
-#define RELAY_1 2
-// #define RELAY_2 0
-// #define RELAY_3 2
-// #define RELAY_4 3
+// actuator pins
+#define PUMP 2
+#define LIGHT 3
+#define FAN 4
 
+// display pins
 #define TFT_CS 10
 #define TFT_RST 8
 #define TFT_DC 9
 
+// button pins
 #define BUTTON_UP 5
 #define BUTTON_DOWN 6
 #define BUTTON_SELECT 7
 
-#define SOIL_TEMP_PIN 2
-#define LDR_PIN 3
-#define DHT_PIN 4
+// sensor pins
+// DELETE LATER: these are just placeholders, the actual pins will depend on the hardware setup
+// #define DHT_PIN A0
+// #define LDR_PIN A3
 #define SOIL_MOIST_PIN A1
+#define SOIL_TEMP_PIN 12
 
 inline void setupPins()
 {
-    pinMode(RELAY_1, OUTPUT);
-    // pinMode(RELAY_2, OUTPUT);
-    // pinMode(RELAY_3, OUTPUT);
-    // pinMode(RELAY_4, OUTPUT);
+    pinMode(PUMP, OUTPUT);
+    pinMode(LIGHT, OUTPUT);
+    pinMode(FAN, OUTPUT);
+    digitalWrite(PUMP, HIGH);
+    digitalWrite(LIGHT, HIGH);
+    digitalWrite(FAN, HIGH);
 
     pinMode(BUTTON_UP, INPUT);
     pinMode(BUTTON_DOWN, INPUT);
