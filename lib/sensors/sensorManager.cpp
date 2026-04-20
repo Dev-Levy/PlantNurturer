@@ -39,9 +39,7 @@ SensorReadings SensorManager::readAll()
 
         lastReadings.airTemp = (int16_t)(temp.temperature * 10);
         lastReadings.airHumidity = (int16_t)(humidity.relative_humidity * 10);
-
-        // currently not used, but maybe in the future
-        // float pressure = bmp.readPressure() / 100.0F;
+        lastReadings.pressure = (uint16_t)bmp.readPressure() / 100;
 
         // float humi = dht.readHumidity();
         // float airTemp = dht.readTemperature();

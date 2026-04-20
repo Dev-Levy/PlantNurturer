@@ -8,4 +8,5 @@ struct SensorReadings
     uint8_t soilMoisture;
     uint8_t light : 1;
     uint16_t lightLux;
+    uint16_t pressure;
 } __attribute__((packed));
