@@ -1,8 +1,13 @@
 #pragma once
 #include <Arduino.h>
-#include <DHT.h>
-#include <OneWire.h>
-#include <DallasTemperature.h>
+
+#include <BH1750.h>
+#include <Wire.h>
+#include <Adafruit_AHTX0.h>
+#include <Adafruit_BMP280.h>
+
+// #include <OneWire.h>
+// #include <DallasTemperature.h>
 
 #include "structs/sensorReadings.h"
 
@@ -16,10 +21,13 @@ public:
     SensorReadings readAll();
 
 private:
-    DHT dht;
-    OneWire oneWire;
-    DallasTemperature sensors;
-    SensorReadings lastReadings;
+    Adafruit_AHTX0 aht;
+    Adafruit_BMP280 bmp;
+    BH1750 lightMeter;
 
+    // OneWire oneWire;
+    // DallasTemperature sensors;
+
+    SensorReadings lastReadings;
     uint32_t lastDhtRead = 0;
 };
