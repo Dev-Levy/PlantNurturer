@@ -122,11 +122,11 @@ void MenuSystem::drawTimeRow()
 
     display.print(getMonthName(time.getMonth()));
     display.print(F(" "));
-    display.print(time.getDay());
+    print2Digits(time.getDay());
     display.print(F(". | "));
-    display.print(time.getHour());
+    print2Digits(time.getHour());
     display.print(F(":"));
-    display.print(time.getMinute());
+    print2Digits(time.getMinute());
     display.print(F(" | Week "));
     display.print(time.getGrowthWeek(time.getUnixNow()));
 }
@@ -318,4 +318,13 @@ void MenuSystem::setItemDrawingProps(bool isSelected, uint8_t y)
     }
     display.setCursor(10, y);
     display.setTextSize(1);
+}
+
+void MenuSystem::print2Digits(uint8_t value)
+{
+    if (value < 10)
+    {
+        display.print(F("0"));
+    }
+    display.print(value);
 }
