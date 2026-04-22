@@ -3,7 +3,8 @@
 
 #include "MenuSystem.h"
 
-static unsigned long lastMenuRefresh = 0;
+static unsigned long lastHomeRefresh = 0;
+static unsigned long lastSensorRefresh = 0;
 MenuSystem *globalMenuPtr = nullptr;
 
 MenuSystem::MenuSystem(TimeManager &time, DisplayManager &display, SensorManager &sensor, ActuatorManager &actuator, PlantManager &plant)
@@ -74,14 +75,20 @@ void MenuSystem::processKey(KeyPress key)
     }
 }
 
-void MenuSystem::updateSensorValues()
+void MenuSystem::refresh()
 {
-    currentReading = sensor.readAll();
-
-    if (currentPage == &sensorPage && millis() - lastMenuRefresh > 2000)
+    if (currentPage == &homePage && millis() - lastHomeRefresh > 60500)
     {
+        time.updateTime();
+        drawTimeRow();
+        lastHomeRefresh = millis();
+    }
+
+    if (currentPage == &sensorPage && millis() - lastSensorRefresh > 2000)
+    {
+        currentReading = sensor.readAll();
         drawSensorPageMenuItems();
-        lastMenuRefresh = millis();
+        lastSensorRefresh = millis();
     }
 }
 

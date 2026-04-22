@@ -23,7 +23,7 @@ public:
     void begin();
     void draw();
     void processKey(KeyPress key);
-    void updateSensorValues();
+    void refresh();
 
     static void plantSelectionCallback(void *ctx);
     static void plantSetAsMainCallback(void *ctx);
