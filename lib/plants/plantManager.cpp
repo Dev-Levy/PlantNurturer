@@ -12,10 +12,10 @@ static const WateringLookupEntry wateringLookup[] PROGMEM = {
 };
 
 static const PlantConfig library[] PROGMEM = {
-    {0, 12, 500, 10, 200, 300},
-    {1, 14, 300, 15, 180, 260},
-    {2, 6, 200, 8, 190, 240},
-    {3, 8, 250, 10, 180, 250},
+    {0, 12, 50, 10, 200, 300},
+    {1, 14, 30, 15, 180, 260},
+    {2, 6, 20, 8, 190, 240},
+    {3, 8, 25, 10, 180, 250},
 };
 
 PlantManager::PlantManager()
