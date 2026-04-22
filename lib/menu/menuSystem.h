@@ -20,6 +20,8 @@ class MenuSystem
 public:
     explicit MenuSystem(TimeManager &time, DisplayManager &display, SensorManager &sensor, ActuatorManager &actuator, PlantManager &plant);
 
+    uint8_t plantConfigIndex = 0;
+
     void begin();
     void draw();
     void processKey(KeyPress key);

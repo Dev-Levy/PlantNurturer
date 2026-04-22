@@ -77,6 +77,7 @@ void MenuSystem::processKey(KeyPress key)
 
 void MenuSystem::refresh()
 {
+    // refresh every minute (with some buffer)
     if (currentPage == &homePage && millis() - lastHomeRefresh > 60500)
     {
         time.updateTime();
@@ -84,6 +85,7 @@ void MenuSystem::refresh()
         lastHomeRefresh = millis();
     }
 
+    // refresh every 2 seconds
     if (currentPage == &sensorPage && millis() - lastSensorRefresh > 2000)
     {
         currentReading = sensor.readAll();
