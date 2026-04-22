@@ -18,7 +18,7 @@ SensorManager sensors;
 ActuatorManager actuators;
 PlantManager plant;
 
-NurturerLogic logic(sensors);
+NurturerLogic logic(clock, sensors, actuators, plant);
 
 MenuSystem menu(clock, tft, sensors, actuators, plant);
 static KeyPress lastKey = KeyPress::NONE;
@@ -46,4 +46,6 @@ void loop()
   lastKey = key;
 
   menu.refresh();
+
+  logic.control(0);
 }
