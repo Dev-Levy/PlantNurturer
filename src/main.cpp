@@ -12,16 +12,16 @@
 
 #include <config.h>
 
+static KeyPress lastKey = KeyPress::NONE;
+
 TimeManager clock;
 DisplayManager tft;
 SensorManager sensors;
 ActuatorManager actuators;
 PlantManager plant;
 
-NurturerLogic logic(clock, sensors, actuators, plant);
-
 MenuSystem menu(clock, tft, sensors, actuators, plant);
-static KeyPress lastKey = KeyPress::NONE;
+NurturerLogic logic(clock, sensors, actuators, plant);
 
 void setup()
 {
@@ -47,5 +47,5 @@ void loop()
 
   menu.refresh();
 
-  logic.control(0);
+  logic.control(menu.plantConfigIndex);
 }

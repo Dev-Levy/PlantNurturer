@@ -1,7 +1,11 @@
 #include "nurturerLogic.h"
 
 static unsigned long pumpStart = 0;
+
 static unsigned long pumpWaitTime = 0;
+static unsigned long lightWaitTime = 0;
+static unsigned long fanWaitTime = 0;
+
 static bool pumpRunning = false;
 static bool lightOn = false;
 static bool fanRunning = false;
@@ -14,8 +18,15 @@ NurturerLogic::NurturerLogic(TimeManager &clock, SensorManager &sensor, Actuator
 void NurturerLogic::control(uint8_t plantIndex)
 {
     data = sensor.readAll();
-    plant.getPlantConfig(plantIndex);
+    currentPlantConfig = plant.getPlantConfig(plantIndex);
 
+    controlPump();
+    controlLight();
+    controlFan();
+}
+
+void NurturerLogic::controlPump()
+{
     const uint8_t wateringSeconds = plant.getWateringSeconds(currentPlantConfig.waterMl);
     const unsigned long wateringDurationMs = (unsigned long)wateringSeconds * 1000UL;
 
@@ -46,10 +57,14 @@ void NurturerLogic::control(uint8_t plantIndex)
         Serial.print("Duration: ");
         Serial.println(pumpStart - millis());
     }
+}
 
+void NurturerLogic::controlLight()
+{
     // START light
     if (!lightOn &&
-        !data.light)
+        !data.light &&
+        millis() - lightWaitTime < LIGHT_COOLDOWN_IN_SECONDS * 1000UL)
     {
         Serial.println("Starting light");
 
@@ -64,12 +79,21 @@ void NurturerLogic::control(uint8_t plantIndex)
         Serial.println("Stopping light");
 
         actuator.toggleLight();
-        lightOn = false;
-    }
 
+        lightWaitTime = millis();
+        lightOn = false;
+
+        Serial.print("Duration: ");
+        Serial.println(lightWaitTime - millis());
+    }
+}
+
+void NurturerLogic::controlFan()
+{
     // START fan
     if (!fanRunning &&
-        data.airTemp > currentPlantConfig.maxTemp)
+        data.airTemp > currentPlantConfig.maxTemp &&
+        millis() - fanWaitTime < FAN_COOLDOWN_IN_SECONDS * 1000UL)
     {
         Serial.println("Starting fan");
 
@@ -84,6 +108,11 @@ void NurturerLogic::control(uint8_t plantIndex)
         Serial.println("Stopping fan");
 
         actuator.toggleFan();
+
+        fanWaitTime = millis();
         fanRunning = false;
+
+        Serial.print("Duration: ");
+        Serial.println(fanWaitTime - millis());
     }
 }

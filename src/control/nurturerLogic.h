@@ -20,4 +20,8 @@ private:
 
     SensorReadings data;
     PlantConfig currentPlantConfig;
+
+    void controlPump();
+    void controlLight();
+    void controlFan();
 };
