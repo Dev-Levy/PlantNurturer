@@ -23,7 +23,7 @@ const char labelSunnyHours[] PROGMEM = "Sunny hours: ";
 const char labelWaterInMl[] PROGMEM = "Water (ml): ";
 const char labelMinTemp[] PROGMEM = "Min temp: ";
 const char labelMaxTemp[] PROGMEM = "Max temp: ";
-const char labelSetMain[] PROGMEM = "# select for growing";
+const char labelStart[] PROGMEM = "# start growing";
 const char labelRemove[] PROGMEM = "# remove plant";
 
 // sensors
