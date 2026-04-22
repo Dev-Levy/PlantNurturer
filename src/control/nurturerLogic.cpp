@@ -1,5 +1,7 @@
 #include "nurturerLogic.h"
 
+static unsigned long lastSensorRefresh = 0;
+
 static unsigned long pumpStart = 0;
 
 static unsigned long pumpWaitTime = 0;
@@ -15,104 +17,76 @@ NurturerLogic::NurturerLogic(TimeManager &clock, SensorManager &sensor, Actuator
 {
 }
 
-void NurturerLogic::control(uint8_t plantIndex)
+void NurturerLogic::control(const PlantConfig &config)
 {
-    data = sensor.readAll();
-    currentPlantConfig = plant.getPlantConfig(plantIndex);
+    if (millis() - lastSensorRefresh > 2000)
+    {
+        data = sensor.readAll();
+        lastSensorRefresh = millis();
+    }
 
-    controlPump();
-    controlLight();
-    controlFan();
+    controlPump(config);
+    controlLight(config);
+    controlFan(config);
 }
 
-void NurturerLogic::controlPump()
+void NurturerLogic::controlPump(const PlantConfig &config)
 {
-    const uint8_t wateringSeconds = plant.getWateringSeconds(currentPlantConfig.waterMl);
+    const uint8_t wateringSeconds = plant.getWateringSeconds(config.waterMl);
     const unsigned long wateringDurationMs = (unsigned long)wateringSeconds * 1000UL;
 
-    // START watering
     if (!pumpRunning &&
-        data.soilMoisture < currentPlantConfig.waterLimit &&
+        data.soilMoisture < config.waterLimit &&
         millis() - pumpWaitTime < PUMP_COOLDOWN_IN_SECONDS * 1000UL)
     {
-        Serial.println("Starting pump");
-
         actuator.togglePump();
-
         pumpRunning = true;
         pumpStart = millis();
     }
 
-    // STOP watering after lookup duration
     if (pumpRunning &&
         (millis() - pumpStart >= wateringDurationMs))
     {
-        Serial.println("Stopping pump");
-
         actuator.togglePump();
-
         pumpRunning = false;
         pumpWaitTime = millis();
-
-        Serial.print("Duration: ");
-        Serial.println(pumpStart - millis());
     }
 }
 
-void NurturerLogic::controlLight()
+void NurturerLogic::controlLight(const PlantConfig &config)
 {
-    // START light
     if (!lightOn &&
         !data.light &&
         millis() - lightWaitTime < LIGHT_COOLDOWN_IN_SECONDS * 1000UL)
     {
-        Serial.println("Starting light");
-
         actuator.toggleLight();
         lightOn = true;
     }
 
-    // STOP light
     if (lightOn &&
         data.light)
     {
-        Serial.println("Stopping light");
-
         actuator.toggleLight();
-
         lightWaitTime = millis();
         lightOn = false;
-
-        Serial.print("Duration: ");
-        Serial.println(lightWaitTime - millis());
     }
 }
 
-void NurturerLogic::controlFan()
+void NurturerLogic::controlFan(const PlantConfig &config)
 {
-    // START fan
     if (!fanRunning &&
-        data.airTemp > currentPlantConfig.maxTemp &&
+        data.airTemp > (float)config.maxTemp / 10 &&
         millis() - fanWaitTime < FAN_COOLDOWN_IN_SECONDS * 1000UL)
     {
-        Serial.println("Starting fan");
-
         actuator.toggleFan();
         fanRunning = true;
     }
 
-    // STOP fan
     if (fanRunning &&
-        data.airTemp < currentPlantConfig.minTemp)
+        data.airTemp < (float)config.minTemp / 10)
     {
-        Serial.println("Stopping fan");
-
         actuator.toggleFan();
-
         fanWaitTime = millis();
         fanRunning = false;
-
-        Serial.print("Duration: ");
-        Serial.println(fanWaitTime - millis());
     }
 }

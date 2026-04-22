@@ -10,7 +10,7 @@ class NurturerLogic
 public:
     NurturerLogic(TimeManager &clock, SensorManager &sensor, ActuatorManager &actuator, PlantManager &plant);
 
-    void control(uint8_t plantIndex);
+    void control(const PlantConfig &config);
 
 private:
     TimeManager &clock;
@@ -19,9 +19,8 @@ private:
     PlantManager &plant;
 
     SensorReadings data;
-    PlantConfig currentPlantConfig;
 
-    void controlPump();
-    void controlLight();
-    void controlFan();
+    void controlPump(const PlantConfig &config);
+    void controlLight(const PlantConfig &config);
+    void controlFan(const PlantConfig &config);
 };
