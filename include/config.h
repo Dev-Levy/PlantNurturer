@@ -22,6 +22,7 @@ static constexpr uint8_t PADDING = 2;
 static constexpr uint8_t MAX_VISIBLE = 6;
 
 static constexpr uint32_t SECONDS_IN_A_WEEK = 604800UL;
+static constexpr uint8_t PUMP_COOLDOWN_IN_SECONDS = 60;
 
 // actuator pins
 #define PUMP 2
