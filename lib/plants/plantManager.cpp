@@ -22,11 +22,16 @@ PlantManager::PlantManager()
 {
 }
 
-PlantConfig PlantManager::getPlantConfig(uint8_t index)
+bool PlantManager::getPlantConfig(uint8_t index, PlantConfig &out) const
 {
-    PlantConfig config;
-    memcpy_P(&config, &library[index], sizeof(PlantConfig));
-    return config;
+    const uint8_t count = sizeof(library) / sizeof(library[0]);
+    if (index >= count)
+    {
+        return false;
+    }
+
+    memcpy_P(&out, &library[index], sizeof(PlantConfig));
+    return true;
 }
 
 uint8_t PlantManager::getWateringSeconds(uint16_t waterMl) const
