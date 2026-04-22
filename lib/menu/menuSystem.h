@@ -28,7 +28,7 @@ public:
     void refresh();
 
     static void plantSelectionCallback(void *ctx);
-    static void plantSetAsMainCallback(void *ctx);
+    static void plantStartGrowingCallback(void *ctx);
     static void plantRemoveCallback(void *ctx);
     static void togglePumpCallBack(void *ctx);
     static void toggleLightCallBack(void *ctx);
@@ -48,6 +48,9 @@ private:
     uint8_t mainPlantIndex = 0;
     uint8_t activePlantIndex = 0;
     const MenuPage *selectedPlantPages[PLANT_COUNT] = {nullptr};
+
+    unsigned long lastHomeRefresh = 0;
+    unsigned long lastSensorRefresh = 0;
 
     void drawTimeRow();
     void drawGrowingRow();

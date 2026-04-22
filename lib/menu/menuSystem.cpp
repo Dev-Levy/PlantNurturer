@@ -3,8 +3,6 @@
 
 #include "MenuSystem.h"
 
-static unsigned long lastHomeRefresh = 0;
-static unsigned long lastSensorRefresh = 0;
 MenuSystem *globalMenuPtr = nullptr;
 
 MenuSystem::MenuSystem(TimeManager &time, DisplayManager &display, SensorManager &sensor, ActuatorManager &actuator, PlantManager &plant)
@@ -19,6 +17,7 @@ void MenuSystem::begin()
     globalMenuPtr = this;
     currentPage = &homePage;
     time.updateTime();
+
     draw();
 }
 
