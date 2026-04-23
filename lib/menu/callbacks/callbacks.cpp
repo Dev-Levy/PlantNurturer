@@ -40,6 +40,8 @@ void MenuSystem::plantStartGrowingCallback(void *ctx)
     ((TimeManager *)ctx)->resetWeekCounter(((TimeManager *)ctx)->getUnixNow());
 
     globalMenuPtr->mainPlantIndex = globalMenuPtr->activePlantIndex;
+    globalMenuPtr->selectedPlantConfig = globalMenuPtr->storedConfigs[globalMenuPtr->mainPlantIndex].idx;
+
     globalMenuPtr->currentPage = &homePage;
     globalMenuPtr->currentCursor = 0;
 

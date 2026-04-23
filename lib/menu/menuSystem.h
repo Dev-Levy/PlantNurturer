@@ -21,7 +21,7 @@ class MenuSystem
 public:
     explicit MenuSystem(TimeManager &time, DisplayManager &display, SensorManager &sensor, ActuatorManager &actuator, PlantManager &plant);
 
-    uint8_t plantConfigIndex = 0;
+    int8_t selectedPlantConfig = -1;
 
     void begin();
     void draw();
