@@ -59,7 +59,7 @@ SensorReadings SensorManager::readAll()
         if (!isnan(lux) && lux >= 0)
         {
             lastReadings.lightLux = (uint16_t)lux;
-            lastReadings.light = (lux > 50) ? 1 : 0;
+            lastReadings.light = (lux > LUX_LIMIT) ? 1 : 0;
         }
         else
         {

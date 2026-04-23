@@ -6,6 +6,7 @@
 #include "pages/pages.h"
 #include "navigationKeys/keys.h"
 #include "helpers/helper.h"
+#include "structs/settingsSave.h"
 
 #include "timeManager.h"
 #include "displayManager.h"
@@ -20,7 +21,7 @@ class MenuSystem
 public:
     explicit MenuSystem(TimeManager &time, DisplayManager &display, SensorManager &sensor, ActuatorManager &actuator, PlantManager &plant);
 
-    uint8_t plantConfigIndex = 0;
+    int8_t selectedPlantConfig = -1;
 
     void begin();
     void draw();
@@ -49,14 +50,21 @@ private:
     uint8_t activePlantIndex = 0;
     const MenuPage *selectedPlantPages[PLANT_COUNT] = {nullptr};
 
+    PlantConfig storedConfigs[PLANT_COUNT];
+
     unsigned long lastHomeRefresh = 0;
     unsigned long lastSensorRefresh = 0;
 
-    void drawTimeRow();
+    void saveSettings();
+    void loadSettings();
+
+    void
+    drawTimeRow();
     void drawGrowingRow();
     void drawHomePageMenuItems();
     // void drawMainPageMenuItems();
     void drawPlantsPageMenuItems();
+    void drawPlantPageMenuItems();
     void drawSensorPageMenuItems();
     // void drawActuatorPageMenuItems();
     void drawMenuItems();

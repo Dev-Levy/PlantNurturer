@@ -1,6 +1,5 @@
 #include <avr/pgmspace.h>
-// #include <EEPROM.h>
-
+#include <EEPROM.h>
 #include "MenuSystem.h"
 
 MenuSystem *globalMenuPtr = nullptr;
@@ -14,6 +13,8 @@ MenuSystem::MenuSystem(TimeManager &time, DisplayManager &display, SensorManager
 
 void MenuSystem::begin()
 {
+    loadSettings();
+
     globalMenuPtr = this;
     currentPage = &homePage;
     time.updateTime();
@@ -110,6 +111,10 @@ void MenuSystem::draw()
     {
         drawPlantsPageMenuItems();
     }
+    else if (currentPage == &tomatoPage || currentPage == &chiliPage || currentPage == &mintPage || currentPage == &basilPage)
+    {
+        drawPlantPageMenuItems();
+    }
     else if (currentPage == &sensorPage)
     {
         drawSensorPageMenuItems();
@@ -117,6 +122,75 @@ void MenuSystem::draw()
     else
     {
         drawMenuItems();
+    }
+}
+
+void MenuSystem::saveSettings()
+{
+    Serial.println(F("Saving"));
+
+    SettingsSave data;
+    data.magic = 0xABCD;
+
+    data.mainPlantIndex = mainPlantIndex;
+    time.getGrowthStartTime(data.growthStartTime);
+
+    for (uint8_t i = 0; i < PLANT_COUNT; i++)
+    {
+        data.configs[i] = storedConfigs[i];
+
+        if (selectedPlantPages[i] == &tomatoPage)
+            data.plantIds[i] = TOMATO_CONFIG_ID;
+        else if (selectedPlantPages[i] == &chiliPage)
+            data.plantIds[i] = CHILI_CONFIG_ID;
+        else if (selectedPlantPages[i] == &mintPage)
+            data.plantIds[i] = MINT_CONFIG_ID;
+        else if (selectedPlantPages[i] == &basilPage)
+            data.plantIds[i] = BASIL_CONFIG_ID;
+        else
+            data.plantIds[i] = -1;
+    }
+
+    EEPROM.put(EEPROM_ADDR, data);
+}
+
+void MenuSystem::loadSettings()
+{
+    Serial.println(F("Loading"));
+
+    SettingsSave data;
+    EEPROM.get(EEPROM_ADDR, data);
+
+    if (data.magic != 0xABCD)
+        return;
+
+    mainPlantIndex = data.mainPlantIndex;
+    selectedPlantConfig = mainPlantIndex;
+
+    time.setGrowthStartTime(data.growthStartTime);
+
+    for (uint8_t i = 0; i < PLANT_COUNT; i++)
+    {
+        storedConfigs[i] = data.configs[i];
+
+        switch (data.plantIds[i])
+        {
+        case TOMATO_CONFIG_ID:
+            selectedPlantPages[i] = &tomatoPage;
+            break;
+        case CHILI_CONFIG_ID:
+            selectedPlantPages[i] = &chiliPage;
+            break;
+        case MINT_CONFIG_ID:
+            selectedPlantPages[i] = &mintPage;
+            break;
+        case BASIL_CONFIG_ID:
+            selectedPlantPages[i] = &basilPage;
+            break;
+        default:
+            selectedPlantPages[i] = nullptr;
+            break;
+        }
     }
 }
 
@@ -216,6 +290,80 @@ void MenuSystem::drawPlantsPageMenuItems()
     }
 }
 
+void MenuSystem::drawPlantPageMenuItems()
+{
+    const uint8_t count = pgm_read_byte(&(currentPage->itemCount));
+    const MenuItem *items = (const MenuItem *)pgm_read_ptr(&(currentPage->items));
+
+    const PlantConfig &cfg = storedConfigs[activePlantIndex];
+
+    uint8_t startY = 2 * LINE_HEIGHT;
+    uint8_t topIndex = (currentCursor / MAX_VISIBLE) * MAX_VISIBLE;
+
+    for (uint8_t i = 0; i < MAX_VISIBLE; i++)
+    {
+
+        uint8_t itemIndex = topIndex + i;
+        uint8_t yPos = startY + (i * LINE_HEIGHT);
+        bool isSelected = (currentCursor == itemIndex);
+
+        if (itemIndex < count)
+        {
+            auto *label = (const __FlashStringHelper *)pgm_read_ptr(&(items[itemIndex].label));
+
+            setItemDrawingProps(isSelected, yPos);
+            display.print(label);
+
+            switch (itemIndex)
+            {
+            case 0: // Sunny Hours
+                display.print(cfg.sunnyHours);
+                display.print(F(" h"));
+                break;
+            case 1: // Water limit
+                display.print(cfg.waterLimit);
+                display.print(F(" %"));
+                break;
+            case 2: // Water Ml
+                display.print(cfg.waterMl);
+                display.print(F(" ml"));
+                break;
+            case 3: // Min Temp
+                display.print(cfg.minTemp / 10);
+                display.print(F("."));
+                display.print(cfg.minTemp % 10 < 0 ? -cfg.minTemp % 10 : cfg.minTemp % 10);
+                display.print(F(" C"));
+                break;
+            case 4: // Max Temp
+                display.print(cfg.maxTemp / 10);
+                display.print(F("."));
+                display.print(cfg.maxTemp % 10 < 0 ? -cfg.maxTemp % 10 : cfg.maxTemp % 10);
+                display.print(F(" C"));
+                break;
+            case 5: // Min humidity
+                display.print(cfg.minHumi / 10);
+                display.print(F("."));
+                display.print(cfg.minHumi % 10);
+                display.print(F(" %"));
+                break;
+            case 6: // Max humidity
+                display.print(cfg.maxHumi / 10);
+                display.print(F("."));
+                display.print(cfg.maxHumi % 10);
+                display.print(F(" %"));
+                break;
+            default:
+                // A Start, Remove, Back
+                break;
+            }
+        }
+        else
+        {
+            display.fillRectangle(0, yPos - PADDING, display.getWidth(), LINE_HEIGHT, ST77XX_BLACK);
+        }
+    }
+}
+
 void MenuSystem::drawSensorPageMenuItems()
 {
     const uint8_t count = pgm_read_byte(&(currentPage->itemCount));
@@ -278,29 +426,26 @@ void MenuSystem::drawSensorPageMenuItem(uint8_t index, uint8_t y, bool isSelecte
         display.print(data.light ? F("LIGHT") : F("DARK"));
         break;
     case 1:
-        display.print(data.airTemp / 10);
-        display.print(F("."));
-        display.print(data.airTemp % 10 < 0 ? -data.airTemp % 10 : data.airTemp % 10);
-        display.print(F("C"));
+        display.print(data.lightLux);
+        display.print(F(" lux"));
         break;
     case 2:
         display.print(data.airHumidity / 10);
         display.print(F("."));
         display.print(data.airHumidity % 10 < 0 ? -data.airHumidity % 10 : data.airHumidity % 10);
-        display.print(F("%"));
+        display.print(F(" %"));
         break;
     case 3:
-        // display.print(data.soilTemp / 10);
-        // display.print(F("."));
-        // display.print(data.soilTemp % 10 < 0 ? -data.soilTemp % 10 : data.soilTemp % 10);
-        // display.print(F("C"));
-        display.print(F("NA"));
+        display.print(data.airTemp / 10);
+        display.print(F("."));
+        display.print(data.airTemp % 10 < 0 ? -data.airTemp % 10 : data.airTemp % 10);
+        display.print(F(" C"));
         break;
     case 4:
         display.print(data.soilMoisture / 10);
         display.print(F("."));
         display.print(data.soilMoisture % 10 < 0 ? -data.soilMoisture % 10 : data.soilMoisture % 10);
-        display.print(F("%"));
+        display.print(F(" %"));
         break;
     }
 }

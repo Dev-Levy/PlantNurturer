@@ -13,7 +13,7 @@
 #include <config.h>
 
 static KeyPress lastKey = KeyPress::NONE;
-static uint8_t lastPlantIndex = 0;
+static int8_t lastSelectedPlantIndex = -1;
 static PlantConfig activeConfig{};
 
 TimeManager clock;
@@ -35,6 +35,16 @@ void setup()
   tft.begin();
   sensors.begin();
   menu.begin();
+
+  if (lastSelectedPlantIndex != menu.selectedPlantConfig)
+  {
+    if (plant.getPlantConfig(menu.selectedPlantConfig, activeConfig))
+    {
+      lastSelectedPlantIndex = menu.selectedPlantConfig;
+      Serial.print(F("Active plant config set to: "));
+      Serial.println(menu.selectedPlantConfig);
+    }
+  }
 }
 
 void loop()
@@ -51,13 +61,18 @@ void loop()
 
   menu.refresh();
 
-  if (menu.plantConfigIndex != lastPlantIndex)
+  if (menu.selectedPlantConfig != lastSelectedPlantIndex)
   {
-    if (plant.getPlantConfig(menu.plantConfigIndex, activeConfig))
+    if (plant.getPlantConfig(menu.selectedPlantConfig, activeConfig))
     {
-      lastPlantIndex = menu.plantConfigIndex;
+      lastSelectedPlantIndex = menu.selectedPlantConfig;
+      Serial.print(F("Active plant config changed: "));
+      Serial.println(menu.selectedPlantConfig);
     }
   }
 
-  logic.control(activeConfig);
+  if (lastSelectedPlantIndex >= 0)
+  {
+    logic.control(activeConfig);
+  }
 }

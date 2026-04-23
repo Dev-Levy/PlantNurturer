@@ -22,6 +22,8 @@ public:
 
     uint8_t getGrowthWeek(uint32_t currentTime);
     void resetWeekCounter(uint32_t currentTime);
+    void getGrowthStartTime(uint32_t &startTime) { startTime = growthStartTime; }
+    void setGrowthStartTime(uint32_t startTime) { growthStartTime = startTime; }
 
 private:
     uint32_t growthStartTime;

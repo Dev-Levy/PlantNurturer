@@ -1,14 +1,33 @@
 #include "menuSystem.h"
+#include "pages/pages.h"
 #include <Arduino.h>
 
 void MenuSystem::plantSelectionCallback(void *ctx)
 {
-    if (!globalMenuPtr)
+    if (!globalMenuPtr || !ctx)
         return;
 
-    globalMenuPtr->selectedPlantPages[globalMenuPtr->activePlantIndex] = (const MenuPage *)ctx;
+    const MenuPage *page = (const MenuPage *)ctx;
+    uint8_t index = globalMenuPtr->activePlantIndex;
+
+    globalMenuPtr->selectedPlantPages[index] = page;
+
+    uint8_t configId = 0;
+    if (page == &tomatoPage)
+        configId = TOMATO_CONFIG_ID;
+    else if (page == &chiliPage)
+        configId = CHILI_CONFIG_ID;
+    else if (page == &mintPage)
+        configId = MINT_CONFIG_ID;
+    else if (page == &basilPage)
+        configId = BASIL_CONFIG_ID;
+
+    globalMenuPtr->plant.getPlantConfig(configId, globalMenuPtr->storedConfigs[index]);
+
     globalMenuPtr->currentPage = &plantsPage;
     globalMenuPtr->currentCursor = 0;
+
+    globalMenuPtr->saveSettings();
 }
 
 void MenuSystem::plantStartGrowingCallback(void *ctx)
@@ -21,8 +40,12 @@ void MenuSystem::plantStartGrowingCallback(void *ctx)
     ((TimeManager *)ctx)->resetWeekCounter(((TimeManager *)ctx)->getUnixNow());
 
     globalMenuPtr->mainPlantIndex = globalMenuPtr->activePlantIndex;
+    globalMenuPtr->selectedPlantConfig = globalMenuPtr->storedConfigs[globalMenuPtr->mainPlantIndex].idx;
+
     globalMenuPtr->currentPage = &homePage;
     globalMenuPtr->currentCursor = 0;
+
+    globalMenuPtr->saveSettings();
 }
 
 void MenuSystem::plantRemoveCallback(void *ctx)
@@ -33,6 +56,8 @@ void MenuSystem::plantRemoveCallback(void *ctx)
     globalMenuPtr->selectedPlantPages[globalMenuPtr->activePlantIndex] = nullptr;
     globalMenuPtr->currentPage = &plantsPage;
     globalMenuPtr->currentCursor = 0;
+
+    globalMenuPtr->saveSettings();
 }
 
 void MenuSystem::togglePumpCallBack(void *ctx)
