@@ -38,12 +38,10 @@ void setup()
 
   if (lastSelectedPlantIndex != menu.selectedPlantConfig)
   {
-    if (plant.getPlantConfig(menu.selectedPlantConfig, activeConfig))
-    {
-      lastSelectedPlantIndex = menu.selectedPlantConfig;
-      Serial.print(F("Active plant config set to: "));
-      Serial.println(menu.selectedPlantConfig);
-    }
+    activeConfig = menu.storedConfigs[menu.selectedPlantConfig];
+    lastSelectedPlantIndex = menu.selectedPlantConfig;
+    Serial.print(F("Active plant config set to: "));
+    Serial.println(menu.selectedPlantConfig);
   }
 }
 
@@ -63,12 +61,10 @@ void loop()
 
   if (menu.selectedPlantConfig != lastSelectedPlantIndex)
   {
-    if (plant.getPlantConfig(menu.selectedPlantConfig, activeConfig))
-    {
-      lastSelectedPlantIndex = menu.selectedPlantConfig;
-      Serial.print(F("Active plant config changed: "));
-      Serial.println(menu.selectedPlantConfig);
-    }
+    activeConfig = menu.storedConfigs[menu.selectedPlantConfig];
+    lastSelectedPlantIndex = menu.selectedPlantConfig;
+    Serial.print(F("Active plant config changed: "));
+    Serial.println(menu.selectedPlantConfig);
   }
 
   if (lastSelectedPlantIndex >= 0)
