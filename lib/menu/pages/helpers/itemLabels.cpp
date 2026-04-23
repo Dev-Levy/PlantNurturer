@@ -20,6 +20,7 @@ const char labelBasil[] PROGMEM = "Basil";
 
 // plant
 const char labelSunnyHours[] PROGMEM = "Sunny hours: ";
+const char labelWaterLimit[] PROGMEM = "Water limit: ";
 const char labelWaterInMl[] PROGMEM = "Water (ml): ";
 const char labelMinTemp[] PROGMEM = "Min temp: ";
 const char labelMaxTemp[] PROGMEM = "Max temp: ";
@@ -28,6 +29,7 @@ const char labelRemove[] PROGMEM = "# remove plant";
 
 // sensors
 const char labelLightSensor[] PROGMEM = "Light: ";
+const char labelLightLuxSensor[] PROGMEM = "Light lux: ";
 const char labelAirTempSensor[] PROGMEM = "Air temp: ";
 const char labelAirHumiditySensor[] PROGMEM = "Air humi: ";
 const char labelSoilMoistureSensor[] PROGMEM = "Soil moist: ";

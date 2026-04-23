@@ -9,7 +9,7 @@ static constexpr uint8_t HOME_PAGE_ITEMS = 1;
 static constexpr uint8_t MAIN_PAGE_ITEMS = 4;
 static constexpr uint8_t PLANTS_PAGE_ITEMS = 4;
 static constexpr uint8_t PLANT_SELECT_PAGE_ITEMS = 5;
-static constexpr uint8_t PLANT_PAGE_ITEMS = 7;
+static constexpr uint8_t PLANT_PAGE_ITEMS = 8;
 static constexpr uint8_t SENSORS_PAGE_ITEMS = 6;
 static constexpr uint8_t ACTUATORS_PAGE_ITEMS = 4;
 
@@ -22,9 +22,17 @@ static constexpr uint8_t PADDING = 2;
 static constexpr uint8_t MAX_VISIBLE = 6;
 
 static constexpr uint32_t SECONDS_IN_A_WEEK = 604800UL;
+
+static constexpr uint8_t LUX_LIMIT = 40;
+
 static constexpr uint8_t PUMP_COOLDOWN_IN_SECONDS = 60;
 static constexpr uint8_t LIGHT_COOLDOWN_IN_SECONDS = 5;
 static constexpr uint8_t FAN_COOLDOWN_IN_SECONDS = 5;
+
+static constexpr uint8_t TOMATO_CONFIG_ID = 0;
+static constexpr uint8_t CHILI_CONFIG_ID = 1;
+static constexpr uint8_t MINT_CONFIG_ID = 2;
+static constexpr uint8_t BASIL_CONFIG_ID = 3;
 
 // actuator pins
 #define PUMP 2

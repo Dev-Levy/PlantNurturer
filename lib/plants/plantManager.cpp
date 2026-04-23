@@ -1,21 +1,22 @@
 #include "plantManager.h"
 
 static const WateringLookupEntry wateringLookup[] PROGMEM = {
-    {50, 1},
-    {100, 2},
-    {150, 3},
-    {200, 4},
-    {250, 5},
-    {300, 6},
-    {400, 8},
-    {500, 10},
+    {5, 1},
+    {10, 2},
+    {15, 3},
+    {20, 4},
+    {25, 5},
+    {30, 6},
+    {40, 8},
+    {50, 10},
 };
 
+// id, sunny hours, water limit, water ml, min temp (*10), max temp (*10)
 static const PlantConfig library[] PROGMEM = {
-    {0, 12, 50, 10, 200, 300},
-    {1, 14, 30, 15, 180, 260},
-    {2, 6, 20, 8, 190, 240},
-    {3, 8, 25, 10, 180, 250},
+    {0, 12, 50, 10, 200, 300}, // tomato ID: 0
+    {1, 14, 30, 15, 180, 260}, // chili  ID: 1
+    {2, 6, 20, 8, 190, 240},   // mint   ID: 2
+    {3, 8, 25, 10, 180, 250},  // basil  ID: 3
 };
 
 PlantManager::PlantManager()

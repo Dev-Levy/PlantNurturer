@@ -49,6 +49,8 @@ private:
     uint8_t activePlantIndex = 0;
     const MenuPage *selectedPlantPages[PLANT_COUNT] = {nullptr};
 
+    PlantConfig storedConfigs[PLANT_COUNT];
+
     unsigned long lastHomeRefresh = 0;
     unsigned long lastSensorRefresh = 0;
 
@@ -57,10 +59,11 @@ private:
     void drawHomePageMenuItems();
     // void drawMainPageMenuItems();
     void drawPlantsPageMenuItems();
+    void drawPlantPageMenuItems();
     void drawSensorPageMenuItems();
     // void drawActuatorPageMenuItems();
     void drawMenuItems();
-
+    
     void drawSensorPageMenuItem(uint8_t index, uint8_t y, bool isSelected, const SensorReadings &data, const __FlashStringHelper *label);
     void setItemDrawingProps(bool isSelected, uint8_t y);
     void print2Digits(uint8_t value);
