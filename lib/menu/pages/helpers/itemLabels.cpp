@@ -24,6 +24,8 @@ const char labelWaterLimit[] PROGMEM = "Water limit: ";
 const char labelWaterInMl[] PROGMEM = "Water (ml): ";
 const char labelMinTemp[] PROGMEM = "Min temp: ";
 const char labelMaxTemp[] PROGMEM = "Max temp: ";
+const char labelMinHumi[] PROGMEM = "Min humi: ";
+const char labelMaxHumi[] PROGMEM = "Max humi: ";
 const char labelStart[] PROGMEM = "# start growing";
 const char labelRemove[] PROGMEM = "# remove plant";
 

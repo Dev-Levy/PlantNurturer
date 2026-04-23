@@ -6,6 +6,7 @@
 #include "pages/pages.h"
 #include "navigationKeys/keys.h"
 #include "helpers/helper.h"
+#include "structs/settingsSave.h"
 
 #include "timeManager.h"
 #include "displayManager.h"
@@ -54,7 +55,11 @@ private:
     unsigned long lastHomeRefresh = 0;
     unsigned long lastSensorRefresh = 0;
 
-    void drawTimeRow();
+    void saveSettings();
+    void loadSettings();
+
+    void
+    drawTimeRow();
     void drawGrowingRow();
     void drawHomePageMenuItems();
     // void drawMainPageMenuItems();
@@ -63,7 +68,7 @@ private:
     void drawSensorPageMenuItems();
     // void drawActuatorPageMenuItems();
     void drawMenuItems();
-    
+
     void drawSensorPageMenuItem(uint8_t index, uint8_t y, bool isSelected, const SensorReadings &data, const __FlashStringHelper *label);
     void setItemDrawingProps(bool isSelected, uint8_t y);
     void print2Digits(uint8_t value);

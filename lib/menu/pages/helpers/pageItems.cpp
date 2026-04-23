@@ -32,6 +32,8 @@ const MenuItem plantItems[] PROGMEM = {
     {(const __FlashStringHelper *)labelWaterInMl, nullptr, nullptr, nullptr},
     {(const __FlashStringHelper *)labelMinTemp, nullptr, nullptr, nullptr},
     {(const __FlashStringHelper *)labelMaxTemp, nullptr, nullptr, nullptr},
+    {(const __FlashStringHelper *)labelMinHumi, nullptr, nullptr, nullptr},
+    {(const __FlashStringHelper *)labelMaxHumi, nullptr, nullptr, nullptr},
     {(const __FlashStringHelper *)labelStart, nullptr, MenuSystem::plantStartGrowingCallback, (void *)&clock},
     {(const __FlashStringHelper *)labelRemove, nullptr, MenuSystem::plantRemoveCallback, nullptr},
     {(const __FlashStringHelper *)labelBack, &plantsPage, nullptr, nullptr},

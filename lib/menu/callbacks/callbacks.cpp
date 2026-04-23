@@ -26,6 +26,8 @@ void MenuSystem::plantSelectionCallback(void *ctx)
 
     globalMenuPtr->currentPage = &plantsPage;
     globalMenuPtr->currentCursor = 0;
+
+    globalMenuPtr->saveSettings();
 }
 
 void MenuSystem::plantStartGrowingCallback(void *ctx)
@@ -40,6 +42,8 @@ void MenuSystem::plantStartGrowingCallback(void *ctx)
     globalMenuPtr->mainPlantIndex = globalMenuPtr->activePlantIndex;
     globalMenuPtr->currentPage = &homePage;
     globalMenuPtr->currentCursor = 0;
+
+    globalMenuPtr->saveSettings();
 }
 
 void MenuSystem::plantRemoveCallback(void *ctx)
@@ -50,6 +54,8 @@ void MenuSystem::plantRemoveCallback(void *ctx)
     globalMenuPtr->selectedPlantPages[globalMenuPtr->activePlantIndex] = nullptr;
     globalMenuPtr->currentPage = &plantsPage;
     globalMenuPtr->currentCursor = 0;
+
+    globalMenuPtr->saveSettings();
 }
 
 void MenuSystem::togglePumpCallBack(void *ctx)

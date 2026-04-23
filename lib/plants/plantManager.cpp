@@ -11,12 +11,12 @@ static const WateringLookupEntry wateringLookup[] PROGMEM = {
     {50, 10},
 };
 
-// id, sunny hours, water limit, water ml, min temp (*10), max temp (*10)
+// id, sunny hours, water limit, water ml, min temp (*10), max temp (*10), min humi (*10), max humi (*10)
 static const PlantConfig library[] PROGMEM = {
-    {0, 12, 50, 10, 200, 300}, // tomato ID: 0
-    {1, 14, 30, 15, 180, 260}, // chili  ID: 1
-    {2, 6, 20, 8, 190, 240},   // mint   ID: 2
-    {3, 8, 25, 10, 180, 250},  // basil  ID: 3
+    {0, 12, 50, 10, 200, 300, 100, 500}, // tomato ID: 0
+    {1, 14, 30, 15, 180, 260, 100, 500}, // chili  ID: 1
+    {2, 6, 20, 8, 190, 240, 100, 500},   // mint   ID: 2
+    {3, 8, 25, 10, 180, 250, 100, 500},  // basil  ID: 3
 };
 
 PlantManager::PlantManager()

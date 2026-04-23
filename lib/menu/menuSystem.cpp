@@ -1,6 +1,5 @@
 #include <avr/pgmspace.h>
-// #include <EEPROM.h>
-
+#include <EEPROM.h>
 #include "MenuSystem.h"
 
 MenuSystem *globalMenuPtr = nullptr;
@@ -14,6 +13,8 @@ MenuSystem::MenuSystem(TimeManager &time, DisplayManager &display, SensorManager
 
 void MenuSystem::begin()
 {
+    loadSettings();
+
     globalMenuPtr = this;
     currentPage = &homePage;
     time.updateTime();
@@ -121,6 +122,73 @@ void MenuSystem::draw()
     else
     {
         drawMenuItems();
+    }
+}
+
+void MenuSystem::saveSettings()
+{
+    Serial.println(F("Saving"));
+
+    SettingsSave data;
+    data.magic = 0xABCD;
+
+    data.mainPlantIndex = mainPlantIndex;
+    time.getGrowthStartTime(data.growthStartTime);
+
+    for (uint8_t i = 0; i < PLANT_COUNT; i++)
+    {
+        data.configs[i] = storedConfigs[i];
+
+        if (selectedPlantPages[i] == &tomatoPage)
+            data.plantIds[i] = TOMATO_CONFIG_ID;
+        else if (selectedPlantPages[i] == &chiliPage)
+            data.plantIds[i] = CHILI_CONFIG_ID;
+        else if (selectedPlantPages[i] == &mintPage)
+            data.plantIds[i] = MINT_CONFIG_ID;
+        else if (selectedPlantPages[i] == &basilPage)
+            data.plantIds[i] = BASIL_CONFIG_ID;
+        else
+            data.plantIds[i] = -1;
+    }
+
+    EEPROM.put(EEPROM_ADDR, data);
+}
+
+void MenuSystem::loadSettings()
+{
+    Serial.println(F("Loading"));
+
+    SettingsSave data;
+    EEPROM.get(EEPROM_ADDR, data);
+
+    if (data.magic != 0xABCD)
+        return;
+
+    mainPlantIndex = data.mainPlantIndex;
+    time.setGrowthStartTime(data.growthStartTime);
+
+    for (uint8_t i = 0; i < PLANT_COUNT; i++)
+    {
+        storedConfigs[i] = data.configs[i];
+
+        switch (data.plantIds[i])
+        {
+        case TOMATO_CONFIG_ID:
+            selectedPlantPages[i] = &tomatoPage;
+            break;
+        case CHILI_CONFIG_ID:
+            selectedPlantPages[i] = &chiliPage;
+            break;
+        case MINT_CONFIG_ID:
+            selectedPlantPages[i] = &mintPage;
+            break;
+        case BASIL_CONFIG_ID:
+            selectedPlantPages[i] = &basilPage;
+            break;
+        default:
+            selectedPlantPages[i] = nullptr;
+            break;
+        }
     }
 }
 
@@ -243,7 +311,7 @@ void MenuSystem::drawPlantPageMenuItems()
 
             setItemDrawingProps(isSelected, yPos);
             display.print(label);
-            
+
             switch (itemIndex)
             {
             case 0: // Sunny Hours
@@ -269,6 +337,18 @@ void MenuSystem::drawPlantPageMenuItems()
                 display.print(F("."));
                 display.print(cfg.maxTemp % 10 < 0 ? -cfg.maxTemp % 10 : cfg.maxTemp % 10);
                 display.print(F(" C"));
+                break;
+            case 5: // Min humidity
+                display.print(cfg.minHumi / 10);
+                display.print(F("."));
+                display.print(cfg.minHumi % 10);
+                display.print(F(" %"));
+                break;
+            case 6: // Max humidity
+                display.print(cfg.maxHumi / 10);
+                display.print(F("."));
+                display.print(cfg.maxHumi % 10);
+                display.print(F(" %"));
                 break;
             default:
                 // A Start, Remove, Back
