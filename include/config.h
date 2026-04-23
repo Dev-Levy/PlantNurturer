@@ -9,7 +9,7 @@ static constexpr uint8_t HOME_PAGE_ITEMS = 1;
 static constexpr uint8_t MAIN_PAGE_ITEMS = 4;
 static constexpr uint8_t PLANTS_PAGE_ITEMS = 4;
 static constexpr uint8_t PLANT_SELECT_PAGE_ITEMS = 5;
-static constexpr uint8_t PLANT_PAGE_ITEMS = 4;
+static constexpr uint8_t PLANT_PAGE_ITEMS = 7;
 static constexpr uint8_t SENSORS_PAGE_ITEMS = 6;
 static constexpr uint8_t ACTUATORS_PAGE_ITEMS = 4;
 
@@ -19,8 +19,12 @@ static constexpr uint8_t EEPROM_ADDR = 0;
 
 static constexpr uint8_t LINE_HEIGHT = 14;
 static constexpr uint8_t PADDING = 2;
+static constexpr uint8_t MAX_VISIBLE = 6;
 
 static constexpr uint32_t SECONDS_IN_A_WEEK = 604800UL;
+static constexpr uint8_t PUMP_COOLDOWN_IN_SECONDS = 60;
+static constexpr uint8_t LIGHT_COOLDOWN_IN_SECONDS = 5;
+static constexpr uint8_t FAN_COOLDOWN_IN_SECONDS = 5;
 
 // actuator pins
 #define PUMP 2
@@ -38,9 +42,6 @@ static constexpr uint32_t SECONDS_IN_A_WEEK = 604800UL;
 #define BUTTON_SELECT 7
 
 // sensor pins
-// DELETE LATER: these are just placeholders, the actual pins will depend on the hardware setup
-// #define DHT_PIN A0
-// #define LDR_PIN A3
 #define SOIL_MOIST_PIN A1
 #define SOIL_TEMP_PIN 12
 

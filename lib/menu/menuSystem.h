@@ -5,26 +5,30 @@
 
 #include "pages/pages.h"
 #include "navigationKeys/keys.h"
+#include "helpers/helper.h"
 
 #include "timeManager.h"
 #include "displayManager.h"
 #include "sensorManager.h"
 #include "actuatorManager.h"
+#include "plantManager.h"
 
 class MenuSystem;
 extern MenuSystem *globalMenuPtr;
 class MenuSystem
 {
 public:
-    explicit MenuSystem(TimeManager &time, DisplayManager &display, SensorManager &sensor, ActuatorManager &actuator);
+    explicit MenuSystem(TimeManager &time, DisplayManager &display, SensorManager &sensor, ActuatorManager &actuator, PlantManager &plant);
+
+    uint8_t plantConfigIndex = 0;
 
     void begin();
     void draw();
     void processKey(KeyPress key);
-    void updateSensorValues();
+    void refresh();
 
     static void plantSelectionCallback(void *ctx);
-    static void plantSetAsMainCallback(void *ctx);
+    static void plantStartGrowingCallback(void *ctx);
     static void plantRemoveCallback(void *ctx);
     static void togglePumpCallBack(void *ctx);
     static void toggleLightCallBack(void *ctx);
@@ -35,6 +39,7 @@ private:
     DisplayManager &display;
     SensorManager &sensor;
     ActuatorManager &actuator;
+    PlantManager &plant;
 
     uint8_t currentCursor = 0;
     const MenuPage *currentPage = nullptr;
@@ -43,6 +48,9 @@ private:
     uint8_t mainPlantIndex = 0;
     uint8_t activePlantIndex = 0;
     const MenuPage *selectedPlantPages[PLANT_COUNT] = {nullptr};
+
+    unsigned long lastHomeRefresh = 0;
+    unsigned long lastSensorRefresh = 0;
 
     void drawTimeRow();
     void drawGrowingRow();
@@ -54,7 +62,6 @@ private:
     void drawMenuItems();
 
     void drawSensorPageMenuItem(uint8_t index, uint8_t y, bool isSelected, const SensorReadings &data, const __FlashStringHelper *label);
-    const char *getMonthName(uint8_t month);
     void setItemDrawingProps(bool isSelected, uint8_t y);
     void print2Digits(uint8_t value);
 };

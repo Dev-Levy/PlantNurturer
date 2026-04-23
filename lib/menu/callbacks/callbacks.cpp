@@ -11,10 +11,14 @@ void MenuSystem::plantSelectionCallback(void *ctx)
     globalMenuPtr->currentCursor = 0;
 }
 
-void MenuSystem::plantSetAsMainCallback(void *ctx)
+void MenuSystem::plantStartGrowingCallback(void *ctx)
 {
     if (!globalMenuPtr)
         return;
+
+    if (!ctx)
+        return;
+    ((TimeManager *)ctx)->resetWeekCounter(((TimeManager *)ctx)->getUnixNow());
 
     globalMenuPtr->mainPlantIndex = globalMenuPtr->activePlantIndex;
     globalMenuPtr->currentPage = &homePage;

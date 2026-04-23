@@ -4,7 +4,6 @@
 #include <BH1750.h>
 #include <Wire.h>
 #include <Adafruit_AHTX0.h>
-#include <Adafruit_BMP280.h>
 
 // #include <OneWire.h>
 // #include <DallasTemperature.h>
@@ -22,8 +21,14 @@ public:
 
 private:
     Adafruit_AHTX0 aht;
-    Adafruit_BMP280 bmp;
     BH1750 lightMeter;
+
+    struct
+    {
+        uint8_t lightReady : 1;
+        uint8_t ahtReady : 1;
+        uint8_t bmpReady : 1;
+    } state;
 
     // OneWire oneWire;
     // DallasTemperature sensors;
