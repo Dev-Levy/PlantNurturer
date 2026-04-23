@@ -35,6 +35,16 @@ void setup()
   tft.begin();
   sensors.begin();
   menu.begin();
+
+  if (lastSelectedPlantIndex != menu.selectedPlantConfig)
+  {
+    if (plant.getPlantConfig(menu.selectedPlantConfig, activeConfig))
+    {
+      lastSelectedPlantIndex = menu.selectedPlantConfig;
+      Serial.print(F("Active plant config set to: "));
+      Serial.println(menu.selectedPlantConfig);
+    }
+  }
 }
 
 void loop()
@@ -58,7 +68,7 @@ void loop()
       lastSelectedPlantIndex = menu.selectedPlantConfig;
       Serial.print(F("Active plant config changed: "));
       Serial.println(menu.selectedPlantConfig);
-          }
+    }
   }
 
   if (lastSelectedPlantIndex >= 0)

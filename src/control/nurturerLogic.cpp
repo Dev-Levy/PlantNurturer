@@ -1,7 +1,7 @@
 #include "nurturerLogic.h"
 
 static unsigned long lastSensorRefresh = 0;
-static unsigned long lastConfigIndex = 0;
+static unsigned long lastConfigIndex = 99;
 
 static unsigned long pumpStart = 0;
 

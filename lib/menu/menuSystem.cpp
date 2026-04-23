@@ -165,6 +165,8 @@ void MenuSystem::loadSettings()
         return;
 
     mainPlantIndex = data.mainPlantIndex;
+    selectedPlantConfig = mainPlantIndex;
+
     time.setGrowthStartTime(data.growthStartTime);
 
     for (uint8_t i = 0; i < PLANT_COUNT; i++)
