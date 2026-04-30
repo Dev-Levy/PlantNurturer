@@ -11,14 +11,14 @@ public:
     bool begin();
     void updateTime();
 
-    inline uint32_t getUnixNow() { return rtc.now().unixtime(); }
-    inline uint8_t getHour() { return now.hour(); }
-    inline uint8_t getMinute() { return now.minute(); }
-    inline uint8_t getSecond() { return now.second(); }
+    inline uint32_t getUnixNow() { return isRTCInitialized ? rtc.now().unixtime() : 0; }
+    inline uint8_t getHour() { return isRTCInitialized ? now.hour() : 0; }
+    inline uint8_t getMinute() { return isRTCInitialized ? now.minute() : 0; }
+    inline uint8_t getSecond() { return isRTCInitialized ? now.second() : 0; }
 
-    inline uint8_t getDay() { return now.day(); }
-    inline uint8_t getMonth() { return now.month(); }
-    inline uint8_t getYear() { return now.year(); }
+    inline uint8_t getDay() { return isRTCInitialized ? now.day() : 0; }
+    inline uint8_t getMonth() { return isRTCInitialized ? now.month() : 0; }
+    inline uint8_t getYear() { return isRTCInitialized ? now.year() : 0; }
 
     uint8_t getGrowthWeek(uint32_t currentTime);
     void resetWeekCounter(uint32_t currentTime);
@@ -26,6 +26,7 @@ public:
     void setGrowthStartTime(uint32_t startTime) { growthStartTime = startTime; }
 
 private:
+    bool isRTCInitialized = false;
     uint32_t growthStartTime;
     RTC_DS1307 rtc;
     DateTime now;
