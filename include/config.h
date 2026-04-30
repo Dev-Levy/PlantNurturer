@@ -48,11 +48,12 @@ static constexpr uint8_t BASIL_CONFIG_ID = 3;
 // button pins
 #define BUTTON_UP 5
 #define BUTTON_DOWN 6
-#define BUTTON_SELECT 7
+// sadly pin 7 is not functional due to a hardware issue, so we use pin 12 for select instead
+#define BUTTON_SELECT 12
 
 // sensor pins
 #define SOIL_MOIST_PIN A1
-#define SOIL_TEMP_PIN 12
+// #define SOIL_TEMP_PIN 12
 
 inline void setupPins()
 {

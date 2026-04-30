@@ -36,7 +36,7 @@ void setup()
   sensors.begin();
   menu.begin();
 
-  if (lastSelectedPlantIndex != menu.selectedPlantConfig)
+  if (lastSelectedPlantIndex >= 0 && lastSelectedPlantIndex != menu.selectedPlantConfig)
   {
     activeConfig = menu.storedConfigs[menu.selectedPlantConfig];
     lastSelectedPlantIndex = menu.selectedPlantConfig;
@@ -59,7 +59,7 @@ void loop()
 
   menu.refresh();
 
-  if (menu.selectedPlantConfig != lastSelectedPlantIndex)
+  if (lastSelectedPlantIndex >= 0 && menu.selectedPlantConfig != lastSelectedPlantIndex)
   {
     activeConfig = menu.storedConfigs[menu.selectedPlantConfig];
     lastSelectedPlantIndex = menu.selectedPlantConfig;

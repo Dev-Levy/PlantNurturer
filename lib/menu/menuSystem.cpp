@@ -13,6 +13,7 @@ MenuSystem::MenuSystem(TimeManager &time, DisplayManager &display, SensorManager
 
 void MenuSystem::begin()
 {
+    saveSettings(); // Save default settings if not already saved
     loadSettings();
 
     globalMenuPtr = this;
@@ -226,22 +227,22 @@ void MenuSystem::handleEditing(KeyPress key)
         cfg.sunnyHours = constrain(cfg.sunnyHours + dir, 0, 24);
         break;
     case 1:
-        cfg.waterLimit = constrain(cfg.waterLimit + dir, 5, 95);
+        cfg.waterLimit = constrain(cfg.waterLimit + (dir * 5), 5, 95);
         break;
     case 2:
         cfg.waterMl = constrain(cfg.waterMl + (dir * 5), 5, 200);
         break;
     case 3:
-        cfg.minTemp = constrain(cfg.maxTemp + (dir * 5), 0, 500);
+        cfg.minTemp = constrain(cfg.minTemp + (dir * 5), 0, 500);
         break;
     case 4:
         cfg.maxTemp = constrain(cfg.maxTemp + (dir * 5), 100, 500);
         break;
     case 5:
-        cfg.minHumi = constrain(cfg.maxTemp + (dir * 5), 50, 500);
+        cfg.minHumi = constrain(cfg.minHumi + (dir * 5), 50, 500);
         break;
     case 6:
-        cfg.maxHumi = constrain(cfg.maxTemp + (dir * 5), 50, 1000);
+        cfg.maxHumi = constrain(cfg.maxHumi + (dir * 5), 50, 1000);
         break;
     }
 }
