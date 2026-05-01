@@ -44,7 +44,7 @@ const MenuItem sensorDataItems[] PROGMEM = {
     {(const __FlashStringHelper *)labelLightLuxSensor, nullptr, nullptr, nullptr},
     {(const __FlashStringHelper *)labelAirTempSensor, nullptr, nullptr, nullptr},
     {(const __FlashStringHelper *)labelAirHumiditySensor, nullptr, nullptr, nullptr},
-    {(const __FlashStringHelper *)labelSoilTempSensor, nullptr, nullptr, nullptr},
+    {(const __FlashStringHelper *)labelSoilMoistureSensor, nullptr, nullptr, nullptr},
     {(const __FlashStringHelper *)labelBack, &mainPage, nullptr, nullptr},
 };
 const MenuItem actuatorActionItems[] PROGMEM = {

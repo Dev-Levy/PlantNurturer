@@ -430,16 +430,16 @@ void MenuSystem::drawSensorPageMenuItem(uint8_t index, uint8_t y, bool isSelecte
         display.print(F(" lux"));
         break;
     case 2:
-        display.print(data.airHumidity / 10);
-        display.print(F("."));
-        display.print(data.airHumidity % 10 < 0 ? -data.airHumidity % 10 : data.airHumidity % 10);
-        display.print(F(" %"));
-        break;
-    case 3:
         display.print(data.airTemp / 10);
         display.print(F("."));
         display.print(data.airTemp % 10 < 0 ? -data.airTemp % 10 : data.airTemp % 10);
         display.print(F(" C"));
+        break;
+    case 3:
+        display.print(data.airHumidity / 10);
+        display.print(F("."));
+        display.print(data.airHumidity % 10 < 0 ? -data.airHumidity % 10 : data.airHumidity % 10);
+        display.print(F(" %"));
         break;
     case 4:
         display.print(data.soilMoisture / 10);
