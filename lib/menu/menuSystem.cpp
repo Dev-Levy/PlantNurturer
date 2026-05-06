@@ -13,6 +13,7 @@ MenuSystem::MenuSystem(TimeManager &time, DisplayManager &display, SensorManager
 
 void MenuSystem::begin()
 {
+    saveSettings(); // Save default settings if not already saved
     loadSettings();
 
     globalMenuPtr = this;
