@@ -13,6 +13,7 @@ MenuSystem::MenuSystem(TimeManager &time, DisplayManager &display, SensorManager
 
 void MenuSystem::begin()
 {
+    saveSettings(); // Save default settings if not already saved
     loadSettings();
 
     globalMenuPtr = this;
@@ -25,6 +26,23 @@ void MenuSystem::begin()
 void MenuSystem::processKey(KeyPress key)
 {
     uint8_t count = pgm_read_byte(&(currentPage->itemCount));
+
+    bool isPlantPage = (currentPage == &tomatoPage || currentPage == &chiliPage || currentPage == &mintPage || currentPage == &basilPage);
+
+    if (isEditing)
+    {
+        if (key == KeyPress::SELECT) // Save
+        {
+            isEditing = false;
+            saveSettings();
+            draw();
+        }
+        else // Edit
+        {
+            handleEditing(key);
+        }
+        return;
+    }
 
     switch (key)
     {
@@ -44,7 +62,11 @@ void MenuSystem::processKey(KeyPress key)
         void (*callback)(void *) = (void (*)(void *))pgm_read_ptr(&(items[currentCursor].callback));
         void *ctx = (void *)pgm_read_ptr(&(items[currentCursor].callbackContext));
 
-        if (currentPage == &plantsPage && currentCursor < PLANTS_PAGE_ITEMS - 1)
+        if (isPlantPage && currentCursor <= PLANT_PAGE_VALUE_ITEMS - 1)
+        {
+            isEditing = true;
+        }
+        else if (currentPage == &plantsPage && currentCursor < PLANTS_PAGE_ITEMS - 1)
         {
             activePlantIndex = currentCursor;
 
@@ -191,6 +213,37 @@ void MenuSystem::loadSettings()
             selectedPlantPages[i] = nullptr;
             break;
         }
+    }
+}
+
+void MenuSystem::handleEditing(KeyPress key)
+{
+    PlantConfig &cfg = storedConfigs[activePlantIndex];
+    int8_t dir = (key == KeyPress::UP) ? 1 : -1;
+
+    switch (currentCursor)
+    {
+    case 0:
+        cfg.sunnyHours = constrain(cfg.sunnyHours + dir, 0, 24);
+        break;
+    case 1:
+        cfg.waterLimit = constrain(cfg.waterLimit + (dir * 5), 5, 95);
+        break;
+    case 2:
+        cfg.waterMl = constrain(cfg.waterMl + (dir * 5), 5, 200);
+        break;
+    case 3:
+        cfg.minTemp = constrain(cfg.minTemp + (dir * 5), 0, 500);
+        break;
+    case 4:
+        cfg.maxTemp = constrain(cfg.maxTemp + (dir * 5), 100, 500);
+        break;
+    case 5:
+        cfg.minHumi = constrain(cfg.minHumi + (dir * 5), 50, 500);
+        break;
+    case 6:
+        cfg.maxHumi = constrain(cfg.maxHumi + (dir * 5), 50, 1000);
+        break;
     }
 }
 
@@ -454,7 +507,14 @@ void MenuSystem::setItemDrawingProps(bool isSelected, uint8_t y)
 {
     if (isSelected)
     {
-        display.fillRectangle(0, y - 2, display.getWidth(), LINE_HEIGHT, ST77XX_WHITE);
+        if (isEditing)
+        {
+            display.fillRectangle(0, y - 2, display.getWidth(), LINE_HEIGHT, ST77XX_YELLOW);
+        }
+        else
+        {
+            display.fillRectangle(0, y - 2, display.getWidth(), LINE_HEIGHT, ST77XX_WHITE);
+        }
         display.setTextColor(ST77XX_BLACK);
         display.setCursor(2, y);
         display.setTextSize(1);

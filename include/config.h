@@ -10,6 +10,7 @@ static constexpr uint8_t MAIN_PAGE_ITEMS = 4;
 static constexpr uint8_t PLANTS_PAGE_ITEMS = 4;
 static constexpr uint8_t PLANT_SELECT_PAGE_ITEMS = 5;
 static constexpr uint8_t PLANT_PAGE_ITEMS = 10;
+static constexpr uint8_t PLANT_PAGE_VALUE_ITEMS = 7;
 static constexpr uint8_t SENSORS_PAGE_ITEMS = 6;
 static constexpr uint8_t ACTUATORS_PAGE_ITEMS = 4;
 
@@ -47,11 +48,12 @@ static constexpr uint8_t BASIL_CONFIG_ID = 3;
 // button pins
 #define BUTTON_UP 5
 #define BUTTON_DOWN 6
-#define BUTTON_SELECT 7
+// sadly pin 7 is not functional due to a hardware issue, so we use pin 12 for select instead
+#define BUTTON_SELECT 12
 
 // sensor pins
 #define SOIL_MOIST_PIN A1
-#define SOIL_TEMP_PIN 12
+// #define SOIL_TEMP_PIN 12
 
 inline void setupPins()
 {

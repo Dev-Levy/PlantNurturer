@@ -36,14 +36,12 @@ void setup()
   sensors.begin();
   menu.begin();
 
-  if (lastSelectedPlantIndex != menu.selectedPlantConfig)
+  if (lastSelectedPlantIndex >= 0 && lastSelectedPlantIndex != menu.selectedPlantConfig)
   {
-    if (plant.getPlantConfig(menu.selectedPlantConfig, activeConfig))
-    {
-      lastSelectedPlantIndex = menu.selectedPlantConfig;
-      Serial.print(F("Active plant config set to: "));
-      Serial.println(menu.selectedPlantConfig);
-    }
+    activeConfig = menu.storedConfigs[menu.selectedPlantConfig];
+    lastSelectedPlantIndex = menu.selectedPlantConfig;
+    Serial.print(F("Active plant config set to: "));
+    Serial.println(menu.selectedPlantConfig);
   }
 }
 
@@ -61,14 +59,12 @@ void loop()
 
   menu.refresh();
 
-  if (menu.selectedPlantConfig != lastSelectedPlantIndex)
+  if (lastSelectedPlantIndex >= 0 && menu.selectedPlantConfig != lastSelectedPlantIndex)
   {
-    if (plant.getPlantConfig(menu.selectedPlantConfig, activeConfig))
-    {
-      lastSelectedPlantIndex = menu.selectedPlantConfig;
-      Serial.print(F("Active plant config changed: "));
-      Serial.println(menu.selectedPlantConfig);
-    }
+    activeConfig = menu.storedConfigs[menu.selectedPlantConfig];
+    lastSelectedPlantIndex = menu.selectedPlantConfig;
+    Serial.print(F("Active plant config changed: "));
+    Serial.println(menu.selectedPlantConfig);
   }
 
   if (lastSelectedPlantIndex >= 0)

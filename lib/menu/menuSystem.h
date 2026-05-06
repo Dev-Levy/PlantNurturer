@@ -22,6 +22,7 @@ public:
     explicit MenuSystem(TimeManager &time, DisplayManager &display, SensorManager &sensor, ActuatorManager &actuator, PlantManager &plant);
 
     int8_t selectedPlantConfig = -1;
+    PlantConfig storedConfigs[PLANT_COUNT];
 
     void begin();
     void draw();
@@ -42,6 +43,8 @@ private:
     ActuatorManager &actuator;
     PlantManager &plant;
 
+    bool isEditing = false;
+
     uint8_t currentCursor = 0;
     const MenuPage *currentPage = nullptr;
     SensorReadings currentReading;
@@ -50,16 +53,15 @@ private:
     uint8_t activePlantIndex = 0;
     const MenuPage *selectedPlantPages[PLANT_COUNT] = {nullptr};
 
-    PlantConfig storedConfigs[PLANT_COUNT];
-
     unsigned long lastHomeRefresh = 0;
     unsigned long lastSensorRefresh = 0;
 
     void saveSettings();
     void loadSettings();
 
-    void
-    drawTimeRow();
+    void handleEditing(KeyPress key);
+
+    void drawTimeRow();
     void drawGrowingRow();
     void drawHomePageMenuItems();
     // void drawMainPageMenuItems();
