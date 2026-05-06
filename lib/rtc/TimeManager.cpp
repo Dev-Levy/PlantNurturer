@@ -26,6 +26,14 @@ void TimeManager::updateTime()
     now = rtc.now();
 }
 
+void TimeManager::forceTimeSync()
+{
+    if (isRTCInitialized)
+    {
+        rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+    }
+}
+
 uint8_t TimeManager::getGrowthWeek(uint32_t currentTime)
 {
     if (growthStartTime == 0 || currentTime < growthStartTime)

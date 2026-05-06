@@ -232,16 +232,10 @@ void MenuSystem::handleEditing(KeyPress key)
         cfg.waterMl = constrain(cfg.waterMl + (dir * 5), 5, 200);
         break;
     case 3:
-        cfg.minTemp = constrain(cfg.minTemp + (dir * 5), 0, 500);
+        cfg.idealTemp = constrain(cfg.idealTemp + (dir * 5), 0, 500);
         break;
     case 4:
-        cfg.maxTemp = constrain(cfg.maxTemp + (dir * 5), 100, 500);
-        break;
-    case 5:
-        cfg.minHumi = constrain(cfg.minHumi + (dir * 5), 50, 500);
-        break;
-    case 6:
-        cfg.maxHumi = constrain(cfg.maxHumi + (dir * 5), 50, 1000);
+        cfg.idealSoilTemp = constrain(cfg.idealSoilTemp + (dir * 5), 0, 500);
         break;
     }
 }
@@ -354,7 +348,6 @@ void MenuSystem::drawPlantPageMenuItems()
 
     for (uint8_t i = 0; i < MAX_VISIBLE; i++)
     {
-
         uint8_t itemIndex = topIndex + i;
         uint8_t yPos = startY + (i * LINE_HEIGHT);
         bool isSelected = (currentCursor == itemIndex);
@@ -380,29 +373,17 @@ void MenuSystem::drawPlantPageMenuItems()
                 display.print(cfg.waterMl);
                 display.print(F(" ml"));
                 break;
-            case 3: // Min Temp
-                display.print(cfg.minTemp / 10);
+            case 3: // Ideal Temp
+                display.print(cfg.idealTemp / 10);
                 display.print(F("."));
-                display.print(cfg.minTemp % 10 < 0 ? -cfg.minTemp % 10 : cfg.minTemp % 10);
+                display.print(cfg.idealTemp % 10 < 0 ? -cfg.idealTemp % 10 : cfg.idealTemp % 10);
                 display.print(F(" C"));
                 break;
-            case 4: // Max Temp
-                display.print(cfg.maxTemp / 10);
+            case 4: // Ideal Soil Temp
+                display.print(cfg.idealSoilTemp / 10);
                 display.print(F("."));
-                display.print(cfg.maxTemp % 10 < 0 ? -cfg.maxTemp % 10 : cfg.maxTemp % 10);
+                display.print(cfg.idealSoilTemp % 10 < 0 ? -cfg.idealSoilTemp % 10 : cfg.idealSoilTemp % 10);
                 display.print(F(" C"));
-                break;
-            case 5: // Min humidity
-                display.print(cfg.minHumi / 10);
-                display.print(F("."));
-                display.print(cfg.minHumi % 10);
-                display.print(F(" %"));
-                break;
-            case 6: // Max humidity
-                display.print(cfg.maxHumi / 10);
-                display.print(F("."));
-                display.print(cfg.maxHumi % 10);
-                display.print(F(" %"));
                 break;
             default:
                 // A Start, Remove, Back

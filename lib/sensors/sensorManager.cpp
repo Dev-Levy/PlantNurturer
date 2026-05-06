@@ -80,8 +80,9 @@ SensorReading SensorManager::readAll()
     }
     else
     {
-        int32_t percentage = ((int32_t)(rawMoisture - 1023) * 100) / (200 - 1023);
-        lastReading.soilMoisture = (uint8_t)constrain(percentage, 0, 100);
+        // int32_t percentage = ((int32_t)(rawMoisture - 1023) * 100) / (200 - 1023);
+        // lastReading.soilMoisture = (uint8_t)constrain(percentage, 0, 100);
+        lastReading.soilMoisture = rawMoisture / 10;
     }
 
     return lastReading;

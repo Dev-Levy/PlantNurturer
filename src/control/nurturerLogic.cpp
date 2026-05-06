@@ -39,14 +39,10 @@ void NurturerLogic::control(const PlantConfig &config)
         Serial.print(F("Water ml: "));
         Serial.println(config.waterMl);
 
-        Serial.print(F("Min temp: "));
-        Serial.println(config.minTemp);
-        Serial.print(F("Max temp: "));
-        Serial.println(config.maxTemp);
-        Serial.print(F("Min humidity: "));
-        Serial.println(config.minHumi);
-        Serial.print(F("Max humidity: "));
-        Serial.println(config.maxHumi);
+        Serial.print(F("Ideal temp: "));
+        Serial.println(config.idealTemp);
+        Serial.print(F("Ideal soil temp: "));
+        Serial.println(config.idealSoilTemp);
 
         Serial.println(F("--------------------"));
     }
@@ -55,6 +51,14 @@ void NurturerLogic::control(const PlantConfig &config)
     {
         data = sensor.readAll();
         lastSensorRefresh = millis();
+
+        int currentHour = clock.getHour();
+        int half = config.sunnyHours / 2;
+        bool afternoon = currentHour > 12;
+        Serial.print(F("Current hour: "));
+        Serial.println(currentHour);
+        Serial.print(F("Is sunny hour: "));
+        Serial.println(afternoon ? currentHour - 12 <= half : 12 - currentHour <= half);
     }
 
     controlPump(config);
@@ -70,9 +74,7 @@ void NurturerLogic::controlPump(const PlantConfig &config)
     if (!pumpRunning && data.soilMoisture < config.waterLimit &&
         (millis() - pumpWaitTime >= PUMP_COOLDOWN_IN_SECONDS * 1000UL))
     {
-        Serial.println(F("Turning on pump"));
-
-        actuator.togglePump();
+        actuator.turnOnPump();
         pumpRunning = true;
         pumpStart = millis();
     }
@@ -80,9 +82,7 @@ void NurturerLogic::controlPump(const PlantConfig &config)
     if (pumpRunning &&
         (millis() - pumpStart >= wateringDurationMs))
     {
-        Serial.println(F("Turning off pump"));
-
-        actuator.togglePump();
+        actuator.turnOffPump();
         pumpRunning = false;
         pumpWaitTime = millis();
     }
@@ -90,20 +90,16 @@ void NurturerLogic::controlPump(const PlantConfig &config)
 
 void NurturerLogic::controlLight(const PlantConfig &config)
 {
-    if (!lightOn && !data.light &&
+    if (!lightOn && !data.light && isSunnyHour(config) &&
         (millis() - lightWaitTime >= LIGHT_COOLDOWN_IN_SECONDS * 1000UL))
     {
-        Serial.println(F("Turning on light"));
-
-        actuator.toggleLight();
+        actuator.turnOnLight();
         lightOn = true;
     }
 
     if (lightOn && data.light)
     {
-        Serial.println(F("Turning off light"));
-
-        actuator.toggleLight();
+        actuator.turnOffLight();
         lightWaitTime = millis();
         lightOn = false;
     }
@@ -111,21 +107,37 @@ void NurturerLogic::controlLight(const PlantConfig &config)
 
 void NurturerLogic::controlFan(const PlantConfig &config)
 {
-    if (!fanRunning && data.airTemp > (float)config.maxTemp / 10 &&
+    if (!fanRunning && (float)data.airTemp / 10 > (float)config.idealTemp + 5 / 10 &&
         (millis() - fanWaitTime >= FAN_COOLDOWN_IN_SECONDS * 1000UL))
     {
-        Serial.println(F("Turning on fan"));
-
-        actuator.toggleFan();
+        actuator.turnOnFan();
         fanRunning = true;
     }
 
-    if (fanRunning && data.airTemp < (float)config.minTemp / 10)
+    if (fanRunning && (float)data.airTemp / 10 < (float)config.idealTemp - 5 / 10)
     {
-        Serial.println(F("Turning off fan"));
-
-        actuator.toggleFan();
+        actuator.turnOffFan();
         fanWaitTime = millis();
         fanRunning = false;
+    }
+}
+
+void NurturerLogic::controlPad(const PlantConfig &config)
+{
+}
+
+bool NurturerLogic::isSunnyHour(const PlantConfig &config)
+{
+    int currentHour = clock.getHour();
+    int half = config.sunnyHours / 2;
+    bool afternoon = currentHour > 12;
+
+    if (config.sunnyHours % 2 == 0)
+    {
+        return afternoon ? currentHour - 12 <= half : 12 - currentHour <= half;
+    }
+    else
+    {
+        return afternoon ? currentHour - 12 <= half : 12 - currentHour <= half + 1;
     }
 }
