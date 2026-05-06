@@ -17,12 +17,12 @@ static int8_t lastSelectedPlantIndex = -1;
 static PlantConfig activeConfig{};
 
 TimeManager clock;
-DisplayManager tft;
+DisplayManager display;
 SensorManager sensors;
 ActuatorManager actuators;
 PlantManager plant;
 
-MenuSystem menu(clock, tft, sensors, actuators, plant);
+MenuSystem menu(clock, display, sensors, actuators, plant);
 NurturerLogic logic(clock, sensors, actuators, plant);
 
 void setup()
@@ -32,7 +32,7 @@ void setup()
   setupPins();
 
   clock.begin();
-  tft.begin();
+  display.begin();
   sensors.begin();
   menu.begin();
 

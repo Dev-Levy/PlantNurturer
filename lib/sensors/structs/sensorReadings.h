@@ -1,6 +1,6 @@
 #pragma once
 
-struct SensorReadings
+struct SensorReading
 {
     int16_t airTemp;
     int16_t airHumidity;

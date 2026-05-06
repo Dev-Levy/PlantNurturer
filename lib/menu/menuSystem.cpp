@@ -13,7 +13,6 @@ MenuSystem::MenuSystem(TimeManager &time, DisplayManager &display, SensorManager
 
 void MenuSystem::begin()
 {
-    saveSettings(); // Save default settings if not already saved
     loadSettings();
 
     globalMenuPtr = this;
@@ -468,7 +467,7 @@ void MenuSystem::drawMenuItems()
     }
 }
 
-void MenuSystem::drawSensorPageMenuItem(uint8_t index, uint8_t y, bool isSelected, const SensorReadings &data, const __FlashStringHelper *label)
+void MenuSystem::drawSensorPageMenuItem(uint8_t index, uint8_t y, bool isSelected, const SensorReading &data, const __FlashStringHelper *label)
 {
     setItemDrawingProps(isSelected, y);
     display.print(label);

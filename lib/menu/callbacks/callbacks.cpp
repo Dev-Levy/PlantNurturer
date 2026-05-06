@@ -37,7 +37,7 @@ void MenuSystem::plantStartGrowingCallback(void *ctx)
 
     if (!ctx)
         return;
-    ((TimeManager *)ctx)->resetWeekCounter(((TimeManager *)ctx)->getUnixNow());
+    ((TimeManager *)ctx)->resetGrowthWeek(((TimeManager *)ctx)->getUnixNow());
 
     globalMenuPtr->mainPlantIndex = globalMenuPtr->activePlantIndex;
     globalMenuPtr->selectedPlantConfig = globalMenuPtr->storedConfigs[globalMenuPtr->mainPlantIndex].idx;
