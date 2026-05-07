@@ -10,10 +10,12 @@ void ActuatorManager::togglePump()
     if (state.pumpOn)
     {
         turnOffPump();
+        pumpWaitTime = millis();
     }
     else
     {
         turnOnPump();
+        pumpStart = millis();
     }
     state.pumpOn = !state.pumpOn;
 }
@@ -23,6 +25,7 @@ void ActuatorManager::toggleLight()
     if (state.lightOn)
     {
         turnOffLight();
+        lightWaitTime = millis();
     }
     else
     {
@@ -36,6 +39,7 @@ void ActuatorManager::toggleFan()
     if (state.fanOn)
     {
         turnOffFan();
+        fanWaitTime = millis();
     }
     else
     {
@@ -49,6 +53,7 @@ void ActuatorManager::togglePad()
     if (state.padOn)
     {
         turnOffPad();
+        padWaitTime = millis();
     }
     else
     {

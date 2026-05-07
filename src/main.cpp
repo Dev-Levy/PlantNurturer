@@ -51,24 +51,6 @@ void loop()
 
   if (key != KeyPress::NONE && lastKey == KeyPress::NONE)
   {
-    Serial.print(F("Key pressed: "));
-    switch (key)
-    {
-    case KeyPress::UP:
-      Serial.println(F("UP"));
-      break;
-    case KeyPress::DOWN:
-
-      Serial.println(F("DOWN"));
-      break;
-    case KeyPress::SELECT:
-      Serial.println(F("SELECT"));
-      break;
-    default:
-      Serial.println(F("UNKNOWN"));
-      break;
-    }
-
     menu.processKey(key);
     menu.draw();
   }
@@ -79,7 +61,6 @@ void loop()
 
   if (menu.selectedPlantConfig != lastSelectedPlantIndex)
   {
-    activeConfig = menu.storedConfigs[menu.selectedPlantConfig];
     lastSelectedPlantIndex = menu.selectedPlantConfig;
     Serial.print(F("Active plant config changed: "));
     Serial.println(menu.selectedPlantConfig);
@@ -87,6 +68,7 @@ void loop()
 
   if (lastSelectedPlantIndex >= 0)
   {
+    activeConfig = menu.storedConfigs[menu.selectedPlantConfig];
     logic.control(activeConfig);
   }
 }
