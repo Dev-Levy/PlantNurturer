@@ -44,6 +44,19 @@ void ActuatorManager::toggleFan()
     state.fanOn = !state.fanOn;
 }
 
+void ActuatorManager::togglePad()
+{
+    if (state.padOn)
+    {
+        turnOffPad();
+    }
+    else
+    {
+        turnOnPad();
+    }
+    state.padOn = !state.padOn;
+}
+
 void ActuatorManager::turnOnPump()
 {
     Serial.println(F("Pump turned ON"));
@@ -78,4 +91,16 @@ void ActuatorManager::turnOffFan()
 {
     Serial.println(F("Fan turned OFF"));
     digitalWrite(FAN, HIGH);
+}
+
+void ActuatorManager::turnOnPad()
+{
+    Serial.println(F("Pad turned ON"));
+    digitalWrite(PAD, LOW);
+}
+
+void ActuatorManager::turnOffPad()
+{
+    Serial.println(F("Pad turned OFF"));
+    digitalWrite(PAD, HIGH);
 }

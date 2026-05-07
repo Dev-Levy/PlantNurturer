@@ -49,5 +49,6 @@ const MenuItem actuatorActionItems[] PROGMEM = {
     {(const __FlashStringHelper *)labelPump, nullptr, MenuSystem::togglePumpCallBack, &actuators},
     {(const __FlashStringHelper *)labelLight, nullptr, MenuSystem::toggleLightCallBack, &actuators},
     {(const __FlashStringHelper *)labelFan, nullptr, MenuSystem::toggleFanCallBack, &actuators},
+    {(const __FlashStringHelper *)labelPad, nullptr, MenuSystem::togglePadCallBack, &actuators},
     {(const __FlashStringHelper *)labelBack, &mainPage, nullptr, nullptr},
 };

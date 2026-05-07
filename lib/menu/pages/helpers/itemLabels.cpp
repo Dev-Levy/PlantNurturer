@@ -39,3 +39,4 @@ const char labelSoilTempSensor[] PROGMEM = "Soil temp: ";
 const char labelPump[] PROGMEM = "Pump";
 const char labelLight[] PROGMEM = "Light";
 const char labelFan[] PROGMEM = "Fan";
+const char labelPad[] PROGMEM = "Heating Pad";

@@ -9,12 +9,16 @@ public:
     void togglePump();
     void toggleLight();
     void toggleFan();
+    void togglePad();
+
     void turnOnPump();
     void turnOffPump();
     void turnOnLight();
     void turnOffLight();
     void turnOnFan();
     void turnOffFan();
+    void turnOnPad();
+    void turnOffPad();
 
 private:
     struct
@@ -22,5 +26,6 @@ private:
         uint8_t pumpOn : 1;
         uint8_t lightOn : 1;
         uint8_t fanOn : 1;
+        uint8_t padOn : 1;
     } state;
 };

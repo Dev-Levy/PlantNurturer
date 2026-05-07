@@ -51,6 +51,24 @@ void loop()
 
   if (key != KeyPress::NONE && lastKey == KeyPress::NONE)
   {
+    Serial.print(F("Key pressed: "));
+    switch (key)
+    {
+    case KeyPress::UP:
+      Serial.println(F("UP"));
+      break;
+    case KeyPress::DOWN:
+
+      Serial.println(F("DOWN"));
+      break;
+    case KeyPress::SELECT:
+      Serial.println(F("SELECT"));
+      break;
+    default:
+      Serial.println(F("UNKNOWN"));
+      break;
+    }
+
     menu.processKey(key);
     menu.draw();
   }

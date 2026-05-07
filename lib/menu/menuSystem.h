@@ -35,6 +35,7 @@ public:
     static void togglePumpCallBack(void *ctx);
     static void toggleLightCallBack(void *ctx);
     static void toggleFanCallBack(void *ctx);
+    static void togglePadCallBack(void *ctx);
 
 private:
     TimeManager &time;

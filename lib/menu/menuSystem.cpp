@@ -475,10 +475,11 @@ void MenuSystem::drawSensorPageMenuItem(uint8_t index, uint8_t y, bool isSelecte
         display.print(F(" %"));
         break;
     case 4:
-        display.print(data.soilMoisture / 10);
-        display.print(F("."));
-        display.print(data.soilMoisture % 10 < 0 ? -data.soilMoisture % 10 : data.soilMoisture % 10);
-        display.print(F(" %"));
+        display.print(data.soilMoisture);
+        // display.print(data.soilMoisture / 10);
+        // display.print(F("."));
+        // display.print(data.soilMoisture % 10 < 0 ? -data.soilMoisture % 10 : data.soilMoisture % 10);
+        // display.print(F(" %"));
         break;
     }
 }

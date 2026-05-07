@@ -1,6 +1,6 @@
 #include "sensorManager.h"
 
-SensorManager::SensorManager()
+SensorManager::SensorManager() : oneWire(SOIL_TEMP_PIN), sensors(&oneWire)
 {
 }
 
@@ -21,6 +21,7 @@ void SensorManager::begin()
     }
 
     pinMode(SOIL_MOIST_PIN, INPUT);
+    pinMode(SOIL_TEMP_PIN, INPUT);
 }
 
 SensorReading SensorManager::readAll()
@@ -83,6 +84,17 @@ SensorReading SensorManager::readAll()
         // int32_t percentage = ((int32_t)(rawMoisture - 1023) * 100) / (200 - 1023);
         // lastReading.soilMoisture = (uint8_t)constrain(percentage, 0, 100);
         lastReading.soilMoisture = rawMoisture / 10;
+    }
+
+    sensors.requestTemperatures();
+    float soilTempC = sensors.getTempCByIndex(0);
+    if (!isnan(soilTempC))
+    {
+        lastReading.soilTemp = (int16_t)(soilTempC * 10);
+    }
+    else
+    {
+        lastReading.soilTemp = 0;
     }
 
     return lastReading;

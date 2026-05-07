@@ -80,3 +80,10 @@ void MenuSystem::toggleFanCallBack(void *ctx)
         return;
     ((ActuatorManager *)ctx)->toggleFan();
 }
+
+void MenuSystem::togglePadCallBack(void *ctx)
+{
+    if (!ctx)
+        return;
+    ((ActuatorManager *)ctx)->togglePad();
+}
