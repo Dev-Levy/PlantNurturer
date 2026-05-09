@@ -42,6 +42,10 @@ static constexpr uint8_t BASIL_CONFIG_ID = 3;
 #define FAN 4
 #define PAD A0
 
+// sensor pins
+#define SOIL_MOIST_PIN A1
+#define SOIL_TEMP_PIN A2
+
 // display pins
 #define TFT_CS 10
 #define TFT_RST 8
@@ -52,10 +56,6 @@ static constexpr uint8_t BASIL_CONFIG_ID = 3;
 #define BUTTON_DOWN 6
 // sadly pin 7 is not functional due to a hardware issue, so we use pin 12 for select instead
 #define BUTTON_SELECT 12
-
-// sensor pins
-#define SOIL_MOIST_PIN A1
-#define SOIL_TEMP_PIN A2
 
 inline void setupPins()
 {
