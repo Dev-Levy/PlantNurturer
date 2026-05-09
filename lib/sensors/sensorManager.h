@@ -23,7 +23,7 @@ private:
     Adafruit_AHTX0 aht;
     BH1750 lightMeter;
     OneWire oneWire;
-    DallasTemperature sensors;
+    DallasTemperature soilTempMeter;
 
     struct
     {
