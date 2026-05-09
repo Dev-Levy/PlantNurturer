@@ -90,13 +90,13 @@ void NurturerLogic::controlLight(const PlantConfig &config)
 
 void NurturerLogic::controlFan(const PlantConfig &config)
 {
-    if (!actuator.state.fanOn && (float)data.airTemp / 10 > (float)config.idealTemp / 10 + 5 &&
+    if (!actuator.state.fanOn && (float)data.airTemp / 10 > (float)config.idealTemp / 10 + 1 &&
         (millis() - actuator.fanWaitTime >= FAN_COOLDOWN_IN_SECONDS * 1000UL))
     {
         actuator.toggleFan();
     }
 
-    if (actuator.state.fanOn && (float)data.airTemp / 10 < (float)config.idealTemp / 10 - 5)
+    if (actuator.state.fanOn && (float)data.airTemp / 10 < (float)config.idealTemp / 10 - 1)
     {
         actuator.toggleFan();
     }
@@ -104,13 +104,13 @@ void NurturerLogic::controlFan(const PlantConfig &config)
 
 void NurturerLogic::controlPad(const PlantConfig &config)
 {
-    if (!actuator.state.padOn && (float)data.soilTemp / 10 > (float)config.idealSoilTemp / 10 - 5 &&
+    if (!actuator.state.padOn && (float)data.soilTemp / 10 > (float)config.idealSoilTemp / 10 - 1 &&
         millis() - actuator.padWaitTime >= HEATING_COOLDOWN_IN_SECONDS * 1000UL)
     {
         actuator.togglePad();
     }
 
-    if (actuator.state.padOn && (float)data.soilTemp / 10 < (float)config.idealSoilTemp / 10 + 5)
+    if (actuator.state.padOn && (float)data.soilTemp / 10 < (float)config.idealSoilTemp / 10 + 1)
     {
         actuator.togglePad();
     }
@@ -128,6 +128,6 @@ bool NurturerLogic::isSunnyHour(const PlantConfig &config)
     }
     else
     {
-        return afternoon ? currentHour - 12 <= half : 12 - currentHour <= half + 1;
+        return afternoon ? currentHour - 12 <= half + 1 : 12 - currentHour <= half;
     }
 }
