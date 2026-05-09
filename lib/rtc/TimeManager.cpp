@@ -28,10 +28,7 @@ void TimeManager::updateTime()
 
 void TimeManager::forceTimeSync()
 {
-    if (isRTCInitialized)
-    {
-        rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
-    }
+    rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
 }
 
 uint8_t TimeManager::getGrowthWeek(uint32_t currentTime)
