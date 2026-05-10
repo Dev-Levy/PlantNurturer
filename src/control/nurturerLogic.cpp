@@ -41,14 +41,6 @@ void NurturerLogic::control(const PlantConfig &config)
     {
         data = sensor.readAll();
         lastSensorRefresh = millis();
-
-        int currentHour = clock.getHour();
-        int half = config.sunnyHours / 2;
-        bool afternoon = currentHour > 12;
-        Serial.print(F("Current hour: "));
-        Serial.println(currentHour);
-        Serial.print(F("Is sunny hour: "));
-        Serial.println(afternoon ? currentHour - 12 <= half : 12 - currentHour <= half);
     }
 
     controlPump(config);
