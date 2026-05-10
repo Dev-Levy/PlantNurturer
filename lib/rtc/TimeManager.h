@@ -12,11 +12,8 @@ public:
     void updateTime();
     void forceTimeSync();
 
-    inline uint32_t
-    getUnixNow()
-    {
-        return isRTCInitialized ? rtc.now().unixtime() : 0;
-    }
+    inline uint32_t getUnixNow() { return isRTCInitialized ? rtc.now().unixtime() : 0; }
+
     inline uint8_t getHour() { return isRTCInitialized ? now.hour() : 0; }
     inline uint8_t getMinute() { return isRTCInitialized ? now.minute() : 0; }
     inline uint8_t getSecond() { return isRTCInitialized ? now.second() : 0; }
