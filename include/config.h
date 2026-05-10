@@ -1,9 +1,6 @@
 #pragma once
 #include <Arduino.h>
 
-// sensor types
-#define DHT_TYPE DHT22
-
 // constants
 static constexpr uint8_t HOME_PAGE_ITEMS = 1;
 static constexpr uint8_t MAIN_PAGE_ITEMS = 4;
