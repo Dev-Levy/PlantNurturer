@@ -518,3 +518,20 @@ void MenuSystem::print2Digits(uint8_t value)
     }
     display.print(value);
 }
+
+const char *MenuSystem::getMonthName(uint8_t month)
+{
+    static const char *months[] = {
+        "Inv",
+        "Jan", "Feb", "Mar",
+        "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep",
+        "Oct", "Nov", "Dec"};
+
+    if (month > 12)
+    {
+        return months[0];
+    }
+
+    return months[month];
+}

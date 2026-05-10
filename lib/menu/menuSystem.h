@@ -5,7 +5,6 @@
 
 #include "pages/pages.h"
 #include "navigationKeys/keys.h"
-#include "helpers/helper.h"
 #include "structs/settingsSave.h"
 
 #include "timeManager.h"
@@ -75,4 +74,5 @@ private:
     void drawSensorPageMenuItem(uint8_t index, uint8_t y, bool isSelected, const SensorReading &data, const __FlashStringHelper *label);
     void setItemDrawingProps(bool isSelected, uint8_t y);
     void print2Digits(uint8_t value);
+    const char *getMonthName(uint8_t month);
 };
