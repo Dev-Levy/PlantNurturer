@@ -2,6 +2,7 @@
 
 static unsigned long lastSensorRefresh = 0;
 static unsigned long lastConfigIndex = 99;
+static const uint8_t allowedCelsiusDiff = 1;
 
 NurturerLogic::NurturerLogic(TimeManager &clock, SensorManager &sensor, ActuatorManager &actuator, PlantManager &plant)
     : clock(clock), sensor(sensor), actuator(actuator), plant(plant)
@@ -54,14 +55,26 @@ void NurturerLogic::controlPump(const PlantConfig &config)
     const uint8_t wateringSeconds = plant.getWateringSeconds(config.waterMl);
     const unsigned long wateringDurationMs = (unsigned long)wateringSeconds * 1000UL;
 
-    if (!actuator.state.pumpOn && data.soilMoisture < config.waterLimit &&
-        (millis() - actuator.pumpWaitTime >= PUMP_COOLDOWN_IN_SECONDS * 1000UL))
+    bool pumpOn = actuator.state.pumpOn;
+    bool shouldWater = data.soilMoisture < config.waterLimit;
+    bool canToggle = millis() - actuator.pumpWaitTime >= PUMP_COOLDOWN_IN_SECONDS * 1000UL;
+    bool wateredEnough = pumpOn && millis() - actuator.pumpStart >= wateringDurationMs;
+
+    bool shouldTurnOn = !pumpOn && shouldWater && canToggle;
+    bool shouldTurnOff = (pumpOn && wateredEnough) || (pumpOn && !shouldWater);
+
+    // if (millis() - lastSensorRefresh > SENSOR_READ_WAIT_TIME * 1000UL)
+    // {
+    //     Serial.print(pumpOn ? F("Pump is ON. ") : F("Pump is OFF. "));
+    //     Serial.print(shouldWater ? F("Should water. ") : F("Should NOT water. "));
+    //     Serial.println(canToggle ? F("Can toggle. ") : F("Cannot toggle. "));
+    // }
+
+    if (shouldTurnOn)
     {
         actuator.togglePump();
     }
-
-    if (actuator.state.pumpOn &&
-        (millis() - actuator.pumpStart >= wateringDurationMs))
+    if (shouldTurnOff)
     {
         actuator.togglePump();
     }
@@ -69,14 +82,27 @@ void NurturerLogic::controlPump(const PlantConfig &config)
 
 void NurturerLogic::controlLight(const PlantConfig &config)
 {
-    if (!actuator.state.lightOn && !data.light && isSunnyHour(config) &&
-        (millis() - actuator.lightWaitTime >= LIGHT_COOLDOWN_IN_SECONDS * 1000UL))
+    bool lightOn = actuator.state.lightOn;
+    bool isThereEnoughLight = data.lightLux > LUX_LIMIT;
+    bool shouldHaveLight = isSunnyHour(config);
+    bool canToggle = millis() - actuator.lightWaitTime >= LIGHT_COOLDOWN_IN_SECONDS * 1000UL;
+
+    bool shouldTurnOn = !lightOn && !isThereEnoughLight && shouldHaveLight && canToggle;
+    bool shouldTurnOff = (lightOn && isThereEnoughLight && canToggle) || (lightOn && !shouldHaveLight);
+
+    // if (millis() - lastSensorRefresh > SENSOR_READ_WAIT_TIME * 1000UL)
+    // {
+    //     Serial.print(lightOn ? F("Light is ON. ") : F("Light is OFF. "));
+    //     Serial.print(isThereEnoughLight ? F("There is enough light. ") : F("There is NOT enough light. "));
+    //     Serial.print(shouldHaveLight ? F("Should have light. ") : F("Should NOT have light. "));
+    //     Serial.println(canToggle ? F("Can toggle. ") : F("Cannot toggle. "));
+    // }
+
+    if (shouldTurnOn)
     {
         actuator.toggleLight();
     }
-
-    if ((!isSunnyHour(config) && actuator.state.lightOn) ||
-        ((actuator.state.lightOn && data.light) && (millis() - actuator.lightWaitTime >= LIGHT_COOLDOWN_IN_SECONDS * 1000UL)))
+    if (shouldTurnOff)
     {
         actuator.toggleLight();
     }
@@ -84,14 +110,27 @@ void NurturerLogic::controlLight(const PlantConfig &config)
 
 void NurturerLogic::controlFan(const PlantConfig &config)
 {
-    if (!actuator.state.fanOn && (float)data.airTemp / 10 > (float)config.idealTemp / 10 + 1 &&
-        (millis() - actuator.fanWaitTime >= FAN_COOLDOWN_IN_SECONDS * 1000UL))
+    bool fanOn = actuator.state.fanOn;
+    bool isTooHot = (float)data.airTemp / 10 > (float)config.idealTemp / 10 + allowedCelsiusDiff;
+    bool isTooCold = (float)data.airTemp / 10 < (float)config.idealTemp / 10 - allowedCelsiusDiff;
+    bool canToggle = millis() - actuator.fanWaitTime >= FAN_COOLDOWN_IN_SECONDS * 1000UL;
+
+    bool shouldTurnOn = !fanOn && isTooHot && canToggle;
+    bool shouldTurnOff = fanOn && isTooCold && canToggle;
+
+    // if (millis() - lastSensorRefresh > SENSOR_READ_WAIT_TIME * 1000UL)
+    // {
+    //     Serial.print(fanOn ? F("Fan is ON. ") : F("Fan is OFF. "));
+    //     Serial.print(isTooHot ? F("It is too hot. ") : F("It is not too hot. "));
+    //     Serial.print(isTooCold ? F("It is too cold. ") : F("It is not too cold. "));
+    //     Serial.println(canToggle ? F("Can toggle. ") : F("Cannot toggle. "));
+    // }
+
+    if (shouldTurnOn)
     {
         actuator.toggleFan();
     }
-
-    if (actuator.state.fanOn && (float)data.airTemp / 10 < (float)config.idealTemp / 10 - 1 &&
-        (millis() - actuator.fanWaitTime >= FAN_COOLDOWN_IN_SECONDS * 1000UL))
+    if (shouldTurnOff)
     {
         actuator.toggleFan();
     }
@@ -99,14 +138,27 @@ void NurturerLogic::controlFan(const PlantConfig &config)
 
 void NurturerLogic::controlPad(const PlantConfig &config)
 {
-    if (!actuator.state.padOn && (float)data.soilTemp / 10 > (float)config.idealSoilTemp / 10 - 1 &&
-        millis() - actuator.padWaitTime >= HEATING_COOLDOWN_IN_SECONDS * 1000UL)
+    bool padOn = actuator.state.padOn;
+    bool isTooCold = (float)data.soilTemp / 10 < (float)config.idealSoilTemp / 10 - allowedCelsiusDiff;
+    bool isTooHot = (float)data.soilTemp / 10 > (float)config.idealSoilTemp / 10 + allowedCelsiusDiff;
+    bool canToggle = millis() - actuator.padWaitTime >= HEATING_COOLDOWN_IN_SECONDS * 1000UL;
+
+    bool shouldTurnOn = !padOn && isTooCold && canToggle;
+    bool shouldTurnOff = padOn && isTooHot && canToggle;
+
+    // if (millis() - lastSensorRefresh > SENSOR_READ_WAIT_TIME * 1000UL)
+    // {
+    //     Serial.print(padOn ? F("Pad is ON. ") : F("Pad is OFF. "));
+    //     Serial.print(isTooCold ? F("Soil is too cold. ") : F("Soil is not too cold. "));
+    //     Serial.print(isTooHot ? F("Soil is too hot. ") : F("Soil is not too hot. "));
+    //     Serial.println(canToggle ? F("Can toggle. ") : F("Cannot toggle. "));
+    // }
+
+    if (shouldTurnOn)
     {
         actuator.togglePad();
     }
-
-    if (actuator.state.padOn && (float)data.soilTemp / 10 < (float)config.idealSoilTemp / 10 + 1 &&
-        millis() - actuator.padWaitTime >= HEATING_COOLDOWN_IN_SECONDS * 1000UL)
+    if (shouldTurnOff)
     {
         actuator.togglePad();
     }
