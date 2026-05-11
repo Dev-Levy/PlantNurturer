@@ -37,7 +37,7 @@ void NurturerLogic::control(const PlantConfig &config)
         Serial.println(F("--------------------"));
     }
 
-    if (millis() - lastSensorRefresh > 2000)
+    if (millis() - lastSensorRefresh > SENSOR_READ_WAIT_TIME * 1000UL)
     {
         data = sensor.readAll();
         lastSensorRefresh = millis();
@@ -46,6 +46,7 @@ void NurturerLogic::control(const PlantConfig &config)
     controlPump(config);
     controlLight(config);
     controlFan(config);
+    controlPad(config);
 }
 
 void NurturerLogic::controlPump(const PlantConfig &config)
@@ -74,7 +75,8 @@ void NurturerLogic::controlLight(const PlantConfig &config)
         actuator.toggleLight();
     }
 
-    if ((actuator.state.lightOn && data.light) || (!isSunnyHour(config) && actuator.state.lightOn))
+    if ((!isSunnyHour(config) && actuator.state.lightOn) ||
+        ((actuator.state.lightOn && data.light) && (millis() - actuator.lightWaitTime >= LIGHT_COOLDOWN_IN_SECONDS * 1000UL)))
     {
         actuator.toggleLight();
     }
@@ -88,7 +90,8 @@ void NurturerLogic::controlFan(const PlantConfig &config)
         actuator.toggleFan();
     }
 
-    if (actuator.state.fanOn && (float)data.airTemp / 10 < (float)config.idealTemp / 10 - 1)
+    if (actuator.state.fanOn && (float)data.airTemp / 10 < (float)config.idealTemp / 10 - 1 &&
+        (millis() - actuator.fanWaitTime >= FAN_COOLDOWN_IN_SECONDS * 1000UL))
     {
         actuator.toggleFan();
     }
@@ -102,7 +105,8 @@ void NurturerLogic::controlPad(const PlantConfig &config)
         actuator.togglePad();
     }
 
-    if (actuator.state.padOn && (float)data.soilTemp / 10 < (float)config.idealSoilTemp / 10 + 1)
+    if (actuator.state.padOn && (float)data.soilTemp / 10 < (float)config.idealSoilTemp / 10 + 1 &&
+        millis() - actuator.padWaitTime >= HEATING_COOLDOWN_IN_SECONDS * 1000UL)
     {
         actuator.togglePad();
     }
