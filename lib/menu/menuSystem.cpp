@@ -106,8 +106,8 @@ void MenuSystem::refresh()
         lastHomeRefresh = millis();
     }
 
-    // refresh every 2 seconds
-    if (currentPage == &sensorPage && millis() - lastSensorRefresh > 2000)
+    // refresh every SENSOR_READ_WAIT_TIME seconds
+    if (currentPage == &sensorPage && millis() - lastSensorRefresh > SENSOR_READ_WAIT_TIME * 1000UL)
     {
         currentReading = sensor.readAll();
         drawSensorPageMenuItems();

@@ -28,6 +28,8 @@ static constexpr uint8_t LIGHT_COOLDOWN_IN_SECONDS = 5;
 static constexpr uint8_t FAN_COOLDOWN_IN_SECONDS = 5;
 static constexpr uint8_t HEATING_COOLDOWN_IN_SECONDS = 5;
 
+static constexpr uint8_t SENSOR_READ_WAIT_TIME = 2; // in seconds
+
 static constexpr uint8_t TOMATO_CONFIG_ID = 0;
 static constexpr uint8_t CHILI_CONFIG_ID = 1;
 static constexpr uint8_t MINT_CONFIG_ID = 2;
