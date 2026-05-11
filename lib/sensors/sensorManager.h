@@ -5,8 +5,8 @@
 #include <Wire.h>
 #include <Adafruit_AHTX0.h>
 
-// #include <OneWire.h>
-// #include <DallasTemperature.h>
+#include <OneWire.h>
+#include <DallasTemperature.h>
 
 #include "structs/sensorReadings.h"
 
@@ -17,22 +17,20 @@ class SensorManager
 public:
     SensorManager();
     void begin();
-    SensorReadings readAll();
+    SensorReading readAll();
 
 private:
     Adafruit_AHTX0 aht;
     BH1750 lightMeter;
+    OneWire oneWire;
+    DallasTemperature soilTempMeter;
 
     struct
     {
         uint8_t lightReady : 1;
         uint8_t ahtReady : 1;
-        uint8_t bmpReady : 1;
     } state;
 
-    // OneWire oneWire;
-    // DallasTemperature sensors;
-
-    SensorReadings lastReadings;
+    SensorReading lastReading;
     uint32_t lastSlowRead = 0;
 };

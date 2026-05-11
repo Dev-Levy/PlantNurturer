@@ -17,12 +17,12 @@ static int8_t lastSelectedPlantIndex = -1;
 static PlantConfig activeConfig{};
 
 TimeManager clock;
-DisplayManager tft;
+DisplayManager display;
 SensorManager sensors;
 ActuatorManager actuators;
 PlantManager plant;
 
-MenuSystem menu(clock, tft, sensors, actuators, plant);
+MenuSystem menu(clock, display, sensors, actuators, plant);
 NurturerLogic logic(clock, sensors, actuators, plant);
 
 void setup()
@@ -32,11 +32,11 @@ void setup()
   setupPins();
 
   clock.begin();
-  tft.begin();
+  display.begin();
   sensors.begin();
   menu.begin();
 
-  if (lastSelectedPlantIndex >= 0 && lastSelectedPlantIndex != menu.selectedPlantConfig)
+  if (lastSelectedPlantIndex != menu.selectedPlantConfig)
   {
     activeConfig = menu.storedConfigs[menu.selectedPlantConfig];
     lastSelectedPlantIndex = menu.selectedPlantConfig;
@@ -59,9 +59,8 @@ void loop()
 
   menu.refresh();
 
-  if (lastSelectedPlantIndex >= 0 && menu.selectedPlantConfig != lastSelectedPlantIndex)
+  if (menu.selectedPlantConfig != lastSelectedPlantIndex)
   {
-    activeConfig = menu.storedConfigs[menu.selectedPlantConfig];
     lastSelectedPlantIndex = menu.selectedPlantConfig;
     Serial.print(F("Active plant config changed: "));
     Serial.println(menu.selectedPlantConfig);
@@ -69,6 +68,7 @@ void loop()
 
   if (lastSelectedPlantIndex >= 0)
   {
+    activeConfig = menu.storedConfigs[menu.selectedPlantConfig];
     logic.control(activeConfig);
   }
 }

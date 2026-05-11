@@ -22,10 +22,8 @@ const char labelBasil[] PROGMEM = "Basil";
 const char labelSunnyHours[] PROGMEM = "Sunny hours: ";
 const char labelWaterLimit[] PROGMEM = "Water limit: ";
 const char labelWaterInMl[] PROGMEM = "Water (ml): ";
-const char labelMinTemp[] PROGMEM = "Min temp: ";
-const char labelMaxTemp[] PROGMEM = "Max temp: ";
-const char labelMinHumi[] PROGMEM = "Min humi: ";
-const char labelMaxHumi[] PROGMEM = "Max humi: ";
+const char labelMinTemp[] PROGMEM = "Ideal temp: ";
+const char labelMaxTemp[] PROGMEM = "Ideal soil temp: ";
 const char labelStart[] PROGMEM = "# start growing";
 const char labelRemove[] PROGMEM = "# remove plant";
 
@@ -41,3 +39,4 @@ const char labelSoilTempSensor[] PROGMEM = "Soil temp: ";
 const char labelPump[] PROGMEM = "Pump";
 const char labelLight[] PROGMEM = "Light";
 const char labelFan[] PROGMEM = "Fan";
+const char labelPad[] PROGMEM = "Heating Pad";

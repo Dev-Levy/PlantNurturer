@@ -5,7 +5,6 @@
 
 #include "pages/pages.h"
 #include "navigationKeys/keys.h"
-#include "helpers/helper.h"
 #include "structs/settingsSave.h"
 
 #include "timeManager.h"
@@ -35,6 +34,7 @@ public:
     static void togglePumpCallBack(void *ctx);
     static void toggleLightCallBack(void *ctx);
     static void toggleFanCallBack(void *ctx);
+    static void togglePadCallBack(void *ctx);
 
 private:
     TimeManager &time;
@@ -47,7 +47,7 @@ private:
 
     uint8_t currentCursor = 0;
     const MenuPage *currentPage = nullptr;
-    SensorReadings currentReading;
+    SensorReading currentReading;
 
     uint8_t mainPlantIndex = 0;
     uint8_t activePlantIndex = 0;
@@ -71,7 +71,8 @@ private:
     // void drawActuatorPageMenuItems();
     void drawMenuItems();
 
-    void drawSensorPageMenuItem(uint8_t index, uint8_t y, bool isSelected, const SensorReadings &data, const __FlashStringHelper *label);
+    void drawSensorPageMenuItem(uint8_t index, uint8_t y, bool isSelected, const SensorReading &data, const __FlashStringHelper *label);
     void setItemDrawingProps(bool isSelected, uint8_t y);
     void print2Digits(uint8_t value);
+    const char *getMonthName(uint8_t month);
 };

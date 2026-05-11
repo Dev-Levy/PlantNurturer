@@ -1,12 +1,11 @@
 #pragma once
 
-struct SensorReadings
+struct SensorReading
 {
     int16_t airTemp;
     int16_t airHumidity;
-    // int16_t soilTemp;
-    uint8_t soilMoisture;
+    int16_t soilTemp;
+    uint16_t soilMoisture;
     uint8_t light : 1;
     uint16_t lightLux;
-    uint16_t pressure;
 } __attribute__((packed));

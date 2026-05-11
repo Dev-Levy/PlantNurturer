@@ -18,9 +18,12 @@ private:
     ActuatorManager &actuator;
     PlantManager &plant;
 
-    SensorReadings data;
+    SensorReading data;
 
     void controlPump(const PlantConfig &config);
     void controlLight(const PlantConfig &config);
     void controlFan(const PlantConfig &config);
+    void controlPad(const PlantConfig &config);
+
+    bool isSunnyHour(const PlantConfig &config);
 };

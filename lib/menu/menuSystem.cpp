@@ -13,7 +13,6 @@ MenuSystem::MenuSystem(TimeManager &time, DisplayManager &display, SensorManager
 
 void MenuSystem::begin()
 {
-    saveSettings(); // Save default settings if not already saved
     loadSettings();
 
     globalMenuPtr = this;
@@ -107,8 +106,8 @@ void MenuSystem::refresh()
         lastHomeRefresh = millis();
     }
 
-    // refresh every 2 seconds
-    if (currentPage == &sensorPage && millis() - lastSensorRefresh > 2000)
+    // refresh every SENSOR_READ_WAIT_TIME seconds
+    if (currentPage == &sensorPage && millis() - lastSensorRefresh > SENSOR_READ_WAIT_TIME * 1000UL)
     {
         currentReading = sensor.readAll();
         drawSensorPageMenuItems();
@@ -233,16 +232,10 @@ void MenuSystem::handleEditing(KeyPress key)
         cfg.waterMl = constrain(cfg.waterMl + (dir * 5), 5, 200);
         break;
     case 3:
-        cfg.minTemp = constrain(cfg.minTemp + (dir * 5), 0, 500);
+        cfg.idealTemp = constrain(cfg.idealTemp + (dir * 5), 0, 500);
         break;
     case 4:
-        cfg.maxTemp = constrain(cfg.maxTemp + (dir * 5), 100, 500);
-        break;
-    case 5:
-        cfg.minHumi = constrain(cfg.minHumi + (dir * 5), 50, 500);
-        break;
-    case 6:
-        cfg.maxHumi = constrain(cfg.maxHumi + (dir * 5), 50, 1000);
+        cfg.idealSoilTemp = constrain(cfg.idealSoilTemp + (dir * 5), 0, 500);
         break;
     }
 }
@@ -355,7 +348,6 @@ void MenuSystem::drawPlantPageMenuItems()
 
     for (uint8_t i = 0; i < MAX_VISIBLE; i++)
     {
-
         uint8_t itemIndex = topIndex + i;
         uint8_t yPos = startY + (i * LINE_HEIGHT);
         bool isSelected = (currentCursor == itemIndex);
@@ -381,29 +373,17 @@ void MenuSystem::drawPlantPageMenuItems()
                 display.print(cfg.waterMl);
                 display.print(F(" ml"));
                 break;
-            case 3: // Min Temp
-                display.print(cfg.minTemp / 10);
+            case 3: // Ideal Temp
+                display.print(cfg.idealTemp / 10);
                 display.print(F("."));
-                display.print(cfg.minTemp % 10 < 0 ? -cfg.minTemp % 10 : cfg.minTemp % 10);
+                display.print(cfg.idealTemp % 10 < 0 ? -cfg.idealTemp % 10 : cfg.idealTemp % 10);
                 display.print(F(" C"));
                 break;
-            case 4: // Max Temp
-                display.print(cfg.maxTemp / 10);
+            case 4: // Ideal Soil Temp
+                display.print(cfg.idealSoilTemp / 10);
                 display.print(F("."));
-                display.print(cfg.maxTemp % 10 < 0 ? -cfg.maxTemp % 10 : cfg.maxTemp % 10);
+                display.print(cfg.idealSoilTemp % 10 < 0 ? -cfg.idealSoilTemp % 10 : cfg.idealSoilTemp % 10);
                 display.print(F(" C"));
-                break;
-            case 5: // Min humidity
-                display.print(cfg.minHumi / 10);
-                display.print(F("."));
-                display.print(cfg.minHumi % 10);
-                display.print(F(" %"));
-                break;
-            case 6: // Max humidity
-                display.print(cfg.maxHumi / 10);
-                display.print(F("."));
-                display.print(cfg.maxHumi % 10);
-                display.print(F(" %"));
                 break;
             default:
                 // A Start, Remove, Back
@@ -468,7 +448,7 @@ void MenuSystem::drawMenuItems()
     }
 }
 
-void MenuSystem::drawSensorPageMenuItem(uint8_t index, uint8_t y, bool isSelected, const SensorReadings &data, const __FlashStringHelper *label)
+void MenuSystem::drawSensorPageMenuItem(uint8_t index, uint8_t y, bool isSelected, const SensorReading &data, const __FlashStringHelper *label)
 {
     setItemDrawingProps(isSelected, y);
     display.print(label);
@@ -483,22 +463,23 @@ void MenuSystem::drawSensorPageMenuItem(uint8_t index, uint8_t y, bool isSelecte
         display.print(F(" lux"));
         break;
     case 2:
-        display.print(data.airHumidity / 10);
-        display.print(F("."));
-        display.print(data.airHumidity % 10 < 0 ? -data.airHumidity % 10 : data.airHumidity % 10);
-        display.print(F(" %"));
-        break;
-    case 3:
         display.print(data.airTemp / 10);
         display.print(F("."));
         display.print(data.airTemp % 10 < 0 ? -data.airTemp % 10 : data.airTemp % 10);
         display.print(F(" C"));
         break;
-    case 4:
-        display.print(data.soilMoisture / 10);
+    case 3:
+        display.print(data.airHumidity / 10);
         display.print(F("."));
-        display.print(data.soilMoisture % 10 < 0 ? -data.soilMoisture % 10 : data.soilMoisture % 10);
+        display.print(data.airHumidity % 10 < 0 ? -data.airHumidity % 10 : data.airHumidity % 10);
         display.print(F(" %"));
+        break;
+    case 4:
+        display.print(data.soilMoisture);
+        // display.print(data.soilMoisture / 10);
+        // display.print(F("."));
+        // display.print(data.soilMoisture % 10 < 0 ? -data.soilMoisture % 10 : data.soilMoisture % 10);
+        // display.print(F(" %"));
         break;
     }
 }
@@ -536,4 +517,21 @@ void MenuSystem::print2Digits(uint8_t value)
         display.print(F("0"));
     }
     display.print(value);
+}
+
+const char *MenuSystem::getMonthName(uint8_t month)
+{
+    static const char *months[] = {
+        "Inv",
+        "Jan", "Feb", "Mar",
+        "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep",
+        "Oct", "Nov", "Dec"};
+
+    if (month > 12)
+    {
+        return months[0];
+    }
+
+    return months[month];
 }

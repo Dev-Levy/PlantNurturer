@@ -1,18 +1,15 @@
 #pragma once
 #include <Arduino.h>
 
-// sensor types
-#define DHT_TYPE DHT22
-
 // constants
 static constexpr uint8_t HOME_PAGE_ITEMS = 1;
 static constexpr uint8_t MAIN_PAGE_ITEMS = 4;
 static constexpr uint8_t PLANTS_PAGE_ITEMS = 4;
 static constexpr uint8_t PLANT_SELECT_PAGE_ITEMS = 5;
-static constexpr uint8_t PLANT_PAGE_ITEMS = 10;
-static constexpr uint8_t PLANT_PAGE_VALUE_ITEMS = 7;
+static constexpr uint8_t PLANT_PAGE_ITEMS = 8;
+static constexpr uint8_t PLANT_PAGE_VALUE_ITEMS = 5; // exclude start, remove, back
 static constexpr uint8_t SENSORS_PAGE_ITEMS = 6;
-static constexpr uint8_t ACTUATORS_PAGE_ITEMS = 4;
+static constexpr uint8_t ACTUATORS_PAGE_ITEMS = 5;
 
 static constexpr uint8_t PLANT_TYPE_COUNT = 4;
 static constexpr uint8_t PLANT_COUNT = 3;
@@ -20,7 +17,7 @@ static constexpr uint8_t EEPROM_ADDR = 0;
 
 static constexpr uint8_t LINE_HEIGHT = 14;
 static constexpr uint8_t PADDING = 2;
-static constexpr uint8_t MAX_VISIBLE = 7;
+static constexpr uint8_t MAX_VISIBLE = 6;
 
 static constexpr uint32_t SECONDS_IN_A_WEEK = 604800UL;
 
@@ -29,6 +26,9 @@ static constexpr uint8_t LUX_LIMIT = 40;
 static constexpr uint8_t PUMP_COOLDOWN_IN_SECONDS = 60;
 static constexpr uint8_t LIGHT_COOLDOWN_IN_SECONDS = 5;
 static constexpr uint8_t FAN_COOLDOWN_IN_SECONDS = 5;
+static constexpr uint8_t HEATING_COOLDOWN_IN_SECONDS = 5;
+
+static constexpr uint8_t SENSOR_READ_WAIT_TIME = 2; // in seconds
 
 static constexpr uint8_t TOMATO_CONFIG_ID = 0;
 static constexpr uint8_t CHILI_CONFIG_ID = 1;
@@ -39,6 +39,11 @@ static constexpr uint8_t BASIL_CONFIG_ID = 3;
 #define PUMP 2
 #define LIGHT 3
 #define FAN 4
+#define PAD A0
+
+// sensor pins
+#define SOIL_MOIST_PIN A1
+#define SOIL_TEMP_PIN A2
 
 // display pins
 #define TFT_CS 10
@@ -51,18 +56,17 @@ static constexpr uint8_t BASIL_CONFIG_ID = 3;
 // sadly pin 7 is not functional due to a hardware issue, so we use pin 12 for select instead
 #define BUTTON_SELECT 12
 
-// sensor pins
-#define SOIL_MOIST_PIN A1
-// #define SOIL_TEMP_PIN 12
-
 inline void setupPins()
 {
     pinMode(PUMP, OUTPUT);
     pinMode(LIGHT, OUTPUT);
     pinMode(FAN, OUTPUT);
+    pinMode(PAD, OUTPUT);
+
     digitalWrite(PUMP, HIGH);
     digitalWrite(LIGHT, HIGH);
     digitalWrite(FAN, HIGH);
+    digitalWrite(PAD, HIGH);
 
     pinMode(BUTTON_UP, INPUT);
     pinMode(BUTTON_DOWN, INPUT);

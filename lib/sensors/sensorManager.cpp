@@ -1,6 +1,6 @@
 #include "sensorManager.h"
 
-SensorManager::SensorManager()
+SensorManager::SensorManager() : oneWire(SOIL_TEMP_PIN), soilTempMeter(&oneWire)
 {
 }
 
@@ -21,9 +21,10 @@ void SensorManager::begin()
     }
 
     pinMode(SOIL_MOIST_PIN, INPUT);
+    pinMode(SOIL_TEMP_PIN, INPUT);
 }
 
-SensorReadings SensorManager::readAll()
+SensorReading SensorManager::readAll()
 {
     uint32_t currentMillis = millis();
 
@@ -35,19 +36,19 @@ SensorReadings SensorManager::readAll()
             aht.getEvent(&humidity, &temp);
 
             if (!isnan(temp.temperature))
-                lastReadings.airTemp = (int16_t)(temp.temperature * 10);
+                lastReading.airTemp = (int16_t)(temp.temperature * 10);
             else
-                lastReadings.airTemp = 0;
+                lastReading.airTemp = 0;
 
             if (!isnan(humidity.relative_humidity))
-                lastReadings.airHumidity = (int16_t)(humidity.relative_humidity * 10);
+                lastReading.airHumidity = (int16_t)(humidity.relative_humidity * 10);
             else
-                lastReadings.airHumidity = 0;
+                lastReading.airHumidity = 0;
         }
         else
         {
-            lastReadings.airTemp = 0;
-            lastReadings.airHumidity = 0;
+            lastReading.airTemp = 0;
+            lastReading.airHumidity = 0;
         }
 
         lastSlowRead = currentMillis;
@@ -58,31 +59,43 @@ SensorReadings SensorManager::readAll()
         float lux = lightMeter.readLightLevel();
         if (!isnan(lux) && lux >= 0)
         {
-            lastReadings.lightLux = (uint16_t)lux;
-            lastReadings.light = (lux > LUX_LIMIT) ? 1 : 0;
+            lastReading.lightLux = (uint16_t)lux;
+            lastReading.light = (lux > LUX_LIMIT) ? 1 : 0;
         }
         else
         {
-            lastReadings.lightLux = 0;
-            lastReadings.light = 0;
+            lastReading.lightLux = 0;
+            lastReading.light = 0;
         }
     }
     else
     {
-        lastReadings.lightLux = 0;
-        lastReadings.light = 0;
+        lastReading.lightLux = 0;
+        lastReading.light = 0;
     }
 
     int16_t rawMoisture = analogRead(SOIL_MOIST_PIN);
     if (rawMoisture <= 1 || rawMoisture >= 1022)
     {
-        lastReadings.soilMoisture = 0;
+        lastReading.soilMoisture = 0;
     }
     else
     {
-        int32_t percentage = ((int32_t)(rawMoisture - 1023) * 100) / (200 - 1023);
-        lastReadings.soilMoisture = (uint8_t)constrain(percentage, 0, 100);
+        // int32_t percentage = ((int32_t)(rawMoisture - 1023) * 100) / (200 - 1023);
+        // lastReading.soilMoisture = (uint8_t)constrain(percentage, 0, 100);
+        lastReading.soilMoisture = rawMoisture;
     }
 
-    return lastReadings;
+    soilTempMeter.requestTemperatures();
+    float soilTempC = soilTempMeter.getTempCByIndex(0);
+    if (!isnan(soilTempC))
+    {
+        lastReading.soilTemp = (int16_t)(soilTempC * 10);
+    }
+    else
+    {
+        lastReading.soilTemp = 0;
+    }
+
+    return lastReading;
 }
