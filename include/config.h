@@ -1,6 +1,15 @@
 #pragma once
 #include <Arduino.h>
 
+#define DEBUG 0
+#if DEBUG
+#define DEBUG_PRINT(x) Serial.print(x)
+#define DEBUG_PRINTLN(x) Serial.println(x)
+#else
+#define DEBUG_PRINT(x)
+#define DEBUG_PRINTLN(x)
+#endif
+
 // constants
 static constexpr uint8_t HOME_PAGE_ITEMS = 1;
 static constexpr uint8_t MAIN_PAGE_ITEMS = 4;
@@ -8,7 +17,7 @@ static constexpr uint8_t PLANTS_PAGE_ITEMS = 4;
 static constexpr uint8_t PLANT_SELECT_PAGE_ITEMS = 5;
 static constexpr uint8_t PLANT_PAGE_ITEMS = 8;
 static constexpr uint8_t PLANT_PAGE_VALUE_ITEMS = 5; // exclude start, remove, back
-static constexpr uint8_t SENSORS_PAGE_ITEMS = 6;
+static constexpr uint8_t SENSORS_PAGE_ITEMS = 8;
 static constexpr uint8_t ACTUATORS_PAGE_ITEMS = 5;
 
 static constexpr uint8_t PLANT_TYPE_COUNT = 4;
@@ -58,15 +67,15 @@ static constexpr uint8_t BASIL_CONFIG_ID = 3;
 
 inline void setupPins()
 {
-    pinMode(PUMP, OUTPUT);
-    pinMode(LIGHT, OUTPUT);
-    pinMode(FAN, OUTPUT);
-    pinMode(PAD, OUTPUT);
-
     digitalWrite(PUMP, HIGH);
     digitalWrite(LIGHT, HIGH);
     digitalWrite(FAN, HIGH);
     digitalWrite(PAD, HIGH);
+
+    pinMode(PUMP, OUTPUT);
+    pinMode(LIGHT, OUTPUT);
+    pinMode(FAN, OUTPUT);
+    pinMode(PAD, OUTPUT);
 
     pinMode(BUTTON_UP, INPUT);
     pinMode(BUTTON_DOWN, INPUT);

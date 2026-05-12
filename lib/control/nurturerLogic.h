@@ -18,7 +18,7 @@ private:
     ActuatorManager &actuator;
     PlantManager &plant;
 
-    SensorReading data;
+    const SensorReading &data;
 
     void controlPump(const PlantConfig &config);
     void controlLight(const PlantConfig &config);

@@ -17,7 +17,7 @@ class SensorManager
 public:
     SensorManager();
     void begin();
-    SensorReading readAll();
+    const SensorReading &readAll();
 
 private:
     Adafruit_AHTX0 aht;

@@ -49,8 +49,8 @@ private:
     const MenuPage *currentPage = nullptr;
     SensorReading currentReading;
 
-    uint8_t mainPlantIndex = 0;
-    uint8_t activePlantIndex = 0;
+    int8_t mainPlantIndex = -1;
+    int8_t activePlantIndex = -1;
     const MenuPage *selectedPlantPages[PLANT_COUNT] = {nullptr};
 
     unsigned long lastHomeRefresh = 0;
@@ -71,8 +71,8 @@ private:
     // void drawActuatorPageMenuItems();
     void drawMenuItems();
 
-    void drawSensorPageMenuItem(uint8_t index, uint8_t y, bool isSelected, const SensorReading &data, const __FlashStringHelper *label);
     void setItemDrawingProps(bool isSelected, uint8_t y);
     void print2Digits(uint8_t value);
     const char *getMonthName(uint8_t month);
+    void printFixedPoint(int16_t value);
 };

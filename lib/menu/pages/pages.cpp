@@ -1,7 +1,7 @@
 #include <config.h>
 #include "pages.h"
-#include "helpers/pageTitles.cpp"
-#include "helpers/pageItems.cpp"
+#include "pageTitles/pageTitles.h"
+#include "pageItems/pageItems.h"
 
 const MenuPage homePage PROGMEM = {(const __FlashStringHelper *)titleHome, homeItems, HOME_PAGE_ITEMS, nullptr};
 const MenuPage mainPage PROGMEM = {(const __FlashStringHelper *)titleMain, mainItems, MAIN_PAGE_ITEMS, &homePage};
