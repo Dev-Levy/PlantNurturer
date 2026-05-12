@@ -1,5 +1,8 @@
 #include "sensorManager.h"
 
+static const uint16_t DRY = 600;
+static const uint16_t WET = 250;
+
 SensorManager::SensorManager() : oneWire(SOIL_TEMP_PIN), soilTempMeter(&oneWire)
 {
 }
@@ -20,30 +23,32 @@ void SensorManager::begin()
         Serial.println(F("AHT20 not found"));
     }
 
+    soilTempMeter.begin();
+    soilTempMeter.setWaitForConversion(false);
+    soilTempMeter.requestTemperatures();
+
     pinMode(SOIL_MOIST_PIN, INPUT);
-    pinMode(SOIL_TEMP_PIN, INPUT);
 }
 
-SensorReading SensorManager::readAll()
+const SensorReading &SensorManager::readAll()
 {
     uint32_t currentMillis = millis();
 
-    if (currentMillis - lastSlowRead > 2000)
+    if (currentMillis - lastSlowRead > SENSOR_READ_WAIT_TIME * 1000)
     {
         if (state.ahtReady)
         {
-            sensors_event_t humidity, temp;
-            aht.getEvent(&humidity, &temp);
-
-            if (!isnan(temp.temperature))
-                lastReading.airTemp = (int16_t)(temp.temperature * 10);
+            sensors_event_t h, t;
+            if (aht.getEvent(&h, &t))
+            {
+                lastReading.airTemp = (int16_t)(t.temperature * 10);
+                lastReading.airHumidity = (int16_t)(h.relative_humidity * 10);
+            }
             else
+            {
                 lastReading.airTemp = 0;
-
-            if (!isnan(humidity.relative_humidity))
-                lastReading.airHumidity = (int16_t)(humidity.relative_humidity * 10);
-            else
                 lastReading.airHumidity = 0;
+            }
         }
         else
         {
@@ -51,13 +56,21 @@ SensorReading SensorManager::readAll()
             lastReading.airHumidity = 0;
         }
 
+        float soilTempC = soilTempMeter.getTempCByIndex(0);
+        if (soilTempC != DEVICE_DISCONNECTED_C)
+        {
+            lastReading.soilTemp = (int16_t)(soilTempC * 10);
+        }
+
+        soilTempMeter.requestTemperatures();
+
         lastSlowRead = currentMillis;
     }
 
     if (state.lightReady)
     {
         float lux = lightMeter.readLightLevel();
-        if (!isnan(lux) && lux >= 0)
+        if (lux >= 0)
         {
             lastReading.lightLux = (uint16_t)lux;
             lastReading.light = (lux > LUX_LIMIT) ? 1 : 0;
@@ -75,26 +88,14 @@ SensorReading SensorManager::readAll()
     }
 
     int16_t rawMoisture = analogRead(SOIL_MOIST_PIN);
-    if (rawMoisture <= 1 || rawMoisture >= 1022)
+    if (rawMoisture <= 5 || rawMoisture >= 1018)
     {
         lastReading.soilMoisture = 0;
     }
     else
     {
-        // int32_t percentage = ((int32_t)(rawMoisture - 1023) * 100) / (200 - 1023);
-        // lastReading.soilMoisture = (uint8_t)constrain(percentage, 0, 100);
-        lastReading.soilMoisture = rawMoisture;
-    }
-
-    soilTempMeter.requestTemperatures();
-    float soilTempC = soilTempMeter.getTempCByIndex(0);
-    if (!isnan(soilTempC))
-    {
-        lastReading.soilTemp = (int16_t)(soilTempC * 10);
-    }
-    else
-    {
-        lastReading.soilTemp = 0;
+        // returns percentage of moisture, multiplied by 1000 to preserve some precision without using floats
+        lastReading.soilMoisture = (uint16_t)(((float)(rawMoisture - DRY) / (WET - DRY)) * 1000);
     }
 
     return lastReading;

@@ -58,15 +58,15 @@ static constexpr uint8_t BASIL_CONFIG_ID = 3;
 
 inline void setupPins()
 {
-    pinMode(PUMP, OUTPUT);
-    pinMode(LIGHT, OUTPUT);
-    pinMode(FAN, OUTPUT);
-    pinMode(PAD, OUTPUT);
-
     digitalWrite(PUMP, HIGH);
     digitalWrite(LIGHT, HIGH);
     digitalWrite(FAN, HIGH);
     digitalWrite(PAD, HIGH);
+
+    pinMode(PUMP, OUTPUT);
+    pinMode(LIGHT, OUTPUT);
+    pinMode(FAN, OUTPUT);
+    pinMode(PAD, OUTPUT);
 
     pinMode(BUTTON_UP, INPUT);
     pinMode(BUTTON_DOWN, INPUT);

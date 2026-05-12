@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "pageTitles.h"
 
 const char titleHome[] PROGMEM = "PlantNurturer";
 const char titleMain[] PROGMEM = "Main Menu";

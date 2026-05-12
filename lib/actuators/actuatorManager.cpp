@@ -63,48 +63,48 @@ void ActuatorManager::togglePad()
 
 void ActuatorManager::turnOnPump()
 {
-    Serial.println(F("Pump turned ON"));
+    Serial.println(F("Pump ON"));
     digitalWrite(PUMP, LOW);
 }
 
 void ActuatorManager::turnOffPump()
 {
-    Serial.println(F("Pump turned OFF"));
+    Serial.println(F("Pump OFF"));
     digitalWrite(PUMP, HIGH);
 }
 
 void ActuatorManager::turnOnLight()
 {
-    Serial.println(F("Light turned ON"));
+    Serial.println(F("Light ON"));
     digitalWrite(LIGHT, LOW);
 }
 
 void ActuatorManager::turnOffLight()
 {
-    Serial.println(F("Light turned OFF"));
+    Serial.println(F("Light OFF"));
     digitalWrite(LIGHT, HIGH);
 }
 
 void ActuatorManager::turnOnFan()
 {
-    Serial.println(F("Fan turned ON"));
+    Serial.println(F("Fan ON"));
     digitalWrite(FAN, LOW);
 }
 
 void ActuatorManager::turnOffFan()
 {
-    Serial.println(F("Fan turned OFF"));
+    Serial.println(F("Fan OFF"));
     digitalWrite(FAN, HIGH);
 }
 
 void ActuatorManager::turnOnPad()
 {
-    Serial.println(F("Pad turned ON"));
+    Serial.println(F("Pad ON"));
     digitalWrite(PAD, LOW);
 }
 
 void ActuatorManager::turnOffPad()
 {
-    Serial.println(F("Pad turned OFF"));
+    Serial.println(F("Pad OFF"));
     digitalWrite(PAD, HIGH);
 }

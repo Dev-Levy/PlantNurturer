@@ -1,14 +1,13 @@
 #include "timeManager.h"
 
-TimeManager::TimeManager() {}
+TimeManager::TimeManager()
+    : isRTCInitialized(false),
+      growthStartTime(DateTime(2026, 4, 1, 12, 0, 0).unixtime())
+{
+}
 
 bool TimeManager::begin()
 {
-    // ################################################
-    growthStartTime = DateTime(2026, 4, 1, 12, 0, 0).unixtime();
-    updateTime();
-    // ################################################
-
     if (!rtc.begin())
     {
         return false;

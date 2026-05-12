@@ -8,6 +8,7 @@ struct SettingsSave
     int8_t plantIds[PLANT_COUNT];
     PlantConfig configs[PLANT_COUNT];
     uint8_t mainPlantIndex;
+    uint8_t selectedPlantConfig;
     uint32_t growthStartTime;
     uint32_t magic;
 };

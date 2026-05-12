@@ -10,8 +10,6 @@ lib\actuators\actuatorManager.h
 lib\menu\menuSystem.cpp  
 lib\menu\menuSystem.h  
 lib\menu\callbacks\callbacks.cpp  
-lib\menu\helpers\helper.cpp  
-lib\menu\helpers\helper.h  
 lib\menu\navigationKeys\keys.cpp  
 lib\menu\navigationKeys\keys.h  
 lib\menu\pages\pages.cpp  
@@ -19,11 +17,13 @@ lib\menu\pages\pages.h
 lib\menu\pages\helpers\forwardDeclarations.h  
 lib\menu\pages\helpers\itemLabels.cpp  
 lib\menu\pages\helpers\pageItems.cpp  
-lib\menu\pages\helpers\titles.cpp  
+lib\menu\pages\helpers\pageTitles.cpp  
 lib\menu\structs\menuPage.h  
+lib\menu\structs\settingsSave.h  
 lib\plants\plantManager.cpp  
 lib\plants\plantManager.h  
 lib\plants\structs\plantConfig.h  
+lib\plants\structs\wateringLookupEntry.h  
 lib\rtc\TimeManager.cpp  
 lib\rtc\TimeManager.h  
 lib\sensors\sensorManager.cpp  

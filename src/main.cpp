@@ -13,8 +13,6 @@
 #include <config.h>
 
 static KeyPress lastKey = KeyPress::NONE;
-static int8_t lastSelectedPlantIndex = -1;
-static PlantConfig activeConfig{};
 
 TimeManager clock;
 DisplayManager display;
@@ -35,14 +33,6 @@ void setup()
   display.begin();
   sensors.begin();
   menu.begin();
-
-  if (lastSelectedPlantIndex != menu.selectedPlantConfig)
-  {
-    activeConfig = menu.storedConfigs[menu.selectedPlantConfig];
-    lastSelectedPlantIndex = menu.selectedPlantConfig;
-    Serial.print(F("Active plant config set to: "));
-    Serial.println(menu.selectedPlantConfig);
-  }
 }
 
 void loop()
@@ -59,16 +49,8 @@ void loop()
 
   menu.refresh();
 
-  if (menu.selectedPlantConfig != lastSelectedPlantIndex)
+  if (menu.selectedPlantConfig >= 0 && menu.selectedPlantConfig < PLANT_COUNT)
   {
-    lastSelectedPlantIndex = menu.selectedPlantConfig;
-    Serial.print(F("Active plant config changed: "));
-    Serial.println(menu.selectedPlantConfig);
-  }
-
-  if (lastSelectedPlantIndex >= 0)
-  {
-    activeConfig = menu.storedConfigs[menu.selectedPlantConfig];
-    logic.control(activeConfig);
+    logic.control(menu.storedConfigs[menu.selectedPlantConfig]);
   }
 }

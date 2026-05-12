@@ -49,8 +49,8 @@ private:
     const MenuPage *currentPage = nullptr;
     SensorReading currentReading;
 
-    uint8_t mainPlantIndex = 0;
-    uint8_t activePlantIndex = 0;
+    int8_t mainPlantIndex = -1;
+    int8_t activePlantIndex = -1;
     const MenuPage *selectedPlantPages[PLANT_COUNT] = {nullptr};
 
     unsigned long lastHomeRefresh = 0;

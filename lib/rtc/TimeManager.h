@@ -28,7 +28,7 @@ public:
     void setGrowthStartTime(uint32_t startTime) { growthStartTime = startTime; }
 
 private:
-    bool isRTCInitialized = false;
+    bool isRTCInitialized;
     uint32_t growthStartTime;
     RTC_DS1307 rtc;
     DateTime now;

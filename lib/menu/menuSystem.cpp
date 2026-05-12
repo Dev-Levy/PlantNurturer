@@ -46,13 +46,15 @@ void MenuSystem::processKey(KeyPress key)
     switch (key)
     {
     case KeyPress::UP:
+    {
         currentCursor = (currentCursor == 0) ? count - 1 : currentCursor - 1;
         break;
-
+    }
     case KeyPress::DOWN:
+    {
         currentCursor = (currentCursor == count - 1) ? 0 : currentCursor + 1;
         break;
-
+    }
     case KeyPress::SELECT:
     {
         const MenuItem *items = (const MenuItem *)pgm_read_ptr(&(currentPage->items));
@@ -89,8 +91,8 @@ void MenuSystem::processKey(KeyPress key)
         {
             callback(ctx);
         }
+        break;
     }
-
     default:
         break;
     }
@@ -154,6 +156,7 @@ void MenuSystem::saveSettings()
     data.magic = 0xABCD;
 
     data.mainPlantIndex = mainPlantIndex;
+    data.selectedPlantConfig = selectedPlantConfig;
     time.getGrowthStartTime(data.growthStartTime);
 
     for (uint8_t i = 0; i < PLANT_COUNT; i++)
@@ -186,8 +189,7 @@ void MenuSystem::loadSettings()
         return;
 
     mainPlantIndex = data.mainPlantIndex;
-    selectedPlantConfig = mainPlantIndex;
-
+    selectedPlantConfig = data.selectedPlantConfig;
     time.setGrowthStartTime(data.growthStartTime);
 
     for (uint8_t i = 0; i < PLANT_COUNT; i++)
@@ -366,11 +368,11 @@ void MenuSystem::drawPlantPageMenuItems()
                 display.print(F(" h"));
                 break;
             case 1: // Water limit
-                display.print(cfg.waterLimit);
+                display.print(cfg.waterLimit / 10);
                 display.print(F(" %"));
                 break;
             case 2: // Water Ml
-                display.print(cfg.waterMl);
+                display.print(cfg.waterMl / 10);
                 display.print(F(" ml"));
                 break;
             case 3: // Ideal Temp
@@ -475,11 +477,10 @@ void MenuSystem::drawSensorPageMenuItem(uint8_t index, uint8_t y, bool isSelecte
         display.print(F(" %"));
         break;
     case 4:
-        display.print(data.soilMoisture);
-        // display.print(data.soilMoisture / 10);
-        // display.print(F("."));
-        // display.print(data.soilMoisture % 10 < 0 ? -data.soilMoisture % 10 : data.soilMoisture % 10);
-        // display.print(F(" %"));
+        display.print(data.soilMoisture / 10);
+        display.print(F("."));
+        display.print(data.soilMoisture % 10 < 0 ? -data.soilMoisture % 10 : data.soilMoisture % 10);
+        display.print(F(" %"));
         break;
     }
 }

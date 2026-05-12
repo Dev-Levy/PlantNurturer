@@ -5,7 +5,7 @@ static unsigned long lastConfigIndex = 99;
 static const uint8_t allowedCelsiusDiff = 1;
 
 NurturerLogic::NurturerLogic(TimeManager &clock, SensorManager &sensor, ActuatorManager &actuator, PlantManager &plant)
-    : clock(clock), sensor(sensor), actuator(actuator), plant(plant)
+    : clock(clock), sensor(sensor), actuator(actuator), plant(plant), data(sensor.readAll())
 {
 }
 
@@ -40,7 +40,7 @@ void NurturerLogic::control(const PlantConfig &config)
 
     if (millis() - lastSensorRefresh > SENSOR_READ_WAIT_TIME * 1000UL)
     {
-        data = sensor.readAll();
+        sensor.readAll();
         lastSensorRefresh = millis();
     }
 
@@ -52,13 +52,14 @@ void NurturerLogic::control(const PlantConfig &config)
 
 void NurturerLogic::controlPump(const PlantConfig &config)
 {
+    unsigned long now = millis();
     const uint8_t wateringSeconds = plant.getWateringSeconds(config.waterMl);
     const unsigned long wateringDurationMs = (unsigned long)wateringSeconds * 1000UL;
 
     bool pumpOn = actuator.state.pumpOn;
     bool shouldWater = data.soilMoisture < config.waterLimit;
-    bool canToggle = millis() - actuator.pumpWaitTime >= PUMP_COOLDOWN_IN_SECONDS * 1000UL;
-    bool wateredEnough = pumpOn && millis() - actuator.pumpStart >= wateringDurationMs;
+    bool canToggle = now - actuator.pumpWaitTime >= PUMP_COOLDOWN_IN_SECONDS * 1000UL;
+    bool wateredEnough = pumpOn && now - actuator.pumpStart >= wateringDurationMs;
 
     bool shouldTurnOn = !pumpOn && shouldWater && canToggle;
     bool shouldTurnOff = (pumpOn && wateredEnough) || (pumpOn && !shouldWater);
@@ -73,8 +74,9 @@ void NurturerLogic::controlPump(const PlantConfig &config)
     if (shouldTurnOn)
     {
         actuator.togglePump();
+        actuator.pumpStart = now;
     }
-    if (shouldTurnOff)
+    else if (shouldTurnOff)
     {
         actuator.togglePump();
     }
@@ -102,7 +104,7 @@ void NurturerLogic::controlLight(const PlantConfig &config)
     {
         actuator.toggleLight();
     }
-    if (shouldTurnOff)
+    else if (shouldTurnOff)
     {
         actuator.toggleLight();
     }
@@ -111,8 +113,8 @@ void NurturerLogic::controlLight(const PlantConfig &config)
 void NurturerLogic::controlFan(const PlantConfig &config)
 {
     bool fanOn = actuator.state.fanOn;
-    bool isTooHot = (float)data.airTemp / 10 > (float)config.idealTemp / 10 + allowedCelsiusDiff;
-    bool isTooCold = (float)data.airTemp / 10 < (float)config.idealTemp / 10 - allowedCelsiusDiff;
+    bool isTooHot = data.airTemp > (config.idealTemp + (allowedCelsiusDiff * 10));
+    bool isTooCold = data.airTemp < (config.idealTemp - (allowedCelsiusDiff * 10));
     bool canToggle = millis() - actuator.fanWaitTime >= FAN_COOLDOWN_IN_SECONDS * 1000UL;
 
     bool shouldTurnOn = !fanOn && isTooHot && canToggle;
@@ -130,7 +132,7 @@ void NurturerLogic::controlFan(const PlantConfig &config)
     {
         actuator.toggleFan();
     }
-    if (shouldTurnOff)
+    else if (shouldTurnOff)
     {
         actuator.toggleFan();
     }
@@ -139,8 +141,8 @@ void NurturerLogic::controlFan(const PlantConfig &config)
 void NurturerLogic::controlPad(const PlantConfig &config)
 {
     bool padOn = actuator.state.padOn;
-    bool isTooCold = (float)data.soilTemp / 10 < (float)config.idealSoilTemp / 10 - allowedCelsiusDiff;
-    bool isTooHot = (float)data.soilTemp / 10 > (float)config.idealSoilTemp / 10 + allowedCelsiusDiff;
+    bool isTooCold = data.soilTemp < (config.idealSoilTemp - (allowedCelsiusDiff * 10));
+    bool isTooHot = data.soilTemp > (config.idealSoilTemp + (allowedCelsiusDiff * 10));
     bool canToggle = millis() - actuator.padWaitTime >= HEATING_COOLDOWN_IN_SECONDS * 1000UL;
 
     bool shouldTurnOn = !padOn && isTooCold && canToggle;
@@ -158,7 +160,7 @@ void NurturerLogic::controlPad(const PlantConfig &config)
     {
         actuator.togglePad();
     }
-    if (shouldTurnOff)
+    else if (shouldTurnOff)
     {
         actuator.togglePad();
     }
@@ -167,15 +169,8 @@ void NurturerLogic::controlPad(const PlantConfig &config)
 bool NurturerLogic::isSunnyHour(const PlantConfig &config)
 {
     int currentHour = clock.getHour();
-    int half = config.sunnyHours / 2;
-    bool afternoon = currentHour > 12;
+    int startHour = 12 - (config.sunnyHours / 2);
+    int endHour = startHour + config.sunnyHours;
 
-    if (config.sunnyHours % 2 == 0)
-    {
-        return afternoon ? currentHour - 12 <= half : 12 - currentHour <= half;
-    }
-    else
-    {
-        return afternoon ? currentHour - 12 <= half + 1 : 12 - currentHour <= half;
-    }
+    return (currentHour >= startHour && currentHour < endHour);
 }

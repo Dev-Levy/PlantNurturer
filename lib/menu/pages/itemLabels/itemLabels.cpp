@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "itemLabels.h"
 
 // special
 const char labelBack[] PROGMEM = "# back";
