@@ -33,8 +33,8 @@ const char labelLightSensor[] PROGMEM = "Light: ";
 const char labelLightLuxSensor[] PROGMEM = "Light lux: ";
 const char labelAirTempSensor[] PROGMEM = "Air temp: ";
 const char labelAirHumiditySensor[] PROGMEM = "Air humi: ";
-const char labelSoilMoistureSensor[] PROGMEM = "Soil moist: ";
 const char labelSoilTempSensor[] PROGMEM = "Soil temp: ";
+const char labelSoilMoistureSensor[] PROGMEM = "Soil moist: ";
 
 // actuators
 const char labelPump[] PROGMEM = "Pump";

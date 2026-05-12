@@ -1,7 +1,7 @@
 #include "sensorManager.h"
 
-static constexpr int16_t DRY_VAL = 500;
-static constexpr int16_t WET_VAL = 200;
+static constexpr int16_t DRY = 600;
+static constexpr int16_t WET = 200;
 
 SensorManager::SensorManager() : oneWire(SOIL_TEMP_PIN), soilTempMeter(&oneWire)
 {
@@ -61,6 +61,10 @@ const SensorReading &SensorManager::readAll()
         {
             lastReading.soilTemp = (int16_t)(soilTempC * 10);
         }
+        else
+        {
+            lastReading.soilTemp = 0;
+        }
 
         soilTempMeter.requestTemperatures();
 
@@ -94,7 +98,9 @@ const SensorReading &SensorManager::readAll()
     }
     else
     {
-        int32_t percentage = map(rawMoisture, DRY_VAL, WET_VAL, 0, 100);
+        lastReading.soilMoistureAnalog = rawMoisture;
+
+        int32_t percentage = map(rawMoisture, DRY, WET, 0, 100);
         lastReading.soilMoisture = (uint8_t)constrain(percentage, 0, 100);
     }
 

@@ -17,7 +17,7 @@ static constexpr uint8_t PLANTS_PAGE_ITEMS = 4;
 static constexpr uint8_t PLANT_SELECT_PAGE_ITEMS = 5;
 static constexpr uint8_t PLANT_PAGE_ITEMS = 8;
 static constexpr uint8_t PLANT_PAGE_VALUE_ITEMS = 5; // exclude start, remove, back
-static constexpr uint8_t SENSORS_PAGE_ITEMS = 6;
+static constexpr uint8_t SENSORS_PAGE_ITEMS = 8;
 static constexpr uint8_t ACTUATORS_PAGE_ITEMS = 5;
 
 static constexpr uint8_t PLANT_TYPE_COUNT = 4;

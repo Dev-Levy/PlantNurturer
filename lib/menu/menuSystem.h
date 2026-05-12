@@ -71,8 +71,8 @@ private:
     // void drawActuatorPageMenuItems();
     void drawMenuItems();
 
-    void drawSensorPageMenuItem(uint8_t index, uint8_t y, bool isSelected, const SensorReading &data, const __FlashStringHelper *label);
     void setItemDrawingProps(bool isSelected, uint8_t y);
     void print2Digits(uint8_t value);
     const char *getMonthName(uint8_t month);
+    void printFixedPoint(int16_t value);
 };

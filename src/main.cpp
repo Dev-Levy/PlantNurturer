@@ -1,14 +1,14 @@
 #include <Arduino.h>
 
-#include <control/nurturerLogic.h>
+#include <navigationKeys/keys.h>
 
 #include <displayManager.h>
 #include <timeManager.h>
 #include <sensorManager.h>
 #include <actuatorManager.h>
 
+#include <nurturerLogic.h>
 #include <menuSystem.h>
-#include <navigationKeys/keys.h>
 
 #include <config.h>
 
