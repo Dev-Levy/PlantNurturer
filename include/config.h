@@ -1,6 +1,15 @@
 #pragma once
 #include <Arduino.h>
 
+#define DEBUG 0
+#if DEBUG
+#define DEBUG_PRINT(x) Serial.print(x)
+#define DEBUG_PRINTLN(x) Serial.println(x)
+#else
+#define DEBUG_PRINT(x)
+#define DEBUG_PRINTLN(x)
+#endif
+
 // constants
 static constexpr uint8_t HOME_PAGE_ITEMS = 1;
 static constexpr uint8_t MAIN_PAGE_ITEMS = 4;

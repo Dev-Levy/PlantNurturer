@@ -150,7 +150,7 @@ void MenuSystem::draw()
 
 void MenuSystem::saveSettings()
 {
-    Serial.println(F("Saving"));
+    DEBUG_PRINTLN(F("Saving"));
 
     SettingsSave data;
     data.magic = 0xABCD;
@@ -180,7 +180,7 @@ void MenuSystem::saveSettings()
 
 void MenuSystem::loadSettings()
 {
-    Serial.println(F("Loading"));
+    DEBUG_PRINTLN(F("Loading"));
 
     SettingsSave data;
     EEPROM.get(EEPROM_ADDR, data);

@@ -1,7 +1,7 @@
 #include "sensorManager.h"
 
-static const uint16_t DRY = 600;
-static const uint16_t WET = 250;
+static constexpr int16_t DRY_VAL = 500;
+static constexpr int16_t WET_VAL = 200;
 
 SensorManager::SensorManager() : oneWire(SOIL_TEMP_PIN), soilTempMeter(&oneWire)
 {
@@ -14,13 +14,13 @@ void SensorManager::begin()
     state.lightReady = lightMeter.begin(BH1750::CONTINUOUS_HIGH_RES_MODE);
     if (!state.lightReady)
     {
-        Serial.println(F("BH1750 not found"));
+        DEBUG_PRINTLN(F("BH1750 not found"));
     }
 
     state.ahtReady = aht.begin();
     if (!state.ahtReady)
     {
-        Serial.println(F("AHT20 not found"));
+        DEBUG_PRINTLN(F("AHT20 not found"));
     }
 
     soilTempMeter.begin();
@@ -94,8 +94,8 @@ const SensorReading &SensorManager::readAll()
     }
     else
     {
-        // returns percentage of moisture, multiplied by 1000 to preserve some precision without using floats
-        lastReading.soilMoisture = (uint16_t)(((float)(rawMoisture - DRY) / (WET - DRY)) * 1000);
+        int32_t percentage = map(rawMoisture, DRY_VAL, WET_VAL, 0, 100);
+        lastReading.soilMoisture = (uint8_t)constrain(percentage, 0, 100);
     }
 
     return lastReading;

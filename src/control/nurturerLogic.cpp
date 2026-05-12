@@ -15,27 +15,27 @@ void NurturerLogic::control(const PlantConfig &config)
     {
         lastConfigIndex = config.idx;
 
-        Serial.print(F("Sunny hours: "));
-        Serial.print(config.sunnyHours);
-        Serial.println(F(" h"));
+        DEBUG_PRINT(F("Sunny hours: "));
+        DEBUG_PRINT(config.sunnyHours);
+        DEBUG_PRINTLN(F(" h"));
 
-        Serial.print(F("Light limit: "));
-        Serial.print(LUX_LIMIT);
-        Serial.println(F(" lux"));
+        DEBUG_PRINT(F("Light limit: "));
+        DEBUG_PRINT(LUX_LIMIT);
+        DEBUG_PRINTLN(F(" lux"));
 
-        Serial.print(F("Water limit: "));
-        Serial.print(config.waterLimit);
-        Serial.println(F(" %"));
+        DEBUG_PRINT(F("Water limit: "));
+        DEBUG_PRINT(config.waterLimit);
+        DEBUG_PRINTLN(F(" %"));
 
-        Serial.print(F("Water ml: "));
-        Serial.println(config.waterMl);
+        DEBUG_PRINT(F("Water ml: "));
+        DEBUG_PRINTLN(config.waterMl);
 
-        Serial.print(F("Ideal temp: "));
-        Serial.println(config.idealTemp);
-        Serial.print(F("Ideal soil temp: "));
-        Serial.println(config.idealSoilTemp);
+        DEBUG_PRINT(F("Ideal temp: "));
+        DEBUG_PRINTLN(config.idealTemp);
+        DEBUG_PRINT(F("Ideal soil temp: "));
+        DEBUG_PRINTLN(config.idealSoilTemp);
 
-        Serial.println(F("--------------------"));
+        DEBUG_PRINTLN(F("--------------------"));
     }
 
     if (millis() - lastSensorRefresh > SENSOR_READ_WAIT_TIME * 1000UL)
@@ -66,9 +66,9 @@ void NurturerLogic::controlPump(const PlantConfig &config)
 
     // if (millis() - lastSensorRefresh > SENSOR_READ_WAIT_TIME * 1000UL)
     // {
-    //     Serial.print(pumpOn ? F("Pump is ON. ") : F("Pump is OFF. "));
-    //     Serial.print(shouldWater ? F("Should water. ") : F("Should NOT water. "));
-    //     Serial.println(canToggle ? F("Can toggle. ") : F("Cannot toggle. "));
+    //     DEBUG_PRINT(pumpOn ? F("Pump is ON. ") : F("Pump is OFF. "));
+    //     DEBUG_PRINT(shouldWater ? F("Should water. ") : F("Should NOT water. "));
+    //     DEBUG_PRINTLN(canToggle ? F("Can toggle. ") : F("Cannot toggle. "));
     // }
 
     if (shouldTurnOn)
@@ -94,10 +94,10 @@ void NurturerLogic::controlLight(const PlantConfig &config)
 
     // if (millis() - lastSensorRefresh > SENSOR_READ_WAIT_TIME * 1000UL)
     // {
-    //     Serial.print(lightOn ? F("Light is ON. ") : F("Light is OFF. "));
-    //     Serial.print(isThereEnoughLight ? F("There is enough light. ") : F("There is NOT enough light. "));
-    //     Serial.print(shouldHaveLight ? F("Should have light. ") : F("Should NOT have light. "));
-    //     Serial.println(canToggle ? F("Can toggle. ") : F("Cannot toggle. "));
+    //     DEBUG_PRINT(lightOn ? F("Light is ON. ") : F("Light is OFF. "));
+    //     DEBUG_PRINT(isThereEnoughLight ? F("There is enough light. ") : F("There is NOT enough light. "));
+    //     DEBUG_PRINT(shouldHaveLight ? F("Should have light. ") : F("Should NOT have light. "));
+    //     DEBUG_PRINTLN(canToggle ? F("Can toggle. ") : F("Cannot toggle. "));
     // }
 
     if (shouldTurnOn)
@@ -122,10 +122,10 @@ void NurturerLogic::controlFan(const PlantConfig &config)
 
     // if (millis() - lastSensorRefresh > SENSOR_READ_WAIT_TIME * 1000UL)
     // {
-    //     Serial.print(fanOn ? F("Fan is ON. ") : F("Fan is OFF. "));
-    //     Serial.print(isTooHot ? F("It is too hot. ") : F("It is not too hot. "));
-    //     Serial.print(isTooCold ? F("It is too cold. ") : F("It is not too cold. "));
-    //     Serial.println(canToggle ? F("Can toggle. ") : F("Cannot toggle. "));
+    //     DEBUG_PRINT(fanOn ? F("Fan is ON. ") : F("Fan is OFF. "));
+    //     DEBUG_PRINT(isTooHot ? F("It is too hot. ") : F("It is not too hot. "));
+    //     DEBUG_PRINT(isTooCold ? F("It is too cold. ") : F("It is not too cold. "));
+    //     DEBUG_PRINTLN(canToggle ? F("Can toggle. ") : F("Cannot toggle. "));
     // }
 
     if (shouldTurnOn)
@@ -150,10 +150,10 @@ void NurturerLogic::controlPad(const PlantConfig &config)
 
     // if (millis() - lastSensorRefresh > SENSOR_READ_WAIT_TIME * 1000UL)
     // {
-    //     Serial.print(padOn ? F("Pad is ON. ") : F("Pad is OFF. "));
-    //     Serial.print(isTooCold ? F("Soil is too cold. ") : F("Soil is not too cold. "));
-    //     Serial.print(isTooHot ? F("Soil is too hot. ") : F("Soil is not too hot. "));
-    //     Serial.println(canToggle ? F("Can toggle. ") : F("Cannot toggle. "));
+    //     DEBUG_PRINT(padOn ? F("Pad is ON. ") : F("Pad is OFF. "));
+    //     DEBUG_PRINT(isTooCold ? F("Soil is too cold. ") : F("Soil is not too cold. "));
+    //     DEBUG_PRINT(isTooHot ? F("Soil is too hot. ") : F("Soil is not too hot. "));
+    //     DEBUG_PRINTLN(canToggle ? F("Can toggle. ") : F("Cannot toggle. "));
     // }
 
     if (shouldTurnOn)
