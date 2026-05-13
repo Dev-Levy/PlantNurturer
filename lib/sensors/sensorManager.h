@@ -27,6 +27,7 @@ private:
     OneWire oneWire;
     DallasTemperature soilTempMeter;
 
+    TEST_CONTENT(public:)
     struct
     {
         uint8_t lightReady : 1;

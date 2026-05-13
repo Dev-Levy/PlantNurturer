@@ -53,6 +53,12 @@ void MenuSystem::plantRemoveCallback(void *ctx)
     if (!globalMenuPtr)
         return;
 
+    if (globalMenuPtr->mainPlantIndex == globalMenuPtr->activePlantIndex)
+    {
+        globalMenuPtr->mainPlantIndex = -1;
+        globalMenuPtr->selectedPlantConfig = -1;
+    }
+
     globalMenuPtr->selectedPlantPages[globalMenuPtr->activePlantIndex] = nullptr;
     globalMenuPtr->currentPage = &plantsPage;
     globalMenuPtr->currentCursor = 0;

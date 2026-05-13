@@ -11,6 +11,7 @@ public:
     NurturerLogic(TimeManager &clock, SensorManager &sensor, ActuatorManager &actuator, PlantManager &plant);
 
     void control(const PlantConfig &config);
+    void turnOffAll();
 
     TEST_CONTENT(void reset() {
         lastSensorRefresh = 0;

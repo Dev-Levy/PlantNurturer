@@ -1,8 +1,8 @@
 #include <unity.h>
-#include "TimeManager.h"
-#include "SensorManager.h"
-#include "ActuatorManager.h"
-#include "PlantManager.h"
+#include "timeManager.h"
+#include "sensorManager.h"
+#include "actuatorManager.h"
+#include "plantManager.h"
 #include "nurturerLogic.h"
 
 TimeManager clock;

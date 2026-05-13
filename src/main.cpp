@@ -13,6 +13,7 @@
 #include <config.h>
 
 static KeyPress lastKey = KeyPress::NONE;
+static bool turnedOff = false;
 
 TimeManager clock;
 DisplayManager display;
@@ -52,5 +53,14 @@ void loop()
   if (menu.selectedPlantConfig >= 0 && menu.selectedPlantConfig < PLANT_COUNT)
   {
     logic.control(menu.storedConfigs[menu.selectedPlantConfig]);
+    turnedOff = false;
+  }
+  else
+  {
+    if (!turnedOff)
+    {
+      logic.turnOffAll();
+      turnedOff = true;
+    }
   }
 }

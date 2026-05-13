@@ -1,7 +1,7 @@
 #pragma once
 #include <Arduino.h>
 
-#define TEST 1
+#define TEST 0
 #if TEST
 #define TEST_CONTENT(x) x
 #else

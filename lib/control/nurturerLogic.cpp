@@ -46,6 +46,18 @@ void NurturerLogic::control(const PlantConfig &config)
     controlPad(config);
 }
 
+void NurturerLogic::turnOffAll()
+{
+    if (actuator.state.pumpOn)
+        actuator.togglePump();
+    if (actuator.state.lightOn)
+        actuator.toggleLight();
+    if (actuator.state.fanOn)
+        actuator.toggleFan();
+    if (actuator.state.padOn)
+        actuator.togglePad();
+}
+
 void NurturerLogic::controlPump(const PlantConfig &config)
 {
     unsigned long now = millis();
