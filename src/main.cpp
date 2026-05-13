@@ -12,55 +12,48 @@
 
 #include <config.h>
 
-static KeyPress lastKey = KeyPress::NONE;
-static bool turnedOff = false;
-
 TimeManager clock;
-DisplayManager display;
 SensorManager sensors;
 ActuatorManager actuators;
 PlantManager plant;
+PlantConfig config;
 
-MenuSystem menu(clock, display, sensors, actuators, plant);
 NurturerLogic logic(clock, sensors, actuators, plant);
 
 void setup()
 {
   Serial.begin(9600);
+  delay(2000);
 
   setupPins();
 
   clock.begin();
-  display.begin();
   sensors.begin();
-  menu.begin();
+
+  plant.getPlantConfig(CHILI_CONFIG_ID, config);
+  // serial out the config value for testing
+  Serial.println(F("Config idx, SunnyHours, WaterLimit, WaterMl, IdealTemp, IdealSoilTemp"));
+  Serial.print(config.idx);
+  Serial.print(F(", "));
+  Serial.print(config.sunnyHours);
+  Serial.print(F(", "));
+  Serial.print(config.waterLimit);
+  Serial.print(F(", "));
+  Serial.print(config.waterMl);
+  Serial.print(F(", "));
+  Serial.print(config.idealTemp);
+  Serial.print(F(", "));
+  Serial.println(config.idealSoilTemp);
+
+  Serial.print(F("Time, Light, Temp, Humidity, SoilTemp, SoilMoist, Pump, Light, Fan, Pad, "));
+  Serial.print(F("ShouldWater, WateredEnough, CanTogglePump, "));
+  Serial.print(F("IsThereEnoughLight, ShouldHaveLight, CanToggleLight, "));
+  Serial.print(F("IsTooHot, IsTooCold, IsTooHumid, IsHumidityIdeal, CanToggleFan, "));
+  Serial.print(F("IsSoilTooHot, IsSoilTooCold, CanTogglePad"));
+  Serial.println();
 }
 
 void loop()
 {
-  KeyPress key = readKeys();
-
-  if (key != KeyPress::NONE && lastKey == KeyPress::NONE)
-  {
-    menu.processKey(key);
-    menu.draw();
-  }
-
-  lastKey = key;
-
-  menu.refresh();
-
-  if (menu.selectedPlantConfig >= 0 && menu.selectedPlantConfig < PLANT_COUNT)
-  {
-    logic.control(menu.storedConfigs[menu.selectedPlantConfig]);
-    turnedOff = false;
-  }
-  else
-  {
-    if (!turnedOff)
-    {
-      logic.turnOffAll();
-      turnedOff = true;
-    }
-  }
+  logic.control(config);
 }
