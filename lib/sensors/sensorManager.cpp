@@ -32,6 +32,8 @@ void SensorManager::begin()
 
 const SensorReading &SensorManager::readAll()
 {
+    TEST_CONTENT(if (state.mock) { return lastReading; })
+
     uint32_t currentMillis = millis();
 
     if (currentMillis - lastSlowRead > SENSOR_READ_WAIT_TIME * 1000)

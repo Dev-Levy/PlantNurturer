@@ -8,7 +8,7 @@ public:
     PlantManager();
 
     bool getPlantConfig(uint8_t index, PlantConfig &out) const;
-    uint8_t getWateringSeconds(uint16_t waterMl) const;
+    uint8_t getWateringMs(uint16_t waterMl) const;
 
 private:
 };
