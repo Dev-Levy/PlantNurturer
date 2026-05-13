@@ -1,6 +1,13 @@
 #pragma once
 #include <Arduino.h>
 
+#define TEST 0
+#if TEST
+#define TEST_CONTENT(x) x
+#else
+#define TEST_CONTENT(x)
+#endif
+
 #define DEBUG 0
 #if DEBUG
 #define DEBUG_PRINT(x) Serial.print(x)
@@ -37,7 +44,9 @@ static constexpr uint8_t LIGHT_COOLDOWN_IN_SECONDS = 5;
 static constexpr uint8_t FAN_COOLDOWN_IN_SECONDS = 5;
 static constexpr uint8_t HEATING_COOLDOWN_IN_SECONDS = 5;
 
-static constexpr uint8_t SENSOR_READ_WAIT_TIME = 2; // in seconds
+static constexpr uint8_t CELSIUS_DIFF_ALLOWED = 1U;   // in degrees Celsius
+static constexpr uint8_t HUMIDITY_DIFF_ALLOWED = 10U; // in percentage points
+constexpr uint8_t SENSOR_READ_WAIT_TIME = 2U;         // in seconds
 
 static constexpr uint8_t TOMATO_CONFIG_ID = 0;
 static constexpr uint8_t CHILI_CONFIG_ID = 1;

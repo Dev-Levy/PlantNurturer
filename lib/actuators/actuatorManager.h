@@ -11,6 +11,17 @@ public:
     void toggleFan();
     void togglePad();
 
+    TEST_CONTENT(void resetStates() {
+        state.pumpOn = 0;
+        state.lightOn = 0;
+        state.fanOn = 0;
+        state.padOn = 0;
+        pumpWaitTime = 0;
+        lightWaitTime = 0;
+        fanWaitTime = 0;
+        padWaitTime = 0;
+    })
+
     unsigned long pumpStart = 0;
     unsigned long pumpWaitTime = 0;
     unsigned long lightWaitTime = 0;

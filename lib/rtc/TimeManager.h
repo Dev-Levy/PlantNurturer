@@ -14,7 +14,20 @@ public:
 
     inline uint32_t getUnixNow() { return isRTCInitialized ? rtc.now().unixtime() : 0; }
 
-    inline uint8_t getHour() { return isRTCInitialized ? now.hour() : 0; }
+    inline uint8_t getHour()
+    {
+        TEST_CONTENT(return hour;)
+
+        return isRTCInitialized ? now.hour() : 0;
+    }
+
+    TEST_CONTENT(inline void setHour(uint8_t h) {
+        hour = h;
+    })
+    TEST_CONTENT(inline void resetMock() {
+        hour = now.hour();
+    })
+
     inline uint8_t getMinute() { return isRTCInitialized ? now.minute() : 0; }
     inline uint8_t getSecond() { return isRTCInitialized ? now.second() : 0; }
 
@@ -28,6 +41,7 @@ public:
     void setGrowthStartTime(uint32_t startTime) { growthStartTime = startTime; }
 
 private:
+    TEST_CONTENT(uint8_t hour = 0;)
     bool isRTCInitialized;
     uint32_t growthStartTime;
     RTC_DS1307 rtc;

@@ -4,5 +4,5 @@
 struct WateringLookupEntry
 {
     uint16_t waterMl;
-    uint8_t seconds;
+    uint16_t milliseconds;
 };

@@ -18,6 +18,8 @@ public:
     SensorManager();
     void begin();
     const SensorReading &readAll();
+    TEST_CONTENT(void setMockReading(const SensorReading &mock) { lastReading = mock; state.mock = 1; })
+    TEST_CONTENT(void resetMock() { state.mock = 0; })
 
 private:
     Adafruit_AHTX0 aht;
@@ -25,10 +27,12 @@ private:
     OneWire oneWire;
     DallasTemperature soilTempMeter;
 
+    TEST_CONTENT(public:)
     struct
     {
         uint8_t lightReady : 1;
         uint8_t ahtReady : 1;
+        TEST_CONTENT(uint8_t mock : 1;)
     } state;
 
     SensorReading lastReading;
